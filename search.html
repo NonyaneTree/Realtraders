@@ -3,27 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image to PDF Search</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.0.0/tesseract.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.6.2/fuse.min.js"></script>
-    <script src="script.js" defer></script>
+    <title>Candlestick Pattern Identifier</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .status, .results {
+            margin-top: 20px;
+        }
+        .status {
+            font-weight: bold;
+            color: #555;
+        }
+        .results {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .results h2 {
+            margin-top: 0;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Image to PDF Search</h1>
-        <p>Limit: 4 searches every 12 hours</p>
-        <label for="imageInput" class="upload-label">Upload Images:</label>
-        <input type="file" id="imageInput" accept="image/*" multiple>
-        <button class="btn" onclick="processImages()">Process and Search</button>
-        <div id="spinner" class="spinner-container">
-            <p>Loading... Please wait while we process your images.</p>
-            <div class="spinner"></div>
-        </div>
-        <p id="status" class="status"></p>
-        <div id="results" class="results"></div>
-        <canvas id="imageCanvas" style="display:none;"></canvas>
+        <h1>Candlestick Pattern Identifier</h1>
+        <!-- Removed PDF file input as we're using chart.pdf directly -->
+        <button id="processButton">Process PDF</button>
+        <div class="status" id="status">Status: Waiting for input...</div>
+        <div class="results" id="results"></div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist/build/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.6.2/fuse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tesseract.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
