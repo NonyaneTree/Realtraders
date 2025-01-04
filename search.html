@@ -23,6 +23,16 @@
             text-align: center;
             color: #333;
         }
+        label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+            color: #555;
+        }
+        input[type="file"] {
+            margin-bottom: 20px;
+            display: block;
+        }
         button {
             padding: 10px 20px;
             background: #007BFF;
@@ -55,7 +65,8 @@
 <body>
     <div class="container">
         <h1>Candlestick Pattern Identifier</h1>
-        <!-- Removed PDF file input as we're using chart.pdf directly -->
+        <label for="pdfInput">Upload PDF:</label>
+        <input type="file" id="pdfInput" accept="application/pdf">
         <button id="processButton">Process PDF</button>
         <div class="status" id="status">Status: Waiting for input...</div>
         <div class="results" id="results"></div>
