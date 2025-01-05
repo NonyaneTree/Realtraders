@@ -1,52 +1,77 @@
-document.getElementById("processButton").addEventListener("click", async () => {
-    const pdfInput = document.getElementById("pdfInput");
+document.getElementById("searchButton").addEventListener("click", async () => {
+    const imageInput = document.getElementById("imageInput");
     const status = document.getElementById("status");
     const results = document.getElementById("results");
 
     // Clear previous results
-    status.textContent = "Processing PDF...";
     results.innerHTML = "";
+    status.textContent = "Processing image and PDF...";
 
-    if (pdfInput.files.length === 0) {
-        status.textContent = "Please upload a PDF file.";
+    const file = imageInput.files[0];
+    if (!file) {
+        status.textContent = "Please upload an image.";
         return;
     }
 
-    const file = pdfInput.files[0];
-    const reader = new FileReader();
+    try {
+        // Perform OCR on the uploaded image
+        const ocrText = await performOCR(file);
 
-    reader.onload = async () => {
-        try {
-            const pdf = await pdfjsLib.getDocument({ data: reader.result }).promise;
-            let fullText = "";
+        // Load and extract text from the PDF
+        const pdfText = await extractTextFromPdf("chart.pdf");
 
-            // Extract text from all pages
-            for (let i = 1; i <= pdf.numPages; i++) {
-                const page = await pdf.getPage(i);
-                const textContent = await page.getTextContent();
-                fullText += textContent.items.map(item => item.str).join(" ");
-            }
+        // Search for similarities using Fuse.js
+        const searchResults = searchInPdf(ocrText, pdfText);
 
-            // Known candlestick patterns
-            const candlestickPatterns = ["Doji", "Hammer", "Engulfing", "Shooting Star", "Morning Star"];
-            
-            // Search for patterns
-            const fuse = new Fuse(candlestickPatterns, { includeScore: true, threshold: 0.3 });
-            const matches = fuse.search(fullText);
-
-            if (matches.length > 0) {
-                const matchedPatterns = matches.map(match => match.item).join(", ");
-                results.innerHTML = `<h2>Identified Patterns:</h2><p>${matchedPatterns}</p>`;
-            } else {
-                results.innerHTML = `<h2>No Candlestick Patterns Identified</h2>`;
-            }
-
-            status.textContent = "Processing complete!";
-        } catch (error) {
-            status.textContent = "Error processing PDF.";
-            console.error(error);
+        // Display results
+        if (searchResults.length > 0) {
+            results.innerHTML = `<h3>Matches Found:</h3><ul>${searchResults
+                .map((result) => `<li>${result.item}</li>`)
+                .join("")}</ul>`;
+        } else {
+            results.innerHTML = `<p>No matches found for the extracted text.</p>`;
         }
-    };
 
-    reader.readAsArrayBuffer(file);
+        status.textContent = "Search completed.";
+    } catch (error) {
+        console.error(error);
+        status.textContent = "An error occurred while processing.";
+    }
 });
+
+async function performOCR(imageFile) {
+    const reader = new FileReader();
+    return new Promise((resolve, reject) => {
+        reader.onload = async () => {
+            const worker = Tesseract.createWorker();
+            await worker.load();
+            await worker.loadLanguage("eng");
+            await worker.initialize("eng");
+            const { data: { text } } = await worker.recognize(reader.result);
+            await worker.terminate();
+            resolve(text.trim());
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(imageFile);
+    });
+}
+
+async function extractTextFromPdf(pdfUrl) {
+    const response = await fetch(pdfUrl);
+    const pdfData = new Uint8Array(await response.arrayBuffer());
+    const pdf = await pdfjsLib.getDocument(pdfData).promise;
+    let pdfText = "";
+
+    for (let i = 0; i < pdf.numPages; i++) {
+        const page = await pdf.getPage(i + 1);
+        const textContent = await page.getTextContent();
+        pdfText += textContent.items.map((item) => item.str).join(" ");
+    }
+
+    return pdfText;
+}
+
+function searchInPdf(ocrText, pdfText) {
+    const fuse = new Fuse(pdfText.split(" "), { includeScore: true });
+    return fuse.search(ocrText);
+                                         }
