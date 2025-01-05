@@ -3,35 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photo Search in PDF</title>
+    <title>Trendline and Support/Resistance</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
             background-color: #f4f4f9;
         }
         .container {
-            max-width: 800px;
-            margin: 50px auto;
+            max-width: 900px;
+            margin: 30px auto;
             padding: 20px;
             background: white;
             border-radius: 8px;
+            text-align: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         h1 {
-            text-align: center;
             color: #333;
         }
-        label {
-            font-weight: bold;
-            margin-bottom: 10px;
-            display: block;
-            color: #555;
-        }
         input[type="file"] {
-            margin-bottom: 20px;
-            display: block;
+            margin: 20px 0;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            max-width: 100%;
+            margin: 20px 0;
         }
         button {
             padding: 10px 20px;
@@ -40,41 +36,121 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            margin: 5px;
         }
         button:hover {
             background: #0056b3;
-        }
-        .status, .results {
-            margin-top: 20px;
-        }
-        .status {
-            font-weight: bold;
-            color: #555;
-        }
-        .results {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-        .results h3 {
-            margin-top: 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Search PDF Using Photo</h1>
-        <label for="imageInput">Upload a Photo:</label>
+        <h1>Trendlines & Support/Resistance</h1>
         <input type="file" id="imageInput" accept="image/*">
-        <button id="searchButton">Search in PDF</button>
-        <div class="status" id="status">Status: Waiting for input...</div>
-        <div class="results" id="results"></div>
+        <canvas id="chartCanvas" width="800" height="600"></canvas>
+        <button id="analyzeChart">Analyze Chart</button>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist/build/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.6.2/fuse.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tesseract.js"></script>
-    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/opencv.js"></script>
+    <script>
+        const canvas = document.getElementById("chartCanvas");
+        const ctx = canvas.getContext("2d");
+        const imageInput = document.getElementById("imageInput");
+        let image = new Image();
+
+        imageInput.addEventListener("change", (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    image.src = reader.result;
+                    image.onload = () => {
+                        canvas.width = image.width;
+                        canvas.height = image.height;
+                        ctx.drawImage(image, 0, 0, image.width, image.height);
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById("analyzeChart").addEventListener("click", () => {
+            analyzeChart();
+        });
+
+        async function analyzeChart() {
+            const src = cv.imread(canvas);
+
+            // Convert to grayscale
+            const gray = new cv.Mat();
+            cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+
+            // Detect edges
+            const edges = new cv.Mat();
+            cv.Canny(gray, edges, 50, 150);
+
+            // Find contours
+            const contours = new cv.MatVector();
+            const hierarchy = new cv.Mat();
+            cv.findContours(edges, contours, hierarchy, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE);
+
+            // Analyze contours to find peaks and troughs
+            const keyPoints = [];
+            for (let i = 0; i < contours.size(); i++) {
+                const contour = contours.get(i);
+                for (let j = 0; j < contour.rows; j++) {
+                    const point = contour.data32S.slice(j * 2, j * 2 + 2);
+                    keyPoints.push({ x: point[0], y: point[1] });
+                }
+            }
+
+            // Separate peaks and troughs
+            const peaks = keyPoints.filter((p) => p.y < canvas.height / 2); // Top half
+            const troughs = keyPoints.filter((p) => p.y >= canvas.height / 2); // Bottom half
+
+            // Sort peaks and troughs by x-coordinate
+            peaks.sort((a, b) => a.x - b.x);
+            troughs.sort((a, b) => a.x - b.x);
+
+            // Draw trendlines
+            if (troughs.length >= 2) {
+                drawLine(troughs[0].x, troughs[0].y, troughs[1].x, troughs[1].y, "green", 2); // Uptrend
+            }
+            if (peaks.length >= 2) {
+                drawLine(peaks[0].x, peaks[0].y, peaks[1].x, peaks[1].y, "red", 2); // Downtrend
+            }
+
+            // Draw horizontal support and resistance lines
+            if (troughs.length > 0) {
+                const supportY = calculateHorizontalLevel(troughs);
+                drawLine(0, supportY, canvas.width, supportY, "blue", 2); // Support
+            }
+            if (peaks.length > 0) {
+                const resistanceY = calculateHorizontalLevel(peaks);
+                drawLine(0, resistanceY, canvas.width, resistanceY, "orange", 2); // Resistance
+            }
+
+            // Clean up
+            src.delete();
+            gray.delete();
+            edges.delete();
+            contours.delete();
+            hierarchy.delete();
+        }
+
+        function calculateHorizontalLevel(points) {
+            const avgY = points.reduce((sum, p) => sum + p.y, 0) / points.length;
+            return avgY;
+        }
+
+        function drawLine(x1, y1, x2, y2, color, width) {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.stroke();
+        }
+    </script>
 </body>
 </html>
