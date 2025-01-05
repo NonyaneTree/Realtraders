@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Candlestick Pattern Identifier</title>
+    <title>Photo Search in PDF</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -57,17 +57,17 @@
             border-radius: 4px;
             border: 1px solid #ddd;
         }
-        .results h2 {
+        .results h3 {
             margin-top: 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Candlestick Pattern Identifier</h1>
-        <label for="pdfInput">Upload PDF:</label>
-        <input type="file" id="pdfInput" accept="application/pdf">
-        <button id="processButton">Process PDF</button>
+        <h1>Search PDF Using Photo</h1>
+        <label for="imageInput">Upload a Photo:</label>
+        <input type="file" id="imageInput" accept="image/*">
+        <button id="searchButton">Search in PDF</button>
         <div class="status" id="status">Status: Waiting for input...</div>
         <div class="results" id="results"></div>
     </div>
