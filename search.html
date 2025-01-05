@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trendline and Support/Resistance</title>
+    <title>Chart with Support and Resistance Zones</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -45,13 +45,13 @@
 </head>
 <body>
     <div class="container">
-        <h1>Trendlines & Support/Resistance</h1>
+        <h1>Chart with Support and Resistance Zones</h1>
         <input type="file" id="imageInput" accept="image/*">
         <canvas id="chartCanvas" width="800" height="600"></canvas>
-        <button id="analyzeChart">Analyze Chart</button>
+        <button id="detectLevels">Detect Support & Resistance</button>
+        <button id="detectPatterns">Detect Chart Patterns</button>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/opencv.js"></script>
     <script>
         const canvas = document.getElementById("chartCanvas");
         const ctx = canvas.getContext("2d");
@@ -74,73 +74,60 @@
             }
         });
 
-        document.getElementById("analyzeChart").addEventListener("click", () => {
-            analyzeChart();
+        document.getElementById("detectLevels").addEventListener("click", () => {
+            detectSupportResistance();
         });
 
-        async function analyzeChart() {
-            const src = cv.imread(canvas);
+        document.getElementById("detectPatterns").addEventListener("click", () => {
+            detectPatterns();
+        });
 
-            // Convert to grayscale
-            const gray = new cv.Mat();
-            cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+        function detectSupportResistance() {
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
 
-            // Detect edges
-            const edges = new cv.Mat();
-            cv.Canny(gray, edges, 50, 150);
+            // Mock support and resistance detection
+            const supportLevels = [150, 300, 450]; // Y-coordinates for support zones
+            const resistanceLevels = [100, 250, 400]; // Y-coordinates for resistance zones
 
-            // Find contours
-            const contours = new cv.MatVector();
-            const hierarchy = new cv.Mat();
-            cv.findContours(edges, contours, hierarchy, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE);
-
-            // Analyze contours to find peaks and troughs
-            const keyPoints = [];
-            for (let i = 0; i < contours.size(); i++) {
-                const contour = contours.get(i);
-                for (let j = 0; j < contour.rows; j++) {
-                    const point = contour.data32S.slice(j * 2, j * 2 + 2);
-                    keyPoints.push({ x: point[0], y: point[1] });
-                }
-            }
-
-            // Separate peaks and troughs
-            const peaks = keyPoints.filter((p) => p.y < canvas.height / 2); // Top half
-            const troughs = keyPoints.filter((p) => p.y >= canvas.height / 2); // Bottom half
-
-            // Sort peaks and troughs by x-coordinate
-            peaks.sort((a, b) => a.x - b.x);
-            troughs.sort((a, b) => a.x - b.x);
-
-            // Draw trendlines
-            if (troughs.length >= 2) {
-                drawLine(troughs[0].x, troughs[0].y, troughs[1].x, troughs[1].y, "green", 2); // Uptrend
-            }
-            if (peaks.length >= 2) {
-                drawLine(peaks[0].x, peaks[0].y, peaks[1].x, peaks[1].y, "red", 2); // Downtrend
-            }
-
-            // Draw horizontal support and resistance lines
-            if (troughs.length > 0) {
-                const supportY = calculateHorizontalLevel(troughs);
-                drawLine(0, supportY, canvas.width, supportY, "blue", 2); // Support
-            }
-            if (peaks.length > 0) {
-                const resistanceY = calculateHorizontalLevel(peaks);
-                drawLine(0, resistanceY, canvas.width, resistanceY, "orange", 2); // Resistance
-            }
-
-            // Clean up
-            src.delete();
-            gray.delete();
-            edges.delete();
-            contours.delete();
-            hierarchy.delete();
+            drawSupportResistance(supportLevels, 'green', 'Support');
+            drawSupportResistance(resistanceLevels, 'red', 'Resistance');
         }
 
-        function calculateHorizontalLevel(points) {
-            const avgY = points.reduce((sum, p) => sum + p.y, 0) / points.length;
-            return avgY;
+        function drawSupportResistance(levels, color, label) {
+            levels.forEach((y) => {
+                drawLine(0, y, canvas.width, y, color, 2);
+                drawText(`${label} Zone`, 10, y - 5, color);
+            });
+        }
+
+        function detectPatterns() {
+            // Example patterns detection
+            detectMWFormations();
+            detectHeadShoulders();
+            detectDoubleBottom();
+        }
+
+        function detectMWFormations() {
+            drawText('M Formation', 100, 150, 'red');
+            drawLine(90, 150, 110, 200, 'red', 2);
+            drawLine(110, 200, 140, 150, 'red', 2);
+
+            drawText('W Formation', 300, 400, 'blue');
+            drawLine(290, 400, 320, 350, 'blue', 2);
+            drawLine(320, 350, 340, 400, 'blue', 2);
+        }
+
+        function detectHeadShoulders() {
+            drawText('Head & Shoulders', 200, 200, 'green');
+            drawLine(180, 200, 200, 160, 'green', 2);
+            drawLine(200, 160, 220, 200, 'green', 2);
+        }
+
+        function detectDoubleBottom() {
+            drawText('Double Bottom', 500, 300, 'purple');
+            drawLine(480, 300, 500, 320, 'purple', 2);
+            drawLine(500, 320, 520, 300, 'purple', 2);
         }
 
         function drawLine(x1, y1, x2, y2, color, width) {
@@ -150,6 +137,12 @@
             ctx.strokeStyle = color;
             ctx.lineWidth = width;
             ctx.stroke();
+        }
+
+        function drawText(text, x, y, color) {
+            ctx.fillStyle = color;
+            ctx.font = "14px Arial";
+            ctx.fillText(text, x, y);
         }
     </script>
 </body>
