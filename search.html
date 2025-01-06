@@ -79,58 +79,93 @@
             detectSupportResistance();
         });
 
-        document.getElementById("detectPatterns").addEventListener("click", () => {
-            detectPatterns();
-        });
+        document.getElementById("detectPatterns").addEventListener("click", detectPatterns);
 
         document.getElementById("drawCandlesticks").addEventListener("click", () => {
             drawAllCandlestickPatterns();
         });
 
         function detectSupportResistance() {
+            // Fetch pixel data from the canvas (chart image)
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const data = imageData.data;
+            const priceData = extractPriceLevels(imageData);
 
-            const supportLevels = [150, 300, 450];
-            const resistanceLevels = [100, 250, 400];
+            // Dynamically calculate support and resistance levels
+            const levels = calculateSupportResistance(priceData);
 
-            drawSupportResistance(supportLevels, 'green', 'Support');
-            drawSupportResistance(resistanceLevels, 'red', 'Resistance');
+            // Draw calculated support and resistance
+            drawSupportResistance(levels.support, 'green', 'Support');
+            drawSupportResistance(levels.resistance, 'red', 'Resistance');
+
+            // Detect and draw trendlines dynamically
+            const trendlines = calculateTrendlines(priceData);
+            drawTrendlines(trendlines);
+        }
+
+        function extractPriceLevels(imageData) {
+            // Mock: Replace this with actual pixel analysis or data parsing
+            // Returns an array of simulated price levels
+            return [150, 180, 200, 300, 320, 450, 500];
+        }
+
+        function calculateSupportResistance(data) {
+            // Analyze data to find clusters of levels (simulate grouping close price levels)
+            const support = [];
+            const resistance = [];
+            const tolerance = 10; // Group close prices together
+
+            data.forEach((level, index) => {
+                if (index % 2 === 0) {
+                    // Alternate as support and resistance for simplicity
+                    support.push(level);
+                } else {
+                    resistance.push(level);
+                }
+            });
+
+            return { support, resistance };
+        }
+
+        function calculateTrendlines(data) {
+            // Identify key trendline points dynamically
+            const trendlines = [];
+            const threshold = 50; // Example threshold to identify significant moves
+
+            for (let i = 1; i < data.length; i++) {
+                const startX = (i - 1) * 100;
+                const endX = i * 100;
+                const startY = canvas.height - data[i - 1];
+                const endY = canvas.height - data[i];
+
+                if (Math.abs(endY - startY) > threshold) {
+                    trendlines.push({
+                        startX,
+                        startY,
+                        endX,
+                        endY,
+                        color: endY < startY ? 'blue' : 'orange', // Downtrend: blue, Uptrend: orange
+                        direction: endY < startY ? 'down' : 'up',
+                    });
+                }
+            }
+
+            return trendlines;
         }
 
         function drawSupportResistance(levels, color, label) {
             levels.forEach((y) => {
-                drawLine(0, y, canvas.width, y, color, 2);
-                drawText(`${label} Zone`, 10, y - 5, color);
+                drawLine(0, canvas.height - y, canvas.width, canvas.height - y, color, 2);
+                drawText(`${label} Zone`, 10, canvas.height - y - 5, color);
             });
         }
 
-        function detectPatterns() {
-            detectMWFormations();
-            detectHeadShoulders();
-            detectDoubleBottom();
-        }
-
-        function detectMWFormations() {
-            drawText('M Formation', 100, 150, 'red');
-            drawLine(90, 150, 110, 200, 'red', 2);
-            drawLine(110, 200, 140, 150, 'red', 2);
-
-            drawText('W Formation', 300, 400, 'blue');
-            drawLine(290, 400, 320, 350, 'blue', 2);
-            drawLine(320, 350, 340, 400, 'blue', 2);
-        }
-
-        function detectHeadShoulders() {
-            drawText('Head & Shoulders', 200, 200, 'green');
-            drawLine(180, 200, 200, 160, 'green', 2);
-            drawLine(200, 160, 220, 200, 'green', 2);
-        }
-
-        function detectDoubleBottom() {
-            drawText('Double Bottom', 500, 300, 'purple');
-            drawLine(480, 300, 500, 320, 'purple', 2);
-            drawLine(500, 320, 520, 300, 'purple', 2);
+        function drawTrendlines(trendlines) {
+            trendlines.forEach((line) => {
+                drawLine(line.startX, line.startY, line.endX, line.endY, line.color, 2);
+                const arrowX = line.endX;
+                const arrowY = line.endY;
+                addTrendArrow(arrowX, arrowY, line.direction, line.color);
+            });
         }
 
         function drawLine(x1, y1, x2, y2, color, width) {
@@ -146,22 +181,6 @@
             ctx.fillStyle = color;
             ctx.font = "14px Arial";
             ctx.fillText(text, x, y);
-        }
-
-        // Function to draw candlestick
-        function drawCandlestick(x, open, high, low, close, color) {
-            const bodyTop = Math.min(open, close);
-            const bodyBottom = Math.max(open, close);
-
-            ctx.fillStyle = color;
-            ctx.fillRect(x - 5, bodyTop, 10, bodyBottom - bodyTop);
-
-            ctx.beginPath();
-            ctx.moveTo(x, high);
-            ctx.lineTo(x, low);
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 2;
-            ctx.stroke();
         }
 
         function addTrendArrow(x, y, direction, color) {
@@ -194,6 +213,21 @@
                     addTrendArrow(candle.x, candle.trend === 'up' ? candle.low : candle.high, candle.trend, candle.color);
                 }
             });
+        }
+
+        function drawCandlestick(x, open, high, low, close, color) {
+            const bodyTop = Math.min(open, close);
+            const bodyBottom = Math.max(open, close);
+
+            ctx.fillStyle = color;
+            ctx.fillRect(x - 5, bodyTop, 10, bodyBottom - bodyTop);
+
+            ctx.beginPath();
+            ctx.moveTo(x, high);
+            ctx.lineTo(x, low);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.stroke();
         }
     </script>
 </body>
