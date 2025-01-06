@@ -50,6 +50,7 @@
         <canvas id="chartCanvas" width="800" height="600"></canvas>
         <button id="detectLevels">Detect Support & Resistance</button>
         <button id="detectPatterns">Detect Chart Patterns</button>
+        <button id="drawCandlesticks">Draw Candlestick Patterns</button>
     </div>
 
     <script>
@@ -82,13 +83,16 @@
             detectPatterns();
         });
 
+        document.getElementById("drawCandlesticks").addEventListener("click", () => {
+            drawAllCandlestickPatterns();
+        });
+
         function detectSupportResistance() {
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const data = imageData.data;
 
-            // Mock support and resistance detection
-            const supportLevels = [150, 300, 450]; // Y-coordinates for support zones
-            const resistanceLevels = [100, 250, 400]; // Y-coordinates for resistance zones
+            const supportLevels = [150, 300, 450];
+            const resistanceLevels = [100, 250, 400];
 
             drawSupportResistance(supportLevels, 'green', 'Support');
             drawSupportResistance(resistanceLevels, 'red', 'Resistance');
@@ -102,7 +106,6 @@
         }
 
         function detectPatterns() {
-            // Example patterns detection
             detectMWFormations();
             detectHeadShoulders();
             detectDoubleBottom();
@@ -143,6 +146,54 @@
             ctx.fillStyle = color;
             ctx.font = "14px Arial";
             ctx.fillText(text, x, y);
+        }
+
+        // Function to draw candlestick
+        function drawCandlestick(x, open, high, low, close, color) {
+            const bodyTop = Math.min(open, close);
+            const bodyBottom = Math.max(open, close);
+
+            ctx.fillStyle = color;
+            ctx.fillRect(x - 5, bodyTop, 10, bodyBottom - bodyTop);
+
+            ctx.beginPath();
+            ctx.moveTo(x, high);
+            ctx.lineTo(x, low);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        function addTrendArrow(x, y, direction, color) {
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            if (direction === 'up') {
+                ctx.lineTo(x - 5, y + 10);
+                ctx.lineTo(x + 5, y + 10);
+            } else if (direction === 'down') {
+                ctx.lineTo(x - 5, y - 10);
+                ctx.lineTo(x + 5, y - 10);
+            }
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+        }
+
+        function drawAllCandlestickPatterns() {
+            const candleData = [
+                { x: 50, open: 200, high: 210, low: 180, close: 205, color: 'green', trend: 'up' },
+                { x: 100, open: 220, high: 250, low: 215, close: 225, color: 'red', trend: 'down' },
+                { x: 150, open: 210, high: 230, low: 200, close: 240, color: 'green', trend: 'up' },
+                { x: 200, open: 240, high: 250, low: 220, close: 210, color: 'red', trend: 'down' },
+                { x: 250, open: 230, high: 240, low: 220, close: 230, color: 'gray', trend: null },
+            ];
+
+            candleData.forEach(candle => {
+                drawCandlestick(candle.x, candle.open, candle.high, candle.low, candle.close, candle.color);
+                if (candle.trend) {
+                    addTrendArrow(candle.x, candle.trend === 'up' ? candle.low : candle.high, candle.trend, candle.color);
+                }
+            });
         }
     </script>
 </body>
