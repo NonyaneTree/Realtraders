@@ -1,46 +1,93 @@
 function drawAllCandlestickPatterns() {
-    // Assuming you have pixel data for prices (e.g., open, close, high, low) per candle
-    const candleData = getCandlestickDataFromChart(); // This function should extract data from the chart
+    const canvas = document.getElementById('chartCanvas');
+    const ctx = canvas.getContext('2d');
+    const candleData = getCandlestickDataFromChart(); // Extract candlestick data
 
-    candleData.forEach(candle => {
-        drawCandlestick(candle.x, candle.open, candle.high, candle.low, candle.close, candle.color);
+    const { scaledData, scaleFactor } = scaleDataToCanvas(candleData, canvas); // Scale data to fit the canvas
+
+    scaledData.forEach(candle => {
+        drawCandlestick(ctx, candle.x, candle.open, candle.high, candle.low, candle.close, candle.color, scaleFactor);
         if (candle.trend) {
-            addTrendArrow(candle.x, candle.trend === 'up' ? candle.low : candle.high, candle.trend, candle.color);
+            addTrendArrow(ctx, candle.x, candle.trend === 'up' ? candle.low : candle.high, candle.trend, candle.color, scaleFactor);
         }
 
-        // Detect patterns
+        // Detect patterns and annotate
         if (isBullishEngulfing(candle)) {
-            drawText('Bullish Engulfing', candle.x, candle.low - 20, 'green');
+            drawText(ctx, 'Bullish Engulfing', candle.x, candle.low - 20 * scaleFactor, 'green');
         } else if (isBearishEngulfing(candle)) {
-            drawText('Bearish Engulfing', candle.x, candle.high + 20, 'red');
+            drawText(ctx, 'Bearish Engulfing', candle.x, candle.high + 20 * scaleFactor, 'red');
+        } else if (isDoji(candle)) {
+            drawText(ctx, 'Doji', candle.x, candle.low - 20 * scaleFactor, 'blue');
+        } else if (isHammer(candle)) {
+            drawText(ctx, 'Hammer', candle.x, candle.low - 20 * scaleFactor, 'purple');
+        } else if (isMorningStar(candleData, candle)) {
+            drawText(ctx, 'Morning Star', candle.x, candle.low - 20 * scaleFactor, 'gold');
+        } else if (isStopHunt(candle)) {
+            drawText(ctx, 'Stop Hunt', candle.x, candle.high + 20 * scaleFactor, 'orange');
         }
-        // Add more pattern checks (Doji, Hammer, etc.) as necessary
     });
 }
 
+// Example candlestick data
 function getCandlestickDataFromChart() {
-    // This function would normally extract the candlestick data from the chart
-    // Here it's mocked with sample data for demonstration purposes
     return [
-        { x: 50, open: 200, high: 210, low: 180, close: 205, color: 'green', trend: 'up' },
-        { x: 100, open: 220, high: 250, low: 215, close: 225, color: 'red', trend: 'down' },
-        { x: 150, open: 210, high: 230, low: 200, close: 240, color: 'green', trend: 'up' },
-        { x: 200, open: 240, high: 250, low: 220, close: 210, color: 'red', trend: 'down' },
-        { x: 250, open: 230, high: 240, low: 220, close: 230, color: 'gray', trend: null },
+        { x: 0, open: 200, high: 210, low: 180, close: 205, color: 'green', trend: 'up' },
+        { x: 1, open: 220, high: 250, low: 215, close: 225, color: 'red', trend: 'down' },
+        { x: 2, open: 210, high: 230, low: 200, close: 240, color: 'green', trend: 'up' },
+        { x: 3, open: 240, high: 250, low: 220, close: 210, color: 'red', trend: 'down' },
+        { x: 4, open: 230, high: 240, low: 220, close: 230, color: 'gray', trend: null },
     ];
 }
 
+// Scale data to fit canvas
+function scaleDataToCanvas(data, canvas) {
+    const maxHigh = Math.max(...data.map(d => d.high));
+    const minLow = Math.min(...data.map(d => d.low));
+    const scaleFactor = canvas.height / (maxHigh - minLow);
+    return {
+        scaledData: data.map(c => ({
+            ...c,
+            open: (c.open - minLow) * scaleFactor,
+            high: (c.high - minLow) * scaleFactor,
+            low: (c.low - minLow) * scaleFactor,
+            close: (c.close - minLow) * scaleFactor,
+            x: c.x * (canvas.width / data.length),
+        })),
+        scaleFactor,
+    };
+}
+
+// Pattern detection
 function isBullishEngulfing(candle) {
-    // Check if current candle is bullish engulfing (open < close of previous candle and current close > previous open)
     return candle.close > candle.open && candle.color === 'green';
 }
 
 function isBearishEngulfing(candle) {
-    // Check if current candle is bearish engulfing (open > close of previous candle and current close < previous open)
     return candle.close < candle.open && candle.color === 'red';
 }
 
-function drawCandlestick(x, open, high, low, close, color) {
+function isDoji(candle) {
+    return Math.abs(candle.open - candle.close) < 2;
+}
+
+function isHammer(candle) {
+    return candle.close > candle.open && (candle.low - Math.min(candle.open, candle.close)) > 2 * Math.abs(candle.open - candle.close);
+}
+
+function isMorningStar(data, candle) {
+    const index = data.indexOf(candle);
+    if (index < 2) return false;
+    const prev1 = data[index - 1];
+    const prev2 = data[index - 2];
+    return prev2.close < prev2.open && isDoji(prev1) && candle.close > candle.open;
+}
+
+function isStopHunt(candle) {
+    return candle.high - candle.open > 1.5 * (candle.open - candle.low);
+}
+
+// Drawing functions
+function drawCandlestick(ctx, x, open, high, low, close, color, scaleFactor) {
     const bodyTop = Math.min(open, close);
     const bodyBottom = Math.max(open, close);
 
@@ -55,23 +102,23 @@ function drawCandlestick(x, open, high, low, close, color) {
     ctx.stroke();
 }
 
-function addTrendArrow(x, y, direction, color) {
+function addTrendArrow(ctx, x, y, direction, color, scaleFactor) {
     ctx.beginPath();
     ctx.moveTo(x, y);
     if (direction === 'up') {
-        ctx.lineTo(x - 5, y + 10);
-        ctx.lineTo(x + 5, y + 10);
+        ctx.lineTo(x - 5, y + 10 * scaleFactor);
+        ctx.lineTo(x + 5, y + 10 * scaleFactor);
     } else if (direction === 'down') {
-        ctx.lineTo(x - 5, y - 10);
-        ctx.lineTo(x + 5, y - 10);
+        ctx.lineTo(x - 5, y - 10 * scaleFactor);
+        ctx.lineTo(x + 5, y - 10 * scaleFactor);
     }
     ctx.closePath();
     ctx.fillStyle = color;
     ctx.fill();
 }
 
-function drawText(text, x, y, color) {
+function drawText(ctx, text, x, y, color) {
     ctx.fillStyle = color;
     ctx.font = "14px Arial";
     ctx.fillText(text, x, y);
-}
+            }
