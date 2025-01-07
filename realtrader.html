@@ -1,4 +1,3 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,10 +42,44 @@
             font-size: 2em;
         }
 
-        .news-icon {
-            font-size: 1.2em;
-            text-decoration: none;
+        .menu-icon {
+            font-size: 1.5em;
             color: #fff;
+            cursor: pointer;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidebar a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidebar .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
         }
 
         /* Section Styling */
@@ -150,6 +183,16 @@
                 section.style.display = 'none';
             }
         }
+
+        // Open and close sidebar
+        function toggleMenu() {
+            const sidebar = document.getElementById('mySidebar');
+            if (sidebar.style.width === '250px') {
+                sidebar.style.width = '0';
+            } else {
+                sidebar.style.width = '250px';
+            }
+        }
     </script>
     <!-- Google AdSense Script -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7221396727211259" 
@@ -157,12 +200,23 @@
 </head>
 <body>
     <!-- Main Content -->
-    <main>
-        <header>
-            <h1>Real Traders</h1>
-            <a href="news.html" class="news-icon">Latest News &rarr;</a>
-        </header>
+    <header>
+        <span class="menu-icon" onclick="toggleMenu()">&#9776;</span>
+        <h1>Real Traders</h1>
+        <a href="news.html" class="news-icon">Latest News &rarr;</a>
+    </header>
 
+    <!-- Sidebar Menu -->
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">&times;</a>
+        <a href="news.html">News</a>
+        <a href="calculator.html">Calculator</a>
+        <a href="advisor.html">Advisor</a>
+        <a href="market-chart-analyzer.html">Market Chart Analyzer</a>
+    </div>
+
+    <!-- Main Content Sections -->
+    <main>
         <section>
             <h2>Economic Calendar</h2>
             <img 
@@ -258,9 +312,10 @@
     <div class="ticker">
         <p>USD: 1.03 | EUR: 0.97 | GBP: 0.80 | JPY: 157.298 | CAD: 1.444 | AUD: 1 40 | BTC: 98 571 | ETH: 3 658</p>
     </div>
+
     <!-- Search Icon -->
     <a href="search.html">
         <img src="Search.png" alt="Search Icon" class="icon" />
     </a>
 </body>
-</html>
+                                                         </html>
