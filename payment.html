@@ -1,4 +1,4 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -91,7 +91,7 @@
 <body>
     <div class="container">
         <h2 id="form-title">Register</h2>
-        <form id="register-form">
+        <form id="register-form" action="realtraders.html" method="GET">
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" id="name" name="name" required>
@@ -108,7 +108,6 @@
                     <option value="South Africa">South Africa</option>
                     <option value="India">India</option>
                     <option value="United Kingdom">United Kingdom</option>
-                    <!-- Add more countries as needed -->
                 </select>
             </div>
             <div class="form-group">
@@ -124,7 +123,7 @@
             </div>
         </form>
 
-        <form id="login-form" style="display: none;">
+        <form id="login-form" action="your_login_endpoint_here" method="POST" style="display: none;">
             <div class="form-group">
                 <label for="login-email">Email Address</label>
                 <input type="email" id="login-email" name="login-email" required>
@@ -150,9 +149,8 @@
     </div>
 
     <script>
-        // Yoco Initialization
         const yoco = new YocoSDK({
-            publicKey: 'pk_live_88415492P4RYmO49b224' // Replace with your actual public key
+            publicKey: 'pk_live_88415492P4RYmO49b224'
         });
 
         const paymentButton = document.getElementById('payment-button');
@@ -160,11 +158,10 @@
         let freeEntries = 4;
         let unlimitedAccess = false;
 
-        // Payment button logic
         paymentButton.addEventListener('click', () => {
             if (!unlimitedAccess) {
                 yoco.showPopup({
-                    amountInCents: 10000, // R100 in cents
+                    amountInCents: 10000,
                     currency: 'ZAR',
                     callback: (result) => {
                         if (result.error) {
@@ -182,16 +179,14 @@
             }
         });
 
-        // Unlimited access timer
         function startUnlimitedAccessTimer() {
             setTimeout(() => {
                 unlimitedAccess = false;
                 alert('Unlimited access expired. Please make another payment.');
                 usageInfo.textContent = 'Free entries remaining: ' + freeEntries + ' (resets every 12 hours).';
-            }, 720 * 60 * 60 * 1000); // 720 hours in milliseconds
+            }, 720 * 60 * 60 * 1000);
         }
 
-        // Free entry logic
         function useFreeEntry() {
             if (freeEntries > 0) {
                 freeEntries--;
@@ -200,6 +195,20 @@
                 alert('Free entries exhausted. Please make a payment.');
             }
         }
+
+        document.getElementById('toggle-form').addEventListener('click', () => {
+            const registerForm = document.getElementById('register-form');
+            const loginForm = document.getElementById('login-form');
+            if (registerForm.style.display === 'none') {
+                registerForm.style.display = 'block';
+                loginForm.style.display = 'none';
+                document.getElementById('form-title').innerText = 'Register';
+            } else {
+                registerForm.style.display = 'none';
+                loginForm.style.display = 'block';
+                document.getElementById('form-title').innerText = 'Login';
+            }
+        });
     </script>
 </body>
 </html>
