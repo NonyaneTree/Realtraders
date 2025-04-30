@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart with Support and Resistance Zones</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        input[type="file"] {
+            margin: 20px 0;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            max-width: 100%;
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #analysisResult {
+            margin-top: 20px;
+            text-align: left;
+            background: #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chart with Support and Resistance Zones</h1>
+        <input type="file" id="imageInput" accept="image/*">
+        <canvas id="chartCanvas" width="800" height="600"></canvas>
+        <button id="detectLevels">Detect Support & Resistance</button>
+        <button id="detectPatterns">Detect Chart Patterns</button>
+        <button id="drawCandlesticks">Draw Candlestick Patterns</button>
+        <button id="analyzeMarket">Analyze Market Direction</button>
+        <div id="analysisResult"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("chartCanvas");
+        const ctx = canvas.getContext("2d");
+        const imageInput = document.getElementById("imageInput");
+        const analysisResult = document.getElementById("analysisResult");
+        let image = new Image();
+
+        imageInput.addEventListener("change", (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    image.src = reader.result;
+                    image.onload = () => {
+                        canvas.width = image.width;
+                        canvas.height = image.height;
+                        ctx.drawImage(image, 0, 0, image.width, image.height);
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById("detectLevels").addEventListener("click", () => {
+            detectSupportResistance();
+        });
+
+        document.getElementById("detectPatterns").addEventListener("click", detectPatterns);
+
+        document.getElementById("drawCandlesticks").addEventListener("click", () => {
+            drawAllCandlestickPatterns();
+        });
+
+        document.getElementById("analyzeMarket").addEventListener("click", analyzeMarketDirection);
+
+        function detectSupportResistance() {
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const priceData = extractPriceLevels(imageData);
+            const levels = calculateSupportResistance(priceData);
+            drawSupportResistance(levels.support, 'green', 'Support');
+            drawSupportResistance(levels.resistance, 'red', 'Resistance');
+            const trendlines = calculateTrendlines(priceData);
+            drawTrendlines(trendlines);
+        }
+
+        function analyzeMarketDirection() {
+            // Placeholder for API call
+            fetch('https://api.deepseek.com/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer sk-d0d60ce2318d46cba83a545996753c7d'
+                },
+                body: JSON.stringify({ /* parameters for analysis */ })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display analysis results
+                const { direction, entryPoint, takeProfit, pendingOrder } = data;
+                analysisResult.innerHTML = `
+                    <h3>Market Analysis:</h3>
+                    <p>Direction: ${direction}</p>
+                    <p>Entry Point: ${entryPoint}</p>
+                    <p>Take Profit: ${takeProfit}</p>
+                    <p>Pending Order: ${pendingOrder}</p>
+                `;
+            })
+            .catch(error => {
+                analysisResult.innerHTML = `<p>Error analyzing market: ${error.message}</p>`;
+            });
+        }
+
+        // Remaining functions (extractPriceLevels, calculateSupportResistance, etc.) remain unchanged
+
+    </script>
+</body>
+</html>
