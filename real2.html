@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Forex Chart Analyzer Bot</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; background: #f4f4f4; }
+    #chatbox { border: 1px solid #ccc; padding: 15px; height: 250px; overflow-y: scroll; background: white; margin-bottom: 15px; }
+    .message { margin: 10px 0; }
+    .bot { color: #0057e7; }
+    .user { color: green; }
+    canvas { border: 1px solid #ccc; max-width: 100%; }
+  </style>
+</head>
+<body>
+
+<h2>📊 Forex Chart Analyzer Bot</h2>
+<div id="chatbox"></div>
+
+<input type="file" id="chartInput" accept="image/*" />
+<button onclick="uploadChart()">Upload Chart</button>
+<button onclick="askOpenAIBot()">Ask AI About Market</button>
+
+<br><br>
+<canvas id="chartCanvas"></canvas>
+
+<script>
+  const chatbox = document.getElementById("chatbox");
+  const canvas = document.getElementById("chartCanvas");
+  const ctx = canvas.getContext("2d");
+  let chartImage = null;
+
+  function appendMessage(sender, text) {
+    const div = document.createElement("div");
+    div.className = "message " + sender;
+    div.textContent = (sender === "user" ? "🧑 You: " : "🤖 Bot: ") + text;
+    chatbox.appendChild(div);
+    chatbox.scrollTop = chatbox.scrollHeight;
+  }
+
+  function uploadChart() {
+    const file = document.getElementById("chartInput").files[0];
+    if (!file) return appendMessage("bot", "Please upload a chart image.");
+
+    appendMessage("user", "Uploading chart...");
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        chartImage = img;
+      };
+      img.src = e.target.result;
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+  const OPENAI_API_KEY = "sk-YOUR-REAL-KEY"; // ⚠️ Replace for test only
+
+  function askOpenAIBot() {
+    if (!chartImage) return appendMessage("bot", "Upload chart first.");
+
+    const prompt = `You're a forex chart analyst. Given this chart, assume these are the key points:
+- Entry: 1.2345
+- Take Profit: 1.2390
+- Support Zone: 1.2300 - 1.2310
+Please label these areas: Entry, TP, and Zone. Return exact price values and the market direction (up or down).`;
+
+    appendMessage("user", "Analyzing with AI...");
+
+    fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + OPENAI_API_KEY
+      },
+      body: JSON.stringify({
+        model: "gpt-4o",
+        messages: [{ role: "user", content: prompt }]
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      const reply = data.choices?.[0]?.message?.content || "No response.";
+      appendMessage("bot", reply);
+
+      // Extract price levels and market direction using regex
+      const entryMatch = reply.match(/Entry[:\s]*([0-9.]+)/i);
+      const tpMatch = reply.match(/TP|Take\s*Profit[:\s]*([0-9.]+)/i);
+      const zoneMatch = reply.match(/Zone[:\s]*([0-9.]+)\s*-\s*([0-9.]+)/i);
+      const directionMatch = reply.match(/direction[:\s]*(up|down)/i);
+
+      const entry = entryMatch ? parseFloat(entryMatch[1]) : null;
+      const tp = tpMatch ? parseFloat(tpMatch[1]) : null;
+      const zoneLow = zoneMatch ? parseFloat(zoneMatch[1]) : null;
+      const zoneHigh = zoneMatch ? parseFloat(zoneMatch[2]) : null;
+      const direction = directionMatch ? directionMatch[1] : null;
+
+      if (entry && tp && zoneLow && zoneHigh) {
+        drawChartLevels(entry, tp, zoneLow, zoneHigh, direction);
+      } else {
+        appendMessage("bot", "⚠️ Could not find all levels in response.");
+      }
+    })
+    .catch(err => {
+      appendMessage("bot", "⚠️ Error: " + err.message);
+    });
+  }
+
+  function drawChartLevels(entry, tp, zoneLow, zoneHigh, direction) {
+    ctx.drawImage(chartImage, 0, 0);
+
+    // Convert price to Y coordinates (simulate based on chart height range)
+    const chartTop = 1.2500;
+    const chartBottom = 1.2200;
+    const pxPerPip = canvas.height / (chartTop - chartBottom);
+
+    function priceToY(price) {
+      return (chartTop - price) * pxPerPip;
+    }
+
+    // Draw green rectangle zone
+    ctx.fillStyle = "rgba(0, 255, 0, 0.2)";
+    const y1 = priceToY(zoneHigh);
+    const y2 = priceToY(zoneLow);
+    ctx.fillRect(0, y1, canvas.width, y2 - y1);
+
+    // Draw Entry line
+    const entryY = priceToY(entry);
+    ctx.strokeStyle = "green";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, entryY);
+    ctx.lineTo(canvas.width, entryY);
+    ctx.stroke();
+    ctx.fillStyle = "green";
+    ctx.fillText("Entry", 10, entryY - 5);
+
+    // Draw TP line
+    const tpY = priceToY(tp);
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, tpY);
+    ctx.lineTo(canvas.width, tpY);
+    ctx.stroke();
+    ctx.fillStyle = "blue";
+    ctx.fillText("TP", 10, tpY - 5);
+
+    // Draw market direction indicator
+    if (direction === 'up') {
+      ctx.fillStyle = "red";
+      ctx.beginPath();
+      ctx.moveTo(canvas.width - 20, entryY - 10);
+      ctx.lineTo(canvas.width - 10, entryY);
+      ctx.lineTo(canvas.width - 20, entryY + 10);
+      ctx.fill();
+      ctx.fillText("Market Direction: Up", 10, entryY + 20);
+    } else if (direction === 'down') {
+      ctx.fillStyle = "red";
+      ctx.beginPath();
+      ctx.moveTo(canvas.width - 20, entryY + 10);
+      ctx.lineTo(canvas.width - 10, entryY);
+      ctx.lineTo(canvas.width - 20, entryY - 10);
+      ctx.fill();
+      ctx.fillText("Market Direction: Down", 10, entryY + 20);
+    }
+  }
+</script>
+
+</body>
+</html>
