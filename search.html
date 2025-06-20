@@ -58,6 +58,7 @@
         const ctx = canvas.getContext("2d");
         const imageInput = document.getElementById("imageInput");
         let image = new Image();
+        let trendPoints = [];
 
         imageInput.addEventListener("change", (event) => {
             const file = event.target.files[0];
@@ -85,6 +86,18 @@
             drawAllCandlestickPatterns();
         });
 
+        canvas.addEventListener("click", (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            trendPoints.push({ x, y });
+
+            if (trendPoints.length === 2) {
+                drawLine(trendPoints[0].x, trendPoints[0].y, trendPoints[1].x, trendPoints[1].y, 'orange', 2);
+                trendPoints = [];
+            }
+        });
+
         function detectSupportResistance() {
             // Fetch pixel data from the canvas (chart image)
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -103,27 +116,88 @@
         }
 
         function extractPriceLevels(imageData) {
-            // Mock: Replace this with actual pixel analysis or data parsing
-            // Returns an array of simulated price levels
-            return [150, 180, 200, 300, 320, 450, 500];
-        }
+            const { width, height, data } = imageData;
+            const rowScores = new Array(height).fill(0);
 
-        function calculateSupportResistance(data) {
-            // Analyze data to find clusters of levels (simulate grouping close price levels)
-            const support = [];
-            const resistance = [];
-            const tolerance = 10; // Group close prices together
+            // Loop over every row and count dark pixels (potential price lines)
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const index = (y * width + x) * 4;
+                    const r = data[index];
+                    const g = data[index + 1];
+                    const b = data[index + 2];
 
-            data.forEach((level, index) => {
-                if (index % 2 === 0) {
-                    // Alternate as support and resistance for simplicity
-                    support.push(level);
-                } else {
-                    resistance.push(level);
+                    const brightness = (r + g + b) / 3;
+                    if (brightness < 50) { // very dark pixel (part of a chart line)
+                        rowScores[y]++;
+                    }
+                }
+            }
+
+            // Filter rows with significant activity
+            const threshold = width * 0.1; // 10% of row pixels are dark
+            const potentialLevels = [];
+            rowScores.forEach((score, y) => {
+                if (score > threshold) {
+                    potentialLevels.push(y);
                 }
             });
 
+            return potentialLevels;
+        }
+
+        function calculateSupportResistance(pixels) {
+            if (pixels.length === 0) return { support: [], resistance: [] };
+
+            // Step 1: cluster close Y-values
+            const tolerance = 15; // slightly larger for higher timeframes
+            const clusters = [];
+            pixels.sort((a, b) => a - b);
+            let current = [pixels[0]];
+
+            for (let i = 1; i < pixels.length; i++) {
+                if (Math.abs(pixels[i] - pixels[i - 1]) <= tolerance) {
+                    current.push(pixels[i]);
+                } else {
+                    if (current.length > 2) clusters.push(current); // only strong levels
+                    current = [pixels[i]];
+                }
+            }
+            if (current.length > 2) clusters.push(current);
+
+            // Step 2: average each cluster
+            const levels = clusters
+                .map(cluster => Math.round(cluster.reduce((a, b) => a + b, 0) / cluster.length))
+                .filter((v, i, arr) => arr.indexOf(v) === i);
+
+            // Step 3: Filter out zones that are too close
+            const minDistance = 30;
+            const cleaned = [];
+
+            levels.sort((a, b) => a - b);
+            for (let level of levels) {
+                if (cleaned.every(existing => Math.abs(existing - level) > minDistance)) {
+                    cleaned.push(level);
+                }
+            }
+
+            const half = canvas.height / 2;
+            const support = cleaned.filter(y => y > half);
+            const resistance = cleaned.filter(y => y <= half);
+
             return { support, resistance };
+        }
+
+        function drawSupportResistance(levels, color, label) {
+            levels.forEach((y) => {
+                // Draw shaded rectangle
+                ctx.fillStyle = color === 'green' ? 'rgba(0,255,0,0.15)' : 'rgba(255,0,0,0.15)';
+                ctx.fillRect(0, y - 5, canvas.width, 10);
+
+                // Draw center line
+                drawLine(0, y, canvas.width, y, color, 2);
+                drawText(`${label} Zone`, 10, y - 7, color);
+            });
         }
 
         function calculateTrendlines(data) {
@@ -150,22 +224,6 @@
             }
 
             return trendlines;
-        }
-
-        function drawSupportResistance(levels, color, label) {
-            levels.forEach((y) => {
-                drawLine(0, canvas.height - y, canvas.width, canvas.height - y, color, 2);
-                drawText(`${label} Zone`, 10, canvas.height - y - 5, color);
-            });
-        }
-
-        function drawTrendlines(trendlines) {
-            trendlines.forEach((line) => {
-                drawLine(line.startX, line.startY, line.endX, line.endY, line.color, 2);
-                const arrowX = line.endX;
-                const arrowY = line.endY;
-                addTrendArrow(arrowX, arrowY, line.direction, line.color);
-            });
         }
 
         function drawLine(x1, y1, x2, y2, color, width) {
