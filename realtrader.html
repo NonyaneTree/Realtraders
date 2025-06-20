@@ -1,321 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real Traders</title>
-    <style>
-        /* General Styles */
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            color: #000;
-            background: #eaf5ea;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-adsense-account" content="ca-pub-7221396727211259">
+  <title>Real Traders</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        /* Background Chart Animation */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://media.giphy.com/media/VbnUQpnihPSIgIXuZv/giphy.gif') center/cover no-repeat;
-            opacity: 0.2;
-            z-index: -1;
-        }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #fff; /* Changed to white */
+      font-family: Arial, sans-serif;
+      color: #111; /* Dark text for visibility */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
 
-        /* Header */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background: #2e7d32;
-            color: #fff;
-            border-bottom: 3px solid #1b5e20;
-        }
+    .header {
+      margin-top: 40px;
+      font-size: 10vw;
+      font-weight: bold;
+      text-align: center;
+      animation: colorChange 1.5s infinite alternate;
+    }
 
-        header h1 {
-            margin: 0;
-            font-size: 2em;
-        }
+    @keyframes colorChange {
+      0%   { color: red; }
+      25%  { color: orange; }
+      50%  { color: limegreen; }
+      75%  { color: deepskyblue; }
+      100% { color: violet; }
+    }
 
-        .menu-icon {
-            font-size: 1.5em;
-            color: #fff;
-            cursor: pointer;
-        }
+    .fundamentals {
+      margin-top: 30px;
+      text-align: center;
+    }
 
-        /* Sidebar */
-        .sidebar {
-            height: 100%;
-            width: 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background-color: #111;
-            overflow-x: hidden;
-            transition: 0.5s;
-            padding-top: 60px;
-        }
+    .fundamentals h2 {
+      font-size: 5vw;
+      margin-bottom: 10px;
+      color: #007acc;
+    }
 
-        .sidebar a {
-            padding: 8px 8px 8px 32px;
-            text-decoration: none;
-            font-size: 25px;
-            color: #818181;
-            display: block;
-            transition: 0.3s;
-        }
+    .fundamentals ul {
+      list-style: none;
+      padding: 0;
+      font-size: 4vw;
+      color: #333;
+    }
 
-        .sidebar a:hover {
-            color: #f1f1f1;
-        }
+    .fundamentals ul li {
+      margin: 6px 0;
+    }
 
-        .sidebar .closebtn {
-            position: absolute;
-            top: 0;
-            right: 25px;
-            font-size: 36px;
-            margin-left: 50px;
-        }
+    .icon-links {
+      margin-top: 30px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
 
-        /* Section Styling */
-        section {
-            margin: 20px;
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+    .icon-links video {
+      width: 100px;
+      height: 100px;
+      border: 2px solid #333;
+      border-radius: 12px;
+      object-fit: cover;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
 
-        section h2 {
-            margin-top: 0;
-            color: #2e7d32;
-        }
+    .icon-links video:hover {
+      transform: scale(1.1);
+      border-color: #007acc;
+    }
 
-        /* Table Styling */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
+    .footer-text {
+      position: absolute;
+      bottom: 15px;
+      font-size: 4vw;
+      color: #666;
+      text-align: center;
+      width: 100%;
+    }
 
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background: #2e7d32;
-            color: #fff;
-        }
-
-        tr:nth-child(even) {
-            background: #f9f9f9;
-        }
-
-        /* Icons */
-        .icon {
-            display: block;
-            margin: 10px auto;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-        }
-
-        .icon:hover {
-            transform: scale(1.1);
-        }
-
-        /* Hidden Sections */
-        #economic-calendar, #currency-section {
-            display: none;
-        }
-
-        /* Plus Icon */
-        .plus-icon {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            background: url('plus-icon.png') center/cover no-repeat;
-            cursor: pointer;
-        }
-
-        /* Moving Ticker */
-        .ticker {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: #2e7d32;
-            color: #fff;
-            overflow: hidden;
-            white-space: nowrap;
-            z-index: 100;
-        }
-
-        .ticker p {
-            display: inline-block;
-            animation: ticker 20s linear infinite;
-            margin: 0;
-            padding: 10px;
-        }
-
-        @keyframes ticker {
-            from {
-                transform: translateX(100%);
-            }
-            to {
-                transform: translateX(-100%);
-            }
-        }
-    </style>
-    <script>
-        // Toggle visibility of sections
-        function toggleSection(sectionId) {
-            const section = document.getElementById(sectionId);
-            if (section.style.display === 'none' || section.style.display === '') {
-                section.style.display = 'block';
-            } else {
-                section.style.display = 'none';
-            }
-        }
-
-        // Open and close sidebar
-        function toggleMenu() {
-            const sidebar = document.getElementById('mySidebar');
-            if (sidebar.style.width === '250px') {
-                sidebar.style.width = '0';
-            } else {
-                sidebar.style.width = '250px';
-            }
-        }
-    </script>
-    <!-- Google AdSense Script -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7221396727211259" 
-        crossorigin="anonymous"></script>
+    @media (min-width: 600px) {
+      .header { font-size: 48px; }
+      .fundamentals h2 { font-size: 24px; }
+      .fundamentals ul li { font-size: 18px; }
+      .footer-text { font-size: 16px; }
+    }
+  </style>
 </head>
 <body>
-    <!-- Main Content -->
-    <header>
-        <span class="menu-icon" onclick="toggleMenu()">&#9776;</span>
-        <h1>Real Traders</h1>
-        <a href="News.html" class="news-icon">Latest News &rarr;</a>
-    </header>
 
-    <!-- Sidebar Menu -->
-    <div id="mySidebar" class="sidebar">
-        <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">&times;</a>
-        <a href="News.html">News</a>
-        <a href="calculator.html">Calculator</a>
-        <a href="advisor.html">Advisor</a>
-        <a href="payroll.html">payroll</a>
-    </div>
+  <div class="header">Real Traders</div>
 
-    <!-- Main Content Sections -->
-    <main>
-        <section>
-            <h2>Economic Calendar</h2>
-            <img 
-                src="calender.png" 
-                alt="Currency Icon" 
-                class="icon" 
-                onclick="toggleSection('economic-calendar')" 
-                width="50" 
-                height="50" 
-            />
-            <div id="economic-calendar">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Event</th>
-                            <th>Impact</th>
-                            <th>Direction</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>2024-01-15</td>
-                            <td>USA CPI</td>
-                            <td>High</td>
-                            <td>BUY</td>
-                        </tr>
-                        <tr>
-                            <td>2024-01-16</td>
-                            <td>AUD EmploymentChange</td>
-                            <td>Medium</td>
-                            <td>Buy</td>
-                        </tr>
-                        <tr>
-                            <td>2024-01-16</td>
-                            <td>AUD Unemployment Rate</td>
-                            <td>High</td>
-                            <td>50/50</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+  <div class="fundamentals">
+    <h2>Fundamental Expectations</h2>
+    <ul>
+      <li>🟢 NFP (Non-Farm Payrolls)</li>
+      <li>🟠 CPI (Consumer Price Index)</li>
+      <li>🔵 PPI (Producer Price Index)</li>
+    </ul>
+  </div>
 
-        <section>
-            <h2>Currency Details</h2>
-            <img 
-                src="Market.png" 
-                alt="Currency Icon" 
-                class="icon" 
-                onclick="toggleSection('currency-section')" 
-                width="50" 
-                height="50" 
-            />
-            <div id="currency-section">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Currency</th>
-                            <th>Trend</th>
-                            <th>Details</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>USD</td>
-                            <td>Bullish</td>
-                            <td>Strong economic data</td>
-                        </tr>
-                        <tr>
-                            <td>EUR</td>
-                            <td>Neutral</td>
-                            <td>Mixed inflation reports</td>
-                        </tr>
-                        <tr>
-                            <td>GBP</td>
-                            <td>Bearish</td>
-                            <td>High unemployment rate</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- Plus Icon Link -->
-        <a href="payroll.html">
-            <div class="plus-icon"></div>
-        </a>
-
-    </main>
-
-    <!-- Moving Ticker -->
-    <div class="ticker">
-        <p>USD: 1.03 | EUR: 0.97 | GBP: 0.80 | JPY: 157.298 | CAD: 1.444 | AUD: 1 40 | BTC: 98 571 | ETH: 3 658</p>
-    </div>
-
-    <!-- Search Icon -->
-    <a href="search2.html">
-        <img src="Search.png" alt="Search Icon" class="icon" />
+  <div class="icon-links">
+    <a href="real2.html">
+      <video src="real2.mp4" autoplay loop muted></video>
     </a>
+    <a href="school.html">
+      <video src="school.mp4" autoplay loop muted></video>
+    </a>
+    <a href="marketexpectations.html">
+      <video src="market.mp4" autoplay loop muted></video>
+    </a>
+  </div>
+
+  <div class="footer-text">Member of the Nonyane Family</div>
+
 </body>
-                                                         </html>
+</html>
