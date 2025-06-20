@@ -1,125 +1,128 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real Traders</title>
-    <style>
-        /* General Styles */
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: #f4f4f4;
-            color: #333;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Real Traders Loading</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        .container {
-            text-align: center;
-        }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      font-family: Arial, sans-serif;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
 
-        /* App Name */
-        .app-name {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin: 0;
-        }
+    .big-r {
+      font-size: 25vw;
+      font-weight: bold;
+      animation: colorChange 1s infinite alternate;
+      line-height: 1;
+    }
 
-        /* Icon (R) */
-        .icon {
-            font-size: 5rem;
-            font-weight: bold;
-            color: #2e7d32;
-            margin: 0.5rem 0;
-        }
+    .subtitle {
+      font-size: 6vw;
+      color: #ccc;
+      margin-top: -1vh;
+      margin-bottom: 40px;
+    }
 
-        /* Chart Line Placeholder */
-        .chart {
-            height: 50px;
-            width: 100%;
-            background: url('https://upload.wikimedia.org/wikipedia/commons/6/64/Line_chart_example.svg') no-repeat center;
-            background-size: contain;
-            margin: 10px 0;
-        }
+    @keyframes colorChange {
+      0%   { color: red; }
+      25%  { color: yellow; }
+      50%  { color: lime; }
+      75%  { color: cyan; }
+      100% { color: magenta; }
+    }
 
-        /* Membership Info */
-        .membership {
-            font-size: 1rem;
-            margin-bottom: 20px;
-            color: #555;
-        }
+    .loader-bar {
+      width: 80%;
+      max-width: 400px;
+      height: 16px;
+      background: #444;
+      border-radius: 10px;
+      overflow: hidden;
+    }
 
-        /* Loading Bar */
-        .loading-bar {
-            width: 80%;
-            height: 20px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 0 auto 10px;
-            position: relative;
-        }
+    .progress {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, #0ff, #0f0);
+      animation: loading 4s forwards;
+    }
 
-        .progress {
-            height: 100%;
-            width: 0;
-            background: #2e7d32;
-            transition: width 0.5s;
-        }
+    @keyframes loading {
+      0%   { width: 0%; }
+      100% { width: 100%; }
+    }
 
-        /* Network Error */
-        .error-message {
-            color: red;
-            font-size: 1rem;
-            display: none;
-        }
-    </style>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7221396727211259" 
-        crossorigin="anonymous"></script>
-    <script>
-        // Simulate loading and internet connection
-        function checkConnection() {
-            const progressBar = document.querySelector('.progress');
-            const errorMessage = document.querySelector('.error-message');
+    .spinner {
+      margin-top: 20px;
+      width: 50px;
+      height: 50px;
+      border: 6px solid #ccc;
+      border-top: 6px solid #0ff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      display: none;
+    }
 
-            // Simulate internet connectivity
-            const hasNetwork = navigator.onLine; // Check if online
-            if (hasNetwork) {
-                let progress = 0;
-                const interval = setInterval(() => {
-                    if (progress >= 100) {
-                        clearInterval(interval);
-                        window.location.href = "real2.html"; // Redirect on full load
-                    } else {
-                        progress += 10;
-                        progressBar.style.width = progress + '%';
-                    }
-                }, 500);
-            } else {
-                errorMessage.style.display = 'block';
-            }
-        }
+    @keyframes spin {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 
-        window.onload = checkConnection;
-    </script>
+    .footer-text {
+      position: absolute;
+      bottom: 15px;
+      font-size: 4vw;
+      color: #888;
+      text-align: center;
+      width: 100%;
+    }
+
+    @media (min-width: 600px) {
+      .subtitle { font-size: 24px; }
+      .footer-text { font-size: 16px; }
+    }
+
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="app-name">Real Traders</h1>
-        <div class="icon">R</div>
-        <div class="chart"></div>
-        <p class="membership">Member of the Nonyane Investment Tree</p>
 
-        <!-- Loading Bar -->
-        <div class="loading-bar">
-            <div class="progress"></div>
-        </div>
+  <div class="big-r">R</div>
+  <div class="subtitle">Real Traders</div>
 
-        <!-- Network Error Message -->
-        <p class="error-message">No network connection</p>
-    </div>
+  <div class="loader-bar" id="loaderBar">
+    <div class="progress" id="progressBar"></div>
+  </div>
+
+  <div class="spinner" id="spinner"></div>
+
+  <div class="footer-text">Member of the Nonyane Family</div>
+
+  <script>
+    // Show spinner after loading bar, then redirect
+    setTimeout(() => {
+      document.getElementById("loaderBar").style.display = "none";
+      document.getElementById("spinner").style.display = "block";
+
+      setTimeout(() => {
+        window.location.href = "real2.html";
+      }, 2000);
+    }, 4000);
+  </script>
+
 </body>
 </html>
