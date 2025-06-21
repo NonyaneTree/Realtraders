@@ -1,292 +1,161 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chart with Support and Resistance Zones</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-        }
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #333;
-        }
-        input[type="file"] {
-            margin: 20px 0;
-        }
-        canvas {
-            border: 1px solid #ddd;
-            max-width: 100%;
-            margin: 20px 0;
-        }
-        button {
-            padding: 10px 20px;
-            background: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 5px;
-        }
-        button:hover {
-            background: #0056b3;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forex Zone Assistant</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .chat-box {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+      background: #fdfdfd;
+      margin-bottom: 10px;
+    }
+    .message {
+      margin: 10px 0;
+      padding: 8px 12px;
+      border-radius: 10px;
+      max-width: 80%;
+    }
+    .user {
+      background-color: #cce5ff;
+      margin-left: auto;
+    }
+    .bot {
+      background-color: #e2e3e5;
+      margin-right: auto;
+    }
+    input[type="text"], input[type="file"] {
+      width: calc(100% - 90px);
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 15px;
+      margin-left: 5px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    canvas {
+      display: block;
+      margin-top: 20px;
+      border: 1px solid #ccc;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Chart with Support and Resistance Zones</h1>
-        <input type="file" id="imageInput" accept="image/*">
-        <canvas id="chartCanvas" width="800" height="600"></canvas>
-        <button id="detectLevels">Detect Support & Resistance</button>
-        <button id="detectPatterns">Detect Chart Patterns</button>
-        <button id="drawCandlesticks">Draw Candlestick Patterns</button>
+  <div class="container">
+    <h1>Forex Zone Assistant</h1>
+    <div class="chat-box" id="chatBox">
+      <div class="message bot">Hi! Upload a chart or describe a zone.</div>
     </div>
+    <input type="text" id="userInput" placeholder="Describe the zone or ask a question...">
+    <button onclick="sendMessage()">Send</button>
+    <br><br>
+    <input type="file" id="imageInput" accept="image/*" onchange="previewImage()">
+    <button onclick="analyzeImage()">Analyze Chart</button>
+    <br>
+    <canvas id="canvas" width="800" height="500"></canvas>
+  </div>  <script>
+    const chatBox = document.getElementById('chatBox');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let uploadedImage = null;
 
-    <script>
-        const canvas = document.getElementById("chartCanvas");
-        const ctx = canvas.getContext("2d");
-        const imageInput = document.getElementById("imageInput");
-        let image = new Image();
-        let trendPoints = [];
+    function appendMessage(text, isUser) {
+      const msg = document.createElement('div');
+      msg.className = 'message ' + (isUser ? 'user' : 'bot');
+      msg.textContent = text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
 
-        imageInput.addEventListener("change", (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    image.src = reader.result;
-                    image.onload = () => {
-                        canvas.width = image.width;
-                        canvas.height = image.height;
-                        ctx.drawImage(image, 0, 0, image.width, image.height);
-                    };
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+    function sendMessage() {
+      const input = document.getElementById('userInput');
+      const msg = input.value.trim();
+      if (!msg) return;
+      appendMessage(msg, true);
 
-        document.getElementById("detectLevels").addEventListener("click", () => {
-            detectSupportResistance();
-        });
+      const response = generateZoneResponse(msg);
+      appendMessage(response, false);
+      input.value = '';
+    }
 
-        document.getElementById("detectPatterns").addEventListener("click", detectPatterns);
+    function generateZoneResponse(text) {
+      const lower = text.toLowerCase();
+      if (lower.includes('supply')) {
+        return 'Supply Zone: Area where sellers dominate and push price down. Usually formed after a sharp move down.';
+      } else if (lower.includes('demand')) {
+        return 'Demand Zone: Area where buyers dominate and push price up. Usually formed after a sharp move up.';
+      } else if (lower.includes('breaker')) {
+        return 'Breaker Block: A previous support/resistance level that was broken and may now act as the opposite.';
+      } else if (lower.includes('liquidity')) {
+        return 'Liquidity Zone: A price region where many stop-losses are accumulated, often targeted by big players.';
+      } else {
+        return "I'm not sure. Try mentioning 'supply', 'demand', 'liquidity', or 'breaker'.";
+      }
+    }
 
-        document.getElementById("drawCandlesticks").addEventListener("click", () => {
-            drawAllCandlestickPatterns();
-        });
-
-        canvas.addEventListener("click", (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            trendPoints.push({ x, y });
-
-            if (trendPoints.length === 2) {
-                drawLine(trendPoints[0].x, trendPoints[0].y, trendPoints[1].x, trendPoints[1].y, 'orange', 2);
-                trendPoints = [];
-            }
-        });
-
-        function detectSupportResistance() {
-            // Fetch pixel data from the canvas (chart image)
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const priceData = extractPriceLevels(imageData);
-
-            // Dynamically calculate support and resistance levels
-            const levels = calculateSupportResistance(priceData);
-
-            // Draw calculated support and resistance
-            drawSupportResistance(levels.support, 'green', 'Support');
-            drawSupportResistance(levels.resistance, 'red', 'Resistance');
-
-            // Detect and draw trendlines dynamically
-            const trendlines = calculateTrendlines(priceData);
-            drawTrendlines(trendlines);
+    function previewImage() {
+      const input = document.getElementById('imageInput');
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = function () {
+        uploadedImage = new Image();
+        uploadedImage.onload = () => {
+          canvas.width = uploadedImage.width;
+          canvas.height = uploadedImage.height;
+          ctx.drawImage(uploadedImage, 0, 0);
         }
+        uploadedImage.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
 
-        function extractPriceLevels(imageData) {
-            const { width, height, data } = imageData;
-            const rowScores = new Array(height).fill(0);
+    function analyzeImage() {
+      appendMessage("Scanning chart image for zones...", false);
 
-            // Loop over every row and count dark pixels (potential price lines)
-            for (let y = 0; y < height; y++) {
-                for (let x = 0; x < width; x++) {
-                    const index = (y * width + x) * 4;
-                    const r = data[index];
-                    const g = data[index + 1];
-                    const b = data[index + 2];
+      setTimeout(() => {
+        if (uploadedImage) {
+          ctx.drawImage(uploadedImage, 0, 0);
 
-                    const brightness = (r + g + b) / 3;
-                    if (brightness < 50) { // very dark pixel (part of a chart line)
-                        rowScores[y]++;
-                    }
-                }
-            }
+          // Fake zone for demo (highlighting middle band)
+          ctx.fillStyle = 'rgba(0, 255, 0, 0.2)';
+          ctx.fillRect(0, canvas.height / 2 - 30, canvas.width, 60);
 
-            // Filter rows with significant activity
-            const threshold = width * 0.1; // 10% of row pixels are dark
-            const potentialLevels = [];
-            rowScores.forEach((score, y) => {
-                if (score > threshold) {
-                    potentialLevels.push(y);
-                }
-            });
-
-            return potentialLevels;
+          appendMessage("Highlighted potential demand zone (green).", false);
+        } else {
+          appendMessage("No image uploaded. Please upload a chart image.", false);
         }
+      }, 1000);
+    }
 
-        function calculateSupportResistance(pixels) {
-            if (pixels.length === 0) return { support: [], resistance: [] };
-
-            // Step 1: cluster close Y-values
-            const tolerance = 15; // slightly larger for higher timeframes
-            const clusters = [];
-            pixels.sort((a, b) => a - b);
-            let current = [pixels[0]];
-
-            for (let i = 1; i < pixels.length; i++) {
-                if (Math.abs(pixels[i] - pixels[i - 1]) <= tolerance) {
-                    current.push(pixels[i]);
-                } else {
-                    if (current.length > 2) clusters.push(current); // only strong levels
-                    current = [pixels[i]];
-                }
-            }
-            if (current.length > 2) clusters.push(current);
-
-            // Step 2: average each cluster
-            const levels = clusters
-                .map(cluster => Math.round(cluster.reduce((a, b) => a + b, 0) / cluster.length))
-                .filter((v, i, arr) => arr.indexOf(v) === i);
-
-            // Step 3: Filter out zones that are too close
-            const minDistance = 30;
-            const cleaned = [];
-
-            levels.sort((a, b) => a - b);
-            for (let level of levels) {
-                if (cleaned.every(existing => Math.abs(existing - level) > minDistance)) {
-                    cleaned.push(level);
-                }
-            }
-
-            const half = canvas.height / 2;
-            const support = cleaned.filter(y => y > half);
-            const resistance = cleaned.filter(y => y <= half);
-
-            return { support, resistance };
-        }
-
-        function drawSupportResistance(levels, color, label) {
-            levels.forEach((y) => {
-                // Draw shaded rectangle
-                ctx.fillStyle = color === 'green' ? 'rgba(0,255,0,0.15)' : 'rgba(255,0,0,0.15)';
-                ctx.fillRect(0, y - 5, canvas.width, 10);
-
-                // Draw center line
-                drawLine(0, y, canvas.width, y, color, 2);
-                drawText(`${label} Zone`, 10, y - 7, color);
-            });
-        }
-
-        function calculateTrendlines(data) {
-            // Identify key trendline points dynamically
-            const trendlines = [];
-            const threshold = 50; // Example threshold to identify significant moves
-
-            for (let i = 1; i < data.length; i++) {
-                const startX = (i - 1) * 100;
-                const endX = i * 100;
-                const startY = canvas.height - data[i - 1];
-                const endY = canvas.height - data[i];
-
-                if (Math.abs(endY - startY) > threshold) {
-                    trendlines.push({
-                        startX,
-                        startY,
-                        endX,
-                        endY,
-                        color: endY < startY ? 'blue' : 'orange', // Downtrend: blue, Uptrend: orange
-                        direction: endY < startY ? 'down' : 'up',
-                    });
-                }
-            }
-
-            return trendlines;
-        }
-
-        function drawLine(x1, y1, x2, y2, color, width) {
-            ctx.beginPath();
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
-            ctx.strokeStyle = color;
-            ctx.lineWidth = width;
-            ctx.stroke();
-        }
-
-        function drawText(text, x, y, color) {
-            ctx.fillStyle = color;
-            ctx.font = "14px Arial";
-            ctx.fillText(text, x, y);
-        }
-
-        function addTrendArrow(x, y, direction, color) {
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            if (direction === 'up') {
-                ctx.lineTo(x - 5, y + 10);
-                ctx.lineTo(x + 5, y + 10);
-            } else if (direction === 'down') {
-                ctx.lineTo(x - 5, y - 10);
-                ctx.lineTo(x + 5, y - 10);
-            }
-            ctx.closePath();
-            ctx.fillStyle = color;
-            ctx.fill();
-        }
-
-        function drawAllCandlestickPatterns() {
-            const candleData = [
-                { x: 50, open: 200, high: 210, low: 180, close: 205, color: 'green', trend: 'up' },
-                { x: 100, open: 220, high: 250, low: 215, close: 225, color: 'red', trend: 'down' },
-                { x: 150, open: 210, high: 230, low: 200, close: 240, color: 'green', trend: 'up' },
-                { x: 200, open: 240, high: 250, low: 220, close: 210, color: 'red', trend: 'down' },
-                { x: 250, open: 230, high: 240, low: 220, close: 230, color: 'gray', trend: null },
-            ];
-
-            candleData.forEach(candle => {
-                drawCandlestick(candle.x, candle.open, candle.high, candle.low, candle.close, candle.color);
-                if (candle.trend) {
-                    addTrendArrow(candle.x, candle.trend === 'up' ? candle.low : candle.high, candle.trend, candle.color);
-                }
-            });
-        }
-
-        function drawCandlestick(x, open, high, low, close, color) {
-            const bodyTop = Math.min(open, close);
-            const bodyBottom = Math.max(open, close);
-
-            ctx.fillStyle = color;
-            ctx.fillRect(x - 5, bodyTop, 10, bodyBottom - bodyTop);
-
-            ctx.beginPath();
-            ctx.moveTo(x, high);
-            ctx.lineTo(x, low);
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 2;
-            ctx.stroke();
-        }
-    </script>
-</body>
+    document.getElementById('userInput').addEventListener('keypress', e => {
+      if (e.key === 'Enter') sendMessage();
+    });
+  </script></body>
 </html>
