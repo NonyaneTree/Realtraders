@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RealTraders Community</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f0f2f5;
+    }
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #007bff;
+    }
+    .message-box {
+      margin-top: 20px;
+    }
+    input[type="text"], input[type="file"] {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .chat {
+      margin-top: 30px;
+    }
+    .msg {
+      background: #f9f9f9;
+      margin: 10px 0;
+      padding: 10px;
+      border-left: 4px solid #007bff;
+    }
+    .time {
+      font-size: 0.8em;
+      color: #555;
+    }
+    img, video {
+      max-width: 100%;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📢 RealTraders Community</h1>
+
+    <div class="message-box">
+      <input type="text" id="userMessage" placeholder="Post your trading idea..." />
+      <input type="file" id="userMedia" accept="image/*,video/*">
+      <button onclick="sendPost()">Post</button>
+    </div>
+
+    <div class="chat" id="chatArea">
+      <p>Loading community posts...</p>
+    </div>
+  </div>
+
+  <script>
+    const botToken = 'YOUR_BOT_TOKEN_HERE'; // Replace with your bot token
+    const chatId = 'YOUR_CHAT_ID_HERE';     // Replace with your channel/group/chat ID
+
+    async function sendPost() {
+      const message = document.getElementById("userMessage").value.trim();
+      const fileInput = document.getElementById("userMedia");
+      const file = fileInput.files[0];
+
+      const form = new FormData();
+
+      // Attach chat ID
+      form.append("chat_id", chatId);
+
+      if (file) {
+        const type = file.type;
+        if (type.startsWith("image/")) {
+          form.append("photo", file);
+          if (message) form.append("caption", message);
+          await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+            method: "POST",
+            body: form
+          });
+        } else if (type.startsWith("video/")) {
+          form.append("video", file);
+          if (message) form.append("caption", message);
+          await fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
+            method: "POST",
+            body: form
+          });
+        } else {
+          alert("Unsupported file type.");
+          return;
+        }
+      } else if (message) {
+        // Only message
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message
+          })
+        });
+      } else {
+        alert("Please write a message or upload a file.");
+        return;
+      }
+
+      // Reset
+      document.getElementById("userMessage").value = "";
+      fileInput.value = "";
+
+      // Refresh feed
+      loadMessages();
+    }
+
+    async function loadMessages() {
+      const res = await fetch(`https://api.telegram.org/bot${botToken}/getUpdates`);
+      const data = await res.json();
+      const container = document.getElementById("chatArea");
+      container.innerHTML = "";
+
+      const now = new Date();
+      const cutoff = now.getTime() - 24 * 60 * 60 * 1000;
+
+      const messages = data.result.filter(update => {
+        if (!update.message) return false;
+        return update.message.date * 1000 >= cutoff;
+      });
+
+      if (messages.length === 0) {
+        container.innerHTML = "<p>No messages posted in the last 24 hours.</p>";
+        return;
+      }
+
+      messages.forEach(update => {
+        const msg = update.message;
+        const div = document.createElement("div");
+        div.className = "msg";
+        const time = new Date(msg.date * 1000).toLocaleString();
+
+        // Text
+        if (msg.text) {
+          div.innerHTML += `<div>${msg.text.replace(/\n/g, "<br>")}</div>`;
+        }
+
+        // Image
+        if (msg.photo) {
+          const fileId = msg.photo[msg.photo.length - 1].file_id;
+          const fileUrl = `https://api.telegram.org/bot${botToken}/getFile?file_id=${fileId}`;
+          fetch(fileUrl)
+            .then(res => res.json())
+            .then(json => {
+              const filePath = json.result.file_path;
+              const url = `https://api.telegram.org/file/bot${botToken}/${filePath}`;
+              const img = document.createElement("img");
+              img.src = url;
+              div.appendChild(img);
+            });
+        }
+
+        // Video
+        if (msg.video) {
+          const fileId = msg.video.file_id;
+          const fileUrl = `https://api.telegram.org/bot${botToken}/getFile?file_id=${fileId}`;
+          fetch(fileUrl)
+            .then(res => res.json())
+            .then(json => {
+              const filePath = json.result.file_path;
+              const url = `https://api.telegram.org/file/bot${botToken}/${filePath}`;
+              const vid = document.createElement("video");
+              vid.src = url;
+              vid.controls = true;
+              div.appendChild(vid);
+            });
+        }
+
+        div.innerHTML += `<div class="time">🕒 ${time}</div>`;
+        container.appendChild(div);
+      });
+    }
+
+    loadMessages();
+  </script>
+</body>
+</html>
