@@ -88,15 +88,17 @@
     const chatId = ' -1002704045278';     // Replace with your channel/group/chat ID
     const spamPhrases = [
       "join my group", 
-      "follow my link", 
-      "free signals", 
-      "get free signals",
-      "join now",
-      "click here",
-      "join us",
-      "subscribe now",
-      "join channel",
-      "join telegram"
+      "follow this link",
+      "free signals",
+      "join this group",
+      "forex signals",
+      "join",
+      "mentorship group",
+      "free mentorship",
+      "join my channel",
+      "join my telegram",
+      "sign up now",
+      "subscribe for signals"
     ];
 
     function showStatus(message, isError = false) {
@@ -110,8 +112,13 @@
     }
 
     function containsSpam(text) {
+      if (!text) return false;
       const lowerText = text.toLowerCase();
-      return spamPhrases.some(phrase => lowerText.includes(phrase));
+      // Create regex patterns that match whole words/phrases
+      const spamPatterns = spamPhrases.map(phrase => 
+        new RegExp(`\\b${phrase.replace(/ /g, '\\s+')}\\b`, 'i')
+      );
+      return spamPatterns.some(pattern => pattern.test(lowerText));
     }
 
     async function deleteMessage(messageId) {
@@ -134,9 +141,9 @@
       const fileInput = document.getElementById("userMedia");
       const file = fileInput.files[0];
 
-      // Check for spam
+      // Check for spam only in text messages
       if (message && containsSpam(message)) {
-        showStatus("Your post contains spam phrases and was not sent.", true);
+        showStatus("Your post contains promotional content that is not allowed.", true);
         return;
       }
 
@@ -186,7 +193,6 @@
 
         const result = await response.json();
         
-        // Check if the message was sent successfully
         if (result.ok) {
           messageId = result.result.message_id;
           showStatus("Post sent successfully!");
@@ -194,7 +200,7 @@
           // Double-check for spam in case we missed something
           if (message && containsSpam(message)) {
             await deleteMessage(messageId);
-            showStatus("Spam detected - post was removed.", true);
+            showStatus("Post contained promotional content and was removed.", true);
           }
         } else {
           showStatus("Failed to send post: " + (result.description || "Unknown error"), true);
@@ -299,4 +305,4 @@
     setInterval(loadMessages, 30000);
   </script>
 </body>
-  </html>
+</html>
