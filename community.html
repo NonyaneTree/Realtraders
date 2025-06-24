@@ -57,6 +57,14 @@
       max-width: 100%;
       margin-top: 10px;
     }
+    .error {
+      color: red;
+      margin: 10px 0;
+    }
+    .success {
+      color: green;
+      margin: 10px 0;
+    }
   </style>
 </head>
 <body>
@@ -67,6 +75,7 @@
       <input type="text" id="userMessage" placeholder="Post your trading idea..." />
       <input type="file" id="userMedia" accept="image/*,video/*">
       <button onclick="sendPost()">Post</button>
+      <div id="statusMessage"></div>
     </div>
 
     <div class="chat" id="chatArea">
@@ -77,53 +86,126 @@
   <script>
     const botToken = '7899787397:AAHZ-JcSPq03R38sQeDCZNSQaXUM4P-uFTo'; // Replace with your bot token
     const chatId = ' -1002704045278';     // Replace with your channel/group/chat ID
+    const spamPhrases = [
+      "join my group", 
+      "follow my link", 
+      "free signals", 
+      "get free signals",
+      "join now",
+      "click here",
+      "join us",
+      "subscribe now",
+      "join channel",
+      "join telegram"
+    ];
+
+    function showStatus(message, isError = false) {
+      const statusDiv = document.getElementById("statusMessage");
+      statusDiv.textContent = message;
+      statusDiv.className = isError ? "error" : "success";
+      setTimeout(() => {
+        statusDiv.textContent = "";
+        statusDiv.className = "";
+      }, 5000);
+    }
+
+    function containsSpam(text) {
+      const lowerText = text.toLowerCase();
+      return spamPhrases.some(phrase => lowerText.includes(phrase));
+    }
+
+    async function deleteMessage(messageId) {
+      try {
+        await fetch(`https://api.telegram.org/bot${botToken}/deleteMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: chatId,
+            message_id: messageId
+          })
+        });
+      } catch (error) {
+        console.error("Error deleting message:", error);
+      }
+    }
 
     async function sendPost() {
       const message = document.getElementById("userMessage").value.trim();
       const fileInput = document.getElementById("userMedia");
       const file = fileInput.files[0];
 
-      const form = new FormData();
-
-      // Attach chat ID
-      form.append("chat_id", chatId);
-
-      if (file) {
-        const type = file.type;
-        if (type.startsWith("image/")) {
-          form.append("photo", file);
-          if (message) form.append("caption", message);
-          await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-            method: "POST",
-            body: form
-          });
-        } else if (type.startsWith("video/")) {
-          form.append("video", file);
-          if (message) form.append("caption", message);
-          await fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
-            method: "POST",
-            body: form
-          });
-        } else {
-          alert("Unsupported file type.");
-          return;
-        }
-      } else if (message) {
-        // Only message
-        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: message
-          })
-        });
-      } else {
-        alert("Please write a message or upload a file.");
+      // Check for spam
+      if (message && containsSpam(message)) {
+        showStatus("Your post contains spam phrases and was not sent.", true);
         return;
       }
 
-      // Reset
+      if (!message && !file) {
+        showStatus("Please write a message or upload a file.", true);
+        return;
+      }
+
+      try {
+        const form = new FormData();
+        form.append("chat_id", chatId);
+
+        let response;
+        let messageId;
+
+        if (file) {
+          const type = file.type;
+          if (type.startsWith("image/")) {
+            form.append("photo", file);
+            if (message) form.append("caption", message);
+            response = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+              method: "POST",
+              body: form
+            });
+          } else if (type.startsWith("video/")) {
+            form.append("video", file);
+            if (message) form.append("caption", message);
+            response = await fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
+              method: "POST",
+              body: form
+            });
+          } else {
+            showStatus("Unsupported file type.", true);
+            return;
+          }
+        } else {
+          // Only message
+          response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: chatId,
+              text: message
+            })
+          });
+        }
+
+        const result = await response.json();
+        
+        // Check if the message was sent successfully
+        if (result.ok) {
+          messageId = result.result.message_id;
+          showStatus("Post sent successfully!");
+          
+          // Double-check for spam in case we missed something
+          if (message && containsSpam(message)) {
+            await deleteMessage(messageId);
+            showStatus("Spam detected - post was removed.", true);
+          }
+        } else {
+          showStatus("Failed to send post: " + (result.description || "Unknown error"), true);
+        }
+      } catch (error) {
+        console.error("Error sending post:", error);
+        showStatus("Error sending post. Please try again.", true);
+        return;
+      }
+
+      // Reset form
       document.getElementById("userMessage").value = "";
       fileInput.value = "";
 
@@ -132,72 +214,89 @@
     }
 
     async function loadMessages() {
-      const res = await fetch(`https://api.telegram.org/bot${botToken}/getUpdates`);
-      const data = await res.json();
-      const container = document.getElementById("chatArea");
-      container.innerHTML = "";
+      try {
+        const res = await fetch(`https://api.telegram.org/bot${botToken}/getUpdates`);
+        const data = await res.json();
+        const container = document.getElementById("chatArea");
+        container.innerHTML = "";
 
-      const now = new Date();
-      const cutoff = now.getTime() - 24 * 60 * 60 * 1000;
+        if (!data.ok) {
+          container.innerHTML = "<p>Error loading messages. Please try again later.</p>";
+          return;
+        }
 
-      const messages = data.result.filter(update => {
-        if (!update.message) return false;
-        return update.message.date * 1000 >= cutoff;
-      });
+        const now = new Date();
+        const cutoff = now.getTime() - 24 * 60 * 60 * 1000;
 
-      if (messages.length === 0) {
-        container.innerHTML = "<p>No messages posted in the last 24 hours.</p>";
-        return;
+        const messages = data.result.filter(update => {
+          if (!update.message) return false;
+          return update.message.date * 1000 >= cutoff;
+        });
+
+        if (messages.length === 0) {
+          container.innerHTML = "<p>No messages posted in the last 24 hours.</p>";
+          return;
+        }
+
+        // Process messages in reverse order (newest first)
+        messages.reverse().forEach(update => {
+          const msg = update.message;
+          const div = document.createElement("div");
+          div.className = "msg";
+          const time = new Date(msg.date * 1000).toLocaleString();
+
+          // Text
+          if (msg.text) {
+            div.innerHTML += `<div>${msg.text.replace(/\n/g, "<br>")}</div>`;
+          }
+
+          // Image
+          if (msg.photo) {
+            const fileId = msg.photo[msg.photo.length - 1].file_id;
+            const fileUrl = `https://api.telegram.org/bot${botToken}/getFile?file_id=${fileId}`;
+            fetch(fileUrl)
+              .then(res => res.json())
+              .then(json => {
+                if (json.ok) {
+                  const filePath = json.result.file_path;
+                  const url = `https://api.telegram.org/file/bot${botToken}/${filePath}`;
+                  const img = document.createElement("img");
+                  img.src = url;
+                  div.appendChild(img);
+                }
+              });
+          }
+
+          // Video
+          if (msg.video) {
+            const fileId = msg.video.file_id;
+            const fileUrl = `https://api.telegram.org/bot${botToken}/getFile?file_id=${fileId}`;
+            fetch(fileUrl)
+              .then(res => res.json())
+              .then(json => {
+                if (json.ok) {
+                  const filePath = json.result.file_path;
+                  const url = `https://api.telegram.org/file/bot${botToken}/${filePath}`;
+                  const vid = document.createElement("video");
+                  vid.src = url;
+                  vid.controls = true;
+                  div.appendChild(vid);
+                }
+              });
+          }
+
+          div.innerHTML += `<div class="time">🕒 ${time}</div>`;
+          container.appendChild(div);
+        });
+      } catch (error) {
+        console.error("Error loading messages:", error);
+        document.getElementById("chatArea").innerHTML = "<p>Error loading messages. Please try again later.</p>";
       }
-
-      messages.forEach(update => {
-        const msg = update.message;
-        const div = document.createElement("div");
-        div.className = "msg";
-        const time = new Date(msg.date * 1000).toLocaleString();
-
-        // Text
-        if (msg.text) {
-          div.innerHTML += `<div>${msg.text.replace(/\n/g, "<br>")}</div>`;
-        }
-
-        // Image
-        if (msg.photo) {
-          const fileId = msg.photo[msg.photo.length - 1].file_id;
-          const fileUrl = `https://api.telegram.org/bot${botToken}/getFile?file_id=${fileId}`;
-          fetch(fileUrl)
-            .then(res => res.json())
-            .then(json => {
-              const filePath = json.result.file_path;
-              const url = `https://api.telegram.org/file/bot${botToken}/${filePath}`;
-              const img = document.createElement("img");
-              img.src = url;
-              div.appendChild(img);
-            });
-        }
-
-        // Video
-        if (msg.video) {
-          const fileId = msg.video.file_id;
-          const fileUrl = `https://api.telegram.org/bot${botToken}/getFile?file_id=${fileId}`;
-          fetch(fileUrl)
-            .then(res => res.json())
-            .then(json => {
-              const filePath = json.result.file_path;
-              const url = `https://api.telegram.org/file/bot${botToken}/${filePath}`;
-              const vid = document.createElement("video");
-              vid.src = url;
-              vid.controls = true;
-              div.appendChild(vid);
-            });
-        }
-
-        div.innerHTML += `<div class="time">🕒 ${time}</div>`;
-        container.appendChild(div);
-      });
     }
 
+    // Load messages initially and then every 30 seconds
     loadMessages();
+    setInterval(loadMessages, 30000);
   </script>
 </body>
-</html>
+  </html>
