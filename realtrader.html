@@ -6,23 +6,19 @@
   <meta name="google-adsense-account" content="ca-pub-7221396727211259">
   <title>Real Traders</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       padding: 0;
-      background-color: #fff; /* Changed to white */
+      background-color: #fff;
       font-family: Arial, sans-serif;
-      color: #111; /* Dark text for visibility */
+      color: #111;
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
       overflow: hidden;
     }
-
     .header {
       margin-top: 40px;
       font-size: 10vw;
@@ -30,37 +26,48 @@
       text-align: center;
       animation: colorChange 1.5s infinite alternate;
     }
-
     @keyframes colorChange {
-      0%   { color: red; }
-      25%  { color: orange; }
-      50%  { color: limegreen; }
-      75%  { color: deepskyblue; }
+      0% { color: red; }
+      25% { color: orange; }
+      50% { color: limegreen; }
+      75% { color: deepskyblue; }
       100% { color: violet; }
     }
-
     .fundamentals {
       margin-top: 30px;
       text-align: center;
+      max-width: 90%;
     }
-
     .fundamentals h2 {
       font-size: 5vw;
       margin-bottom: 10px;
       color: #007acc;
     }
-
     .fundamentals ul {
       list-style: none;
       padding: 0;
       font-size: 4vw;
       color: #333;
     }
-
     .fundamentals ul li {
       margin: 6px 0;
+      padding: 10px;
+      border-radius: 8px;
+      background: #f9f9f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-
+    .tag {
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.9em;
+      color: white;
+    }
+    .buy { background: #28a745; }
+    .sell { background: #dc3545; }
+    .news { background: #007bff; }
+    .neutral { background: #6c757d; }
     .icon-links {
       margin-top: 30px;
       display: flex;
@@ -68,7 +75,6 @@
       flex-wrap: wrap;
       justify-content: center;
     }
-
     .icon-links video {
       width: 100px;
       height: 100px;
@@ -78,12 +84,10 @@
       cursor: pointer;
       transition: transform 0.3s ease;
     }
-
     .icon-links video:hover {
       transform: scale(1.1);
       border-color: #007acc;
     }
-
     .footer-text {
       position: absolute;
       bottom: 15px;
@@ -92,7 +96,6 @@
       text-align: center;
       width: 100%;
     }
-
     @media (min-width: 600px) {
       .header { font-size: 48px; }
       .fundamentals h2 { font-size: 24px; }
@@ -106,31 +109,73 @@
   <div class="header">Real Traders</div>
 
   <div class="fundamentals">
-    <h2>Fundamental Expectations</h2>
-    <ul>
-      <li>🟢 NFP (Non-Farm Payrolls)</li>
-      <li>🟠 CPI (Consumer Price Index)</li>
-      <li>🔵 PPI (Producer Price Index)</li>
+    <h2>📡 Signals</h2>
+    <ul id="signal-list">
+      <li>Loading signals...</li>
     </ul>
   </div>
 
   <div class="icon-links">
-    <a href="real2.html">
-      <video src="real2.mp4" autoplay loop muted></video>
-    </a>
-    <a href="search.html">
-      <video src="search.mp4" autoplay loop muted></video>
-    </a>
-    <a href="marketexpectations.html">
-      <video src="market.mp4" autoplay loop muted></video>
-    </a>
-    </a>
-    <a href="community.html">
-      <video src="community.mp4" autoplay loop muted></video>
-    </a>
+    <a href="real2.html"><video src="real2.mp4" autoplay loop muted></video></a>
+    <a href="search.html"><video src="search.mp4" autoplay loop muted></video></a>
+    <a href="marketexpectations.html"><video src="market.mp4" autoplay loop muted></video></a>
+    <a href="community.html"><video src="community.mp4" autoplay loop muted></video></a>
   </div>
 
   <div class="footer-text">Member of the Nonyane Family</div>
+
+  <script>
+    const botToken = 'YOUR_BOT_TOKEN_HERE';  // Replace this
+    const chatId = 'YOUR_GROUP_CHAT_ID_HERE'; // Replace this (e.g. -100xxxxxxxxxx)
+
+    function getTag(text) {
+      const lower = text.toLowerCase();
+      if (lower.includes("buy")) return '<span class="tag buy">BUY</span>';
+      if (lower.includes("sell")) return '<span class="tag sell">SELL</span>';
+      if (lower.includes("news")) return '<span class="tag news">NEWS</span>';
+      return '<span class="tag neutral">INFO</span>';
+    }
+
+    async function fetchSignals() {
+      const res = await fetch(`https://api.telegram.org/bot${botToken}/getUpdates`);
+      const data = await res.json();
+      const list = document.getElementById("signal-list");
+      list.innerHTML = "";
+
+      if (!data.ok || !data.result.length) {
+        list.innerHTML = "<li>Failed to load signals.</li>";
+        return;
+      }
+
+      const today = new Date().toISOString().split("T")[0];
+      const filtered = [];
+
+      data.result.forEach(update => {
+        if (!update.message || !update.message.text) return;
+        const match = update.message.text.match(/^(\d{4}-\d{2}-\d{2}):\s*(.+)$/);
+        if (!match) return;
+        const signalDate = match[1];
+        const signalText = match[2];
+        if (signalDate >= today) {
+          filtered.push({ date: signalDate, text: signalText });
+        }
+      });
+
+      if (filtered.length === 0) {
+        list.innerHTML = "<li>No upcoming signals found.</li>";
+        return;
+      }
+
+      filtered.forEach(signal => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span>${signal.date}: ${signal.text}</span>${getTag(signal.text)}`;
+        list.appendChild(li);
+      });
+    }
+
+    fetchSignals();
+    setInterval(fetchSignals, 30000);
+  </script>
 
 </body>
 </html>
