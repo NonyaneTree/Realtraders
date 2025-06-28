@@ -123,59 +123,5 @@
   </div>
 
   <div class="footer-text">Member of the Nonyane Family</div>
-
-  <script>
-    const botToken = '8134819355:AAEd9ILnRv5e7Hje1pccMvShXNzSrqJ-42o';  // Replace this
-    const chatId = '-1002654219465'; // Replace this (e.g. -100xxxxxxxxxx)
-
-    function getTag(text) {
-      const lower = text.toLowerCase();
-      if (lower.includes("buy")) return '<span class="tag buy">BUY</span>';
-      if (lower.includes("sell")) return '<span class="tag sell">SELL</span>';
-      if (lower.includes("news")) return '<span class="tag news">NEWS</span>';
-      return '<span class="tag neutral">INFO</span>';
-    }
-
-    async function fetchSignals() {
-      const res = await fetch(`https://api.telegram.org/bot${botToken}/getUpdates`);
-      const data = await res.json();
-      const list = document.getElementById("signal-list");
-      list.innerHTML = "";
-
-      if (!data.ok || !data.result.length) {
-        list.innerHTML = "<li>Failed to load signals.</li>";
-        return;
-      }
-
-      const today = new Date().toISOString().split("T")[0];
-      const filtered = [];
-
-      data.result.forEach(update => {
-        if (!update.message || !update.message.text) return;
-        const match = update.message.text.match(/^(\d{4}-\d{2}-\d{2}):\s*(.+)$/);
-        if (!match) return;
-        const signalDate = match[1];
-        const signalText = match[2];
-        if (signalDate >= today) {
-          filtered.push({ date: signalDate, text: signalText });
-        }
-      });
-
-      if (filtered.length === 0) {
-        list.innerHTML = "<li>No upcoming signals found.</li>";
-        return;
-      }
-
-      filtered.forEach(signal => {
-        const li = document.createElement("li");
-        li.innerHTML = `<span>${signal.date}: ${signal.text}</span>${getTag(signal.text)}`;
-        list.appendChild(li);
-      });
-    }
-
-    fetchSignals();
-    setInterval(fetchSignals, 30000);
-  </script>
-
 </body>
 </html>
