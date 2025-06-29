@@ -41,14 +41,30 @@
         button:hover {
             background: #0056b3;
         }
-        #analysisResult {
+        #analysisResult, #chatOutput {
             margin-top: 20px;
             text-align: left;
             background: #e9ecef;
             border-radius: 5px;
             padding: 15px;
         }
+        #chatContainer {
+            margin-top: 30px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        #chatInput {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
     </style>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7221396727211259" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 </head>
 <body>
     <div class="container">
@@ -58,8 +74,13 @@
         <button id="detectLevels">Detect Support & Resistance</button>
         <button id="detectPatterns">Detect Chart Patterns</button>
         <button id="drawCandlesticks">Draw Candlestick Patterns</button>
-        <button id="analyzeMarket">Analyze Market Direction</button>
         <div id="analysisResult"></div>
+    </div>
+
+    <div id="chatContainer">
+        <h2>Chat with Chat.024</h2>
+        <input type="text" id="chatInput" placeholder="Type your message...">
+        <div id="chatOutput"></div>
     </div>
 
     <script>
@@ -67,7 +88,21 @@
         const ctx = canvas.getContext("2d");
         const imageInput = document.getElementById("imageInput");
         const analysisResult = document.getElementById("analysisResult");
+        const chatInput = document.getElementById("chatInput");
+        const chatOutput = document.getElementById("chatOutput");
         let image = new Image();
+
+        // Predefined reference images stored in Telegram
+        const referenceImages = {
+            "M Formation": "https://api.telegram.org/file/botYOUR_BOT_TOKEN/path/to/mformation.png", // Replace with actual file path
+            "Head and Shoulders": "https://api.telegram.org/file/botYOUR_BOT_TOKEN/path/to/head_and_shoulders.png", // Replace with actual file path
+            "Inverse Head and Shoulders": "https://api.telegram.org/file/botYOUR_BOT_TOKEN/path/to/inverse_head_and_shoulders.png",
+            "Double Top": "https://api.telegram.org/file/botYOUR_BOT_TOKEN/path/to/double_top.png",
+            "Double Bottom": "https://api.telegram.org/file/botYOUR_BOT_TOKEN/path/to/double_bottom.png",
+            "W Formation": "https://api.telegram.org/file/botYOUR_BOT_TOKEN/path/to/w_formation.png",
+            "Flag": "https://api.telegram.org/file/botYOUR_BOT_TOKEN/path/to/flag.png",
+            // Add more formations as needed
+        };
 
         imageInput.addEventListener("change", (event) => {
             const file = event.target.files[0];
@@ -85,57 +120,93 @@
             }
         });
 
-        document.getElementById("detectLevels").addEventListener("click", () => {
-            detectSupportResistance();
-        });
-
         document.getElementById("detectPatterns").addEventListener("click", detectPatterns);
 
-        document.getElementById("drawCandlesticks").addEventListener("click", () => {
-            drawAllCandlestickPatterns();
+        chatInput.addEventListener("keypress", (event) => {
+            if (event.key === 'Enter') {
+                respondToChat(chatInput.value);
+                chatInput.value = ''; // Clear input after sending
+            }
         });
 
-        document.getElementById("analyzeMarket").addEventListener("click", analyzeMarketDirection);
+        function respondToChat(message) {
+            const greetings = ["Hi", "Hello", "Morning", "Good morning", "Afternoon", "Good afternoon", "Good night", "Ola", "XO"];
+            const forexDefinition = "Forex trading involves buying and selling currencies in the foreign exchange market.";
 
-        function detectSupportResistance() {
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const priceData = extractPriceLevels(imageData);
-            const levels = calculateSupportResistance(priceData);
-            drawSupportResistance(levels.support, 'green', 'Support');
-            drawSupportResistance(levels.resistance, 'red', 'Resistance');
-            const trendlines = calculateTrendlines(priceData);
-            drawTrendlines(trendlines);
+            message = message.toLowerCase();
+            let response = "";
+
+            if (greetings.includes(message)) {
+                response = "Hello! How can I help you today?";
+            } else if (message === "what is forex trading") {
+                response = forexDefinition;
+            } else if (message.includes("my name is")) {
+                response = "My name is Chat.024. I am designed by Nonyane Investment Tree and coded by Thulane Nonyane.";
+            } else {
+                response = "I'm sorry, I didn't understand that.";
+            }
+
+            chatOutput.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+            chatOutput.innerHTML += `<p><strong>Chat.024:</strong> ${response}</p>`;
         }
 
-        function analyzeMarketDirection() {
-            // Placeholder for API call
-            fetch('https://api.deepseek.com/analyze', {
+        function detectPatterns() {
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+            // Here you would implement pixel comparison or feature matching
+            const detectedFormations = analyzeImageForPatterns(imageData);
+
+            if (detectedFormations.length > 0) {
+                detectedFormations.forEach((formation, index) => {
+                    drawFormationLabel(formation, index);
+                });
+                analysisResult.innerHTML = `Detected formations: ${detectedFormations.join(", ")}`;
+                // sendImageToTelegram(canvas.toDataURL());
+            } else {
+                analysisResult.innerHTML = "No formations detected.";
+            }
+        }
+
+        function analyzeImageForPatterns(imageData) {
+            // This function should implement the logic to compare imageData
+            // with referenceImages. For now, it's mocked.
+            return ["M Formation", "Head and Shoulders"]; // Mocked example
+        }
+
+        function drawFormationLabel(label, index) {
+            ctx.fillStyle = "red";
+            ctx.font = "24px Arial";
+            ctx.fillText(label, 50, 50 + (index * 30)); // Stacks labels
+        }
+
+        function sendImageToTelegram(imageData) {
+            const telegramChatId = "YOUR_TELEGRAM_CHAT_ID"; // Your Telegram chat ID
+            const telegramBotToken = "YOUR_TELEGRAM_BOT_TOKEN"; // Your Telegram Bot Token
+            const url = `https://api.telegram.org/bot${telegramBotToken}/sendPhoto`;
+
+            fetch(url, {
                 method: 'POST',
+                body: JSON.stringify({
+                    chat_id: telegramChatId,
+                    photo: imageData,
+                    caption: "Chart with detected formations."
+                }),
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer sk-d0d60ce2318d46cba83a545996753c7d'
-                },
-                body: JSON.stringify({ /* parameters for analysis */ })
+                    'Content-Type': 'application/json'
+                }
             })
             .then(response => response.json())
             .then(data => {
-                // Display analysis results
-                const { direction, entryPoint, takeProfit, pendingOrder } = data;
-                analysisResult.innerHTML = `
-                    <h3>Market Analysis:</h3>
-                    <p>Direction: ${direction}</p>
-                    <p>Entry Point: ${entryPoint}</p>
-                    <p>Take Profit: ${takeProfit}</p>
-                    <p>Pending Order: ${pendingOrder}</p>
-                `;
+                if (data.ok) {
+                    console.log("Image sent successfully!");
+                } else {
+                    console.error("Error sending image:", data);
+                }
             })
             .catch(error => {
-                analysisResult.innerHTML = `<p>Error analyzing market: ${error.message}</p>`;
+                console.error("Error:", error);
             });
         }
-
-        // Remaining functions (extractPriceLevels, calculateSupportResistance, etc.) remain unchanged
-
     </script>
 </body>
 </html>
