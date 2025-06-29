@@ -7,22 +7,86 @@
   <meta name="admob-app-id" content="ca-app-pub-7221396727211259~2673686178"/>
   <style>
     body { font-family: Arial; text-align: center; padding: 20px; }
-    #watchAdBtn { padding: 12px 24px; background: green; color: white; font-size: 18px; border: none; border-radius: 10px; }
-    .icon-links { display: none; margin-top: 20px; flex-wrap: wrap; justify-content: center; gap: 10px; }
-    .icon-links a video { width: 120px; height: 120px; border-radius: 10px; border: 2px solid #333; }
+    #watchAdBtn {
+      padding: 12px 24px;
+      background: green;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+    }
+
+    .icon-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .icon-wrapper {
+      position: relative;
+      width: 120px;
+      height: 120px;
+    }
+
+    .icon-wrapper video {
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      border: 2px solid #333;
+      object-fit: cover;
+    }
+
+    .lock-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      color: white;
+      font-weight: bold;
+      border-radius: 10px;
+    }
+
+    .icon-wrapper.unlocked .lock-overlay {
+      display: none;
+    }
   </style>
 </head>
 <body>
 
   <h1>📡 Real Traders</h1>
-  <p>Watch 4 ads to unlock full access</p>
+  <p>Watch 4 ads to unlock premium access</p>
   <button id="watchAdBtn" onclick="watchAd()">Watch Ad (0/4)</button>
 
-  <div class="icon-links" id="videoLinks">
-    <a href="search.html"><video src="search.mp4" autoplay muted loop></video></a>
-    <a href="marketexpectations.html"><video src="market.mp4" autoplay muted loop></video></a>
-    <a href="community.html"><video src="community.mp4" autoplay muted loop></video></a>
-    <a href="fundamental.html"><video src="calendar.mp4" autoplay muted loop></video></a>
+  <div class="icon-links">
+    <!-- Locked until 4 ads -->
+    <div class="icon-wrapper locked" data-target="search.html">
+      <video src="search.mp4" autoplay muted loop></video>
+      <div class="lock-overlay">🔒</div>
+    </div>
+
+    <div class="icon-wrapper locked" data-target="marketexpectations.html">
+      <video src="market.mp4" autoplay muted loop></video>
+      <div class="lock-overlay">🔒</div>
+    </div>
+
+    <div class="icon-wrapper">
+      <a href="community.html">
+        <video src="community.mp4" autoplay muted loop></video>
+      </a>
+    </div>
+
+    <div class="icon-wrapper locked" data-target="fundamental.html">
+      <video src="calendar.mp4" autoplay muted loop></video>
+      <div class="lock-overlay">🔒</div>
+    </div>
   </div>
 
   <script>
@@ -30,19 +94,39 @@
 
     function watchAd() {
       if (typeof WebAppInterface !== "undefined") {
-        WebAppInterface.showRewardedAd(); // Native call
+        WebAppInterface.showRewardedAd();
       } else {
-        simulateAdWatched(); // fallback for browser testing
+        simulateAdWatched();
       }
     }
 
     function onAdCompleted() {
       adCount++;
       document.getElementById('watchAdBtn').innerText = `Watch Ad (${adCount}/4)`;
+
       if (adCount >= 4) {
+        unlockAll();
         document.getElementById('watchAdBtn').style.display = 'none';
-        document.getElementById('videoLinks').style.display = 'flex';
       }
+    }
+
+    function unlockAll() {
+      const locked = document.querySelectorAll('.icon-wrapper.locked');
+      locked.forEach(el => {
+        el.classList.remove('locked');
+        el.classList.add('unlocked');
+
+        const link = document.createElement('a');
+        link.href = el.dataset.target;
+        el.appendChild(link);
+
+        const video = el.querySelector('video');
+        el.removeChild(video);
+        link.appendChild(video);
+
+        const lock = el.querySelector('.lock-overlay');
+        if (lock) lock.remove();
+      });
     }
 
     function simulateAdWatched() {
@@ -52,4 +136,4 @@
   </script>
 
 </body>
-</html>
+  </html>
