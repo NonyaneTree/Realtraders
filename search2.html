@@ -1,212 +1,337 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chart with Support and Resistance Zones</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-        }
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #333;
-        }
-        input[type="file"] {
-            margin: 20px 0;
-        }
-        canvas {
-            border: 1px solid #ddd;
-            max-width: 100%;
-            margin: 20px 0;
-        }
-        button {
-            padding: 10px 20px;
-            background: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 5px;
-        }
-        button:hover {
-            background: #0056b3;
-        }
-        #analysisResult, #chatOutput {
-            margin-top: 20px;
-            text-align: left;
-            background: #e9ecef;
-            border-radius: 5px;
-            padding: 15px;
-        }
-        #chatContainer {
-            margin-top: 30px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background: #f9f9f9;
-        }
-        #chatInput {
-            width: 100%;
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            margin-top: 10px;
-        }
-    </style>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7221396727211259" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forex Pattern Recognition</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #2962ff;
+    }
+    .upload-section {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .pattern-info {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    canvas {
+      display: block;
+      max-width: 100%;
+      margin: 20px auto;
+      border: 1px solid #ddd;
+      background: white;
+    }
+    button {
+      padding: 10px 20px;
+      background: #2962ff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 500;
+      margin: 5px;
+    }
+    button:hover {
+      background: #0039cb;
+    }
+    .detected-patterns {
+      margin-top: 20px;
+    }
+    .pattern-card {
+      background: white;
+      border-left: 4px solid #2962ff;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    input[type="file"] {
+      padding: 10px;
+      margin: 10px 0;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Chart with Support and Resistance Zones</h1>
-        <input type="file" id="imageInput" accept="image/*">
-        <canvas id="chartCanvas" width="800" height="600"></canvas>
-        <button id="detectLevels">Detect Support & Resistance</button>
-        <button id="detectPatterns">Detect Chart Patterns</button>
-        <button id="drawCandlesticks">Draw Candlestick Patterns</button>
-        <div id="analysisResult"></div>
+  <div class="container">
+    <h1>Forex Pattern Recognition</h1>
+    
+    <div class="upload-section">
+      <input type="file" id="imageInput" accept="image/*">
+      <button onclick="analyzeImage()">Analyze Chart</button>
+      <button onclick="clearCanvas()">Clear</button>
     </div>
-
-    <div id="chatContainer">
-        <h2>Chat with Chat.024</h2>
-        <input type="text" id="chatInput" placeholder="Type your message...">
-        <div id="chatOutput"></div>
+    
+    <div class="canvas-container">
+      <canvas id="chartCanvas" width="900" height="500"></canvas>
     </div>
+    
+    <div class="detected-patterns" id="detectedPatterns">
+      <!-- Detected patterns will appear here -->
+    </div>
+    
+    <div class="pattern-info">
+      <h3>Common Forex Patterns</h3>
+      <div class="pattern-card">
+        <h4>Head and Shoulders</h4>
+        <p>A reversal pattern that signals a potential trend change. Characterized by three peaks with the middle peak (head) being the highest and the two outside peaks (shoulders) being lower and roughly equal.</p>
+      </div>
+      <div class="pattern-card">
+        <h4>Double Top/Bottom</h4>
+        <p>Reversal pattern where price tests a level twice before reversing. Double top forms at highs, double bottom at lows.</p>
+      </div>
+      <div class="pattern-card">
+        <h4>Triangles (Ascending, Descending, Symmetrical)</h4>
+        <p>Continuation patterns where price converges into a smaller range before breaking out in the direction of the trend.</p>
+      </div>
+      <div class="pattern-card">
+        <h4>Flags and Pennants</h4>
+        <p>Short-term continuation patterns that mark a brief consolidation before the previous trend resumes.</p>
+      </div>
+      <div class="pattern-card">
+        <h4>Wedge (Rising/Falling)</h4>
+        <p>Can be reversal or continuation patterns. Rising wedge typically bearish, falling wedge typically bullish.</p>
+      </div>
+      <div class="pattern-card">
+        <h4>Cup and Handle</h4>
+        <p>Bullish continuation pattern resembling a tea cup, where the "cup" is rounded bottom and the "handle" is a small pullback.</p>
+      </div>
+    </div>
+  </div>
 
-    <script>
-        const canvas = document.getElementById("chartCanvas");
-        const ctx = canvas.getContext("2d");
-        const imageInput = document.getElementById("imageInput");
-        const analysisResult = document.getElementById("analysisResult");
-        const chatInput = document.getElementById("chatInput");
-        const chatOutput = document.getElementById("chatOutput");
-        let image = new Image();
+  <script>
+    const canvas = document.getElementById('chartCanvas');
+    const ctx = canvas.getContext('2d');
+    const imageInput = document.getElementById('imageInput');
+    const detectedPatterns = document.getElementById('detectedPatterns');
+    let uploadedImage = null;
 
-        // Predefined reference images stored in Telegram
-        const referenceImages = {
-            "M Formation": "https://api.telegram.org/file/botYOUR_BOT_TOKEN/path/to/mformation.png", // Replace with actual file path
-            "Head and Shoulders": "https://api.telegram.org/file/botYOUR_BOT_TOKEN/path/to/head_and_shoulders.png", // Replace with actual file path
-            "Inverse Head and Shoulders": "https://api.telegram.org/file/botYOUR_BOT_TOKEN/path/to/inverse_head_and_shoulders.png",
-            "Double Top": "https://api.telegram.org/file/botYOUR_BOT_TOKEN/path/to/double_top.png",
-            "Double Bottom": "https://api.telegram.org/file/botYOUR_BOT_TOKEN/path/to/double_bottom.png",
-            "W Formation": "https://api.telegram.org/file/botYOUR_BOT_TOKEN/path/to/w_formation.png",
-            "Flag": "https://api.telegram.org/file/botYOUR_BOT_TOKEN/path/to/flag.png",
-            // Add more formations as needed
+    // Pattern definitions (simplified for demo)
+    const patternDefinitions = {
+      "Head and Shoulders": {
+        description: "Reversal pattern with three peaks (middle highest)",
+        color: "rgba(255, 99, 132, 0.5)"
+      },
+      "Double Top": {
+        description: "Two peaks at similar price level signaling potential reversal",
+        color: "rgba(54, 162, 235, 0.5)"
+      },
+      "Double Bottom": {
+        description: "Two troughs at similar price level signaling potential reversal",
+        color: "rgba(75, 192, 192, 0.5)"
+      },
+      "Ascending Triangle": {
+        description: "Bullish continuation with flat top and rising bottom",
+        color: "rgba(255, 159, 64, 0.5)"
+      },
+      "Descending Triangle": {
+        description: "Bearish continuation with flat bottom and descending top",
+        color: "rgba(153, 102, 255, 0.5)"
+      },
+      "Flag": {
+        description: "Short-term continuation pattern after strong move",
+        color: "rgba(255, 206, 86, 0.5)"
+      }
+    };
+
+    // Load image when file selected
+    imageInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          uploadedImage = new Image();
+          uploadedImage.onload = function() {
+            drawImageOnCanvas();
+          };
+          uploadedImage.src = event.target.result;
         };
+        reader.readAsDataURL(file);
+      }
+    });
 
-        imageInput.addEventListener("change", (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    image.src = reader.result;
-                    image.onload = () => {
-                        canvas.width = image.width;
-                        canvas.height = image.height;
-                        ctx.drawImage(image, 0, 0, image.width, image.height);
-                    };
-                };
-                reader.readAsDataURL(file);
-            }
+    function drawImageOnCanvas() {
+      // Calculate dimensions to maintain aspect ratio
+      const maxWidth = canvas.width;
+      const maxHeight = canvas.height;
+      let width = uploadedImage.width;
+      let height = uploadedImage.height;
+
+      if (width > maxWidth) {
+        height = (maxWidth / width) * height;
+        width = maxWidth;
+      }
+
+      if (height > maxHeight) {
+        width = (maxHeight / height) * width;
+        height = maxHeight;
+      }
+
+      // Center the image on canvas
+      const x = (canvas.width - width) / 2;
+      const y = (canvas.height - height) / 2;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(uploadedImage, x, y, width, height);
+    }
+
+    function analyzeImage() {
+      if (!uploadedImage) {
+        alert("Please upload an image first");
+        return;
+      }
+
+      detectedPatterns.innerHTML = "<h3>Analyzing Chart...</h3>";
+      
+      // Simulate analysis (in a real app, this would be actual pattern detection)
+      setTimeout(() => {
+        detectPatterns();
+      }, 1500);
+    }
+
+    function detectPatterns() {
+      // In a real implementation, this would analyze the image for patterns
+      // For demo purposes, we'll simulate finding some patterns
+      
+      // Clear previous results
+      detectedPatterns.innerHTML = "<h3>Detected Patterns</h3>";
+      
+      // Simulate finding some patterns (random for demo)
+      const possiblePatterns = Object.keys(patternDefinitions);
+      const detected = [];
+      
+      // Randomly select 1-3 patterns for demo
+      const numPatterns = Math.min(3, 1 + Math.floor(Math.random() * possiblePatterns.length));
+      for (let i = 0; i < numPatterns; i++) {
+        const randomIndex = Math.floor(Math.random() * possiblePatterns.length);
+        const pattern = possiblePatterns[randomIndex];
+        if (!detected.includes(pattern)) {
+          detected.push(pattern);
+        }
+      }
+      
+      // Display detected patterns
+      if (detected.length === 0) {
+        detectedPatterns.innerHTML += "<p>No clear patterns detected</p>";
+      } else {
+        detected.forEach(pattern => {
+          const patternInfo = patternDefinitions[pattern];
+          
+          // Add to results list
+          detectedPatterns.innerHTML += `
+            <div class="pattern-card">
+              <h4>${pattern}</h4>
+              <p>${patternInfo.description}</p>
+            </div>
+          `;
+          
+          // Highlight on canvas (simplified visualization)
+          highlightPatternOnCanvas(pattern);
         });
+      }
+    }
 
-        document.getElementById("detectPatterns").addEventListener("click", detectPatterns);
-
-        chatInput.addEventListener("keypress", (event) => {
-            if (event.key === 'Enter') {
-                respondToChat(chatInput.value);
-                chatInput.value = ''; // Clear input after sending
-            }
-        });
-
-        function respondToChat(message) {
-            const greetings = ["Hi", "Hello", "Morning", "Good morning", "Afternoon", "Good afternoon", "Good night", "Ola", "XO"];
-            const forexDefinition = "Forex trading involves buying and selling currencies in the foreign exchange market.";
-
-            message = message.toLowerCase();
-            let response = "";
-
-            if (greetings.includes(message)) {
-                response = "Hello! How can I help you today?";
-            } else if (message === "what is forex trading") {
-                response = forexDefinition;
-            } else if (message.includes("my name is")) {
-                response = "My name is Chat.024. I am designed by Nonyane Investment Tree and coded by Thulane Nonyane.";
-            } else {
-                response = "I'm sorry, I didn't understand that.";
-            }
-
-            chatOutput.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
-            chatOutput.innerHTML += `<p><strong>Chat.024:</strong> ${response}</p>`;
+    function highlightPatternOnCanvas(pattern) {
+      const patternInfo = patternDefinitions[pattern];
+      if (!patternInfo) return;
+      
+      // Simplified visualization - in real app this would be precise
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      
+      ctx.fillStyle = patternInfo.color;
+      ctx.globalAlpha = 0.3;
+      
+      // Draw different shapes based on pattern type
+      if (pattern.includes("Head and Shoulders")) {
+        // Draw three peaks
+        const headWidth = canvas.width * 0.3;
+        const shoulderWidth = canvas.width * 0.2;
+        const headHeight = canvas.height * 0.3;
+        const shoulderHeight = headHeight * 0.7;
+        
+        // Left shoulder
+        ctx.beginPath();
+        ctx.arc(centerX - headWidth/2 - shoulderWidth, centerY - shoulderHeight, shoulderWidth, 0, Math.PI);
+        ctx.fill();
+        
+        // Head
+        ctx.beginPath();
+        ctx.arc(centerX, centerY - headHeight, headWidth/2, 0, Math.PI);
+        ctx.fill();
+        
+        // Right shoulder
+        ctx.beginPath();
+        ctx.arc(centerX + headWidth/2 + shoulderWidth, centerY - shoulderHeight, shoulderWidth, 0, Math.PI);
+        ctx.fill();
+        
+      } else if (pattern.includes("Double")) {
+        // Draw two peaks or troughs
+        const patternWidth = canvas.width * 0.4;
+        const patternHeight = canvas.height * 0.2;
+        const isTop = pattern.includes("Top");
+        
+        // First peak/trough
+        ctx.beginPath();
+        ctx.arc(centerX - patternWidth/2, centerY - (isTop ? patternHeight : 0), patternWidth/3, isTop ? 0 : Math.PI, isTop ? Math.PI : 2*Math.PI);
+        ctx.fill();
+        
+        // Second peak/trough
+        ctx.beginPath();
+        ctx.arc(centerX + patternWidth/2, centerY - (isTop ? patternHeight : 0), patternWidth/3, isTop ? 0 : Math.PI, isTop ? Math.PI : 2*Math.PI);
+        ctx.fill();
+        
+      } else if (pattern.includes("Triangle")) {
+        // Draw triangle shape
+        const triangleHeight = canvas.height * 0.3;
+        const triangleWidth = canvas.width * 0.4;
+        
+        ctx.beginPath();
+        if (pattern.includes("Ascending")) {
+          ctx.moveTo(centerX - triangleWidth/2, centerY);
+          ctx.lineTo(centerX + triangleWidth/2, centerY);
+          ctx.lineTo(centerX - triangleWidth/2, centerY - triangleHeight);
+        } else if (pattern.includes("Descending")) {
+          ctx.moveTo(centerX - triangleWidth/2, centerY - triangleHeight);
+          ctx.lineTo(centerX + triangleWidth/2, centerY - triangleHeight);
+          ctx.lineTo(centerX + triangleWidth/2, centerY);
+        } else { // Symmetrical
+          ctx.moveTo(centerX - triangleWidth/2, centerY);
+          ctx.lineTo(centerX + triangleWidth/2, centerY);
+          ctx.lineTo(centerX, centerY - triangleHeight);
         }
+        ctx.closePath();
+        ctx.fill();
+      }
+      
+      ctx.globalAlpha = 1.0;
+    }
 
-        function detectPatterns() {
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-            // Here you would implement pixel comparison or feature matching
-            const detectedFormations = analyzeImageForPatterns(imageData);
-
-            if (detectedFormations.length > 0) {
-                detectedFormations.forEach((formation, index) => {
-                    drawFormationLabel(formation, index);
-                });
-                analysisResult.innerHTML = `Detected formations: ${detectedFormations.join(", ")}`;
-                // sendImageToTelegram(canvas.toDataURL());
-            } else {
-                analysisResult.innerHTML = "No formations detected.";
-            }
-        }
-
-        function analyzeImageForPatterns(imageData) {
-            // This function should implement the logic to compare imageData
-            // with referenceImages. For now, it's mocked.
-            return ["M Formation", "Head and Shoulders"]; // Mocked example
-        }
-
-        function drawFormationLabel(label, index) {
-            ctx.fillStyle = "red";
-            ctx.font = "24px Arial";
-            ctx.fillText(label, 50, 50 + (index * 30)); // Stacks labels
-        }
-
-        function sendImageToTelegram(imageData) {
-            const telegramChatId = "YOUR_TELEGRAM_CHAT_ID"; // Your Telegram chat ID
-            const telegramBotToken = "YOUR_TELEGRAM_BOT_TOKEN"; // Your Telegram Bot Token
-            const url = `https://api.telegram.org/bot${telegramBotToken}/sendPhoto`;
-
-            fetch(url, {
-                method: 'POST',
-                body: JSON.stringify({
-                    chat_id: telegramChatId,
-                    photo: imageData,
-                    caption: "Chart with detected formations."
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.ok) {
-                    console.log("Image sent successfully!");
-                } else {
-                    console.error("Error sending image:", data);
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-            });
-        }
-    </script>
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      uploadedImage = null;
+      imageInput.value = '';
+      detectedPatterns.innerHTML = "";
+    }
+  </script>
 </body>
-</html>
+                                                                                                                                         </html>
