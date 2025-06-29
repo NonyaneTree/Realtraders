@@ -2,133 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="google-adsense-account" content="ca-pub-7221396727211259">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Real Traders</title>
-
-  <!-- Google AdSense Script -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7221396727211259"
-     crossorigin="anonymous"></script>
-
+  <meta name="admob-app-id" content="ca-app-pub-7221396727211259~2673686178"/>
   <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #fff;
-      font-family: Arial, sans-serif;
-      color: #111;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      overflow: hidden;
-    }
-    .header {
-      margin-top: 40px;
-      font-size: 10vw;
-      font-weight: bold;
-      text-align: center;
-      animation: colorChange 1.5s infinite alternate;
-    }
-    @keyframes colorChange {
-      0% { color: red; }
-      25% { color: orange; }
-      50% { color: limegreen; }
-      75% { color: deepskyblue; }
-      100% { color: violet; }
-    }
-    .fundamentals {
-      margin-top: 30px;
-      text-align: center;
-      max-width: 90%;
-    }
-    .fundamentals h2 {
-      font-size: 5vw;
-      margin-bottom: 10px;
-      color: #007acc;
-    }
-    .fundamentals ul {
-      list-style: none;
-      padding: 0;
-      font-size: 4vw;
-      color: #333;
-    }
-    .fundamentals ul li {
-      margin: 6px 0;
-      padding: 10px;
-      border-radius: 8px;
-      background: #f9f9f9;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .tag {
-      padding: 3px 8px;
-      border-radius: 12px;
-      font-size: 0.9em;
-      color: white;
-    }
-    .buy { background: #28a745; }
-    .sell { background: #dc3545; }
-    .news { background: #007bff; }
-    .neutral { background: #6c757d; }
-    .icon-links {
-      margin-top: 30px;
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .icon-links video {
-      width: 100px;
-      height: 100px;
-      border: 2px solid #333;
-      border-radius: 12px;
-      object-fit: cover;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-    .icon-links video:hover {
-      transform: scale(1.1);
-      border-color: #007acc;
-    }
-    .footer-text {
-      position: absolute;
-      bottom: 15px;
-      font-size: 4vw;
-      color: #666;
-      text-align: center;
-      width: 100%;
-    }
-    @media (min-width: 600px) {
-      .header { font-size: 48px; }
-      .fundamentals h2 { font-size: 24px; }
-      .fundamentals ul li { font-size: 18px; }
-      .footer-text { font-size: 16px; }
-    }
+    body { font-family: Arial; text-align: center; padding: 20px; }
+    #watchAdBtn { padding: 12px 24px; background: green; color: white; font-size: 18px; border: none; border-radius: 10px; }
+    .icon-links { display: none; margin-top: 20px; flex-wrap: wrap; justify-content: center; gap: 10px; }
+    .icon-links a video { width: 120px; height: 120px; border-radius: 10px; border: 2px solid #333; }
   </style>
 </head>
 <body>
 
-  <div class="header">Real Traders</div>
+  <h1>📡 Real Traders</h1>
+  <p>Watch 4 ads to unlock full access</p>
+  <button id="watchAdBtn" onclick="watchAd()">Watch Ad (0/4)</button>
 
-  <div class="fundamentals">
-    <h2>📡 Signals Website</h2>
-    <ul id="signal-list">
-      <li>Get all forex signals</li>
-    </ul>
+  <div class="icon-links" id="videoLinks">
+    <a href="search.html"><video src="search.mp4" autoplay muted loop></video></a>
+    <a href="marketexpectations.html"><video src="market.mp4" autoplay muted loop></video></a>
+    <a href="community.html"><video src="community.mp4" autoplay muted loop></video></a>
+    <a href="fundamental.html"><video src="calendar.mp4" autoplay muted loop></video></a>
   </div>
 
-  <div class="icon-links">
-    <a href="real2.html"><video src="real2.mp4" autoplay loop muted></video></a>
-    <a href="search.html"><video src="search.mp4" autoplay loop muted></video></a>
-    <a href="marketexpectations.html"><video src="market.mp4" autoplay loop muted></video></a>
-    <a href="community.html"><video src="community.mp4" autoplay loop muted></video></a>
-    <a href="fundamental.html"><video src="calendar.mp4" autoplay loop muted></video></a>
-  </div>
+  <script>
+    let adCount = 0;
 
-  <div class="footer-text">Member of the Nonyane Family</div>
+    function watchAd() {
+      if (typeof WebAppInterface !== "undefined") {
+        WebAppInterface.showRewardedAd(); // Native call
+      } else {
+        simulateAdWatched(); // fallback for browser testing
+      }
+    }
+
+    function onAdCompleted() {
+      adCount++;
+      document.getElementById('watchAdBtn').innerText = `Watch Ad (${adCount}/4)`;
+      if (adCount >= 4) {
+        document.getElementById('watchAdBtn').style.display = 'none';
+        document.getElementById('videoLinks').style.display = 'flex';
+      }
+    }
+
+    function simulateAdWatched() {
+      alert("Simulated ad watched!");
+      onAdCompleted();
+    }
+  </script>
 
 </body>
 </html>
