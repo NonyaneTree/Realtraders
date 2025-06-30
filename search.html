@@ -1,337 +1,404 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Forex Pattern Recognition</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XIIchat2.5</title>
   <style>
+    :root {
+      --primary-color: #2962ff;
+      --primary-light: #768fff;
+      --primary-dark: #0039cb;
+      --secondary-color: #ff6d00;
+      --background: #f5f7fa;
+      --card-bg: #ffffff;
+      --text-primary: #263238;
+      --text-secondary: #607d8b;
+      --success-color: #00c853;
+      --warning-color: #ffab00;
+      --error-color: #ff1744;
+    }
+    
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f5f7fa;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: var(--background);
       margin: 0;
       padding: 20px;
-      color: #333;
+      color: var(--text-primary);
     }
+    
     .container {
       max-width: 1000px;
       margin: 0 auto;
-      background: white;
+      background: var(--card-bg);
       padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
     }
+    
     h1 {
       text-align: center;
       margin-bottom: 25px;
-      color: #2962ff;
+      color: var(--primary-dark);
+      font-weight: 600;
     }
-    .upload-section {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .pattern-info {
-      background: #f8f9fa;
-      padding: 20px;
+    
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 500px;
+      border: 1px solid #e0e0e0;
       border-radius: 8px;
-      margin-top: 20px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      background: var(--card-bg);
     }
-    canvas {
-      display: block;
-      max-width: 100%;
-      margin: 20px auto;
-      border: 1px solid #ddd;
-      background: white;
+    
+    .chat-box {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      background: var(--card-bg);
     }
+    
+    .message {
+      margin: 12px 0;
+      padding: 10px 15px;
+      border-radius: 12px;
+      max-width: 75%;
+      line-height: 1.4;
+      position: relative;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .user {
+      background-color: var(--primary-light);
+      color: white;
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+    }
+    
+    .bot {
+      background-color: #f1f3f4;
+      margin-right: auto;
+      border-bottom-left-radius: 4px;
+      color: var(--text-primary);
+    }
+    
+    .input-area {
+      display: flex;
+      gap: 10px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    input[type="text"], input[type="file"] {
+      flex: 1;
+      padding: 12px 15px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.3s;
+    }
+    
+    input[type="text"]:focus, input[type="file"]:focus {
+      border-color: var(--primary-color);
+    }
+    
     button {
-      padding: 10px 20px;
-      background: #2962ff;
+      padding: 12px 20px;
+      background-color: var(--primary-color);
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 500;
-      margin: 5px;
+      transition: all 0.2s;
+      white-space: nowrap;
     }
+    
     button:hover {
-      background: #0039cb;
+      background-color: var(--primary-dark);
+      transform: translateY(-1px);
     }
-    .detected-patterns {
-      margin-top: 20px;
+    
+    button:active {
+      transform: translateY(0);
     }
-    .pattern-card {
+    
+    .secondary-btn {
+      background-color: #e0e0e0;
+      color: var(--text-primary);
+    }
+    
+    .secondary-btn:hover {
+      background-color: #bdbdbd;
+    }
+    
+    .canvas-container {
+      margin-top: 25px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      overflow: hidden;
       background: white;
-      border-left: 4px solid #2962ff;
-      padding: 15px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-    input[type="file"] {
-      padding: 10px;
-      margin: 10px 0;
+    
+    canvas {
+      display: block;
+      width: 100%;
+      background: white;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .timestamp {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      text-align: right;
+    }
+    
+    .bot-name {
+      font-weight: 600;
+      color: var(--primary-dark);
+      margin-bottom: 4px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+      
+      .chat-container {
+        height: 400px;
+      }
+      
+      .message {
+        max-width: 85%;
+      }
+      
+      .input-area {
+        flex-direction: column;
+      }
+      
+      button {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Forex Pattern Recognition</h1>
+    <h1>Forex Zone Assistant</h1>
     
-    <div class="upload-section">
-      <input type="file" id="imageInput" accept="image/*">
+    <div class="chat-container">
+      <div class="chat-box" id="chatBox">
+        <div class="message bot">
+          <div class="bot-name">FX Assistant</div>
+          Hi! I can help analyze Forex charts. Upload a chart image or describe a zone you're seeing.
+          <div class="timestamp">Just now</div>
+        </div>
+      </div>
+      
+      <div class="input-area">
+        <input type="text" id="userInput" placeholder="Describe the zone or ask a question...">
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+    
+    <div class="action-buttons">
+      <input type="file" id="imageInput" accept="image/*" onchange="previewImage()">
       <button onclick="analyzeImage()">Analyze Chart</button>
-      <button onclick="clearCanvas()">Clear</button>
+      <button class="secondary-btn" onclick="clearCanvas()">Clear Chart</button>
     </div>
     
     <div class="canvas-container">
-      <canvas id="chartCanvas" width="900" height="500"></canvas>
-    </div>
-    
-    <div class="detected-patterns" id="detectedPatterns">
-      <!-- Detected patterns will appear here -->
-    </div>
-    
-    <div class="pattern-info">
-      <h3>Common Forex Patterns</h3>
-      <div class="pattern-card">
-        <h4>Head and Shoulders</h4>
-        <p>A reversal pattern that signals a potential trend change. Characterized by three peaks with the middle peak (head) being the highest and the two outside peaks (shoulders) being lower and roughly equal.</p>
-      </div>
-      <div class="pattern-card">
-        <h4>Double Top/Bottom</h4>
-        <p>Reversal pattern where price tests a level twice before reversing. Double top forms at highs, double bottom at lows.</p>
-      </div>
-      <div class="pattern-card">
-        <h4>Triangles (Ascending, Descending, Symmetrical)</h4>
-        <p>Continuation patterns where price converges into a smaller range before breaking out in the direction of the trend.</p>
-      </div>
-      <div class="pattern-card">
-        <h4>Flags and Pennants</h4>
-        <p>Short-term continuation patterns that mark a brief consolidation before the previous trend resumes.</p>
-      </div>
-      <div class="pattern-card">
-        <h4>Wedge (Rising/Falling)</h4>
-        <p>Can be reversal or continuation patterns. Rising wedge typically bearish, falling wedge typically bullish.</p>
-      </div>
-      <div class="pattern-card">
-        <h4>Cup and Handle</h4>
-        <p>Bullish continuation pattern resembling a tea cup, where the "cup" is rounded bottom and the "handle" is a small pullback.</p>
-      </div>
+      <canvas id="canvas" width="950" height="500"></canvas>
     </div>
   </div>
 
   <script>
-    const canvas = document.getElementById('chartCanvas');
+    const chatBox = document.getElementById('chatBox');
+    const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    const imageInput = document.getElementById('imageInput');
-    const detectedPatterns = document.getElementById('detectedPatterns');
     let uploadedImage = null;
 
-    // Pattern definitions (simplified for demo)
-    const patternDefinitions = {
-      "Head and Shoulders": {
-        description: "Reversal pattern with three peaks (middle highest)",
-        color: "rgba(255, 99, 132, 0.5)"
-      },
-      "Double Top": {
-        description: "Two peaks at similar price level signaling potential reversal",
-        color: "rgba(54, 162, 235, 0.5)"
-      },
-      "Double Bottom": {
-        description: "Two troughs at similar price level signaling potential reversal",
-        color: "rgba(75, 192, 192, 0.5)"
-      },
-      "Ascending Triangle": {
-        description: "Bullish continuation with flat top and rising bottom",
-        color: "rgba(255, 159, 64, 0.5)"
-      },
-      "Descending Triangle": {
-        description: "Bearish continuation with flat bottom and descending top",
-        color: "rgba(153, 102, 255, 0.5)"
-      },
-      "Flag": {
-        description: "Short-term continuation pattern after strong move",
-        color: "rgba(255, 206, 86, 0.5)"
+    function appendMessage(text, isUser) {
+      const msg = document.createElement('div');
+      msg.className = 'message ' + (isUser ? 'user' : 'bot');
+      
+      if (!isUser) {
+        const botName = document.createElement('div');
+        botName.className = 'bot-name';
+        botName.textContent = 'FX Assistant';
+        msg.appendChild(botName);
       }
-    };
+      
+      msg.appendChild(document.createTextNode(text));
+      
+      const timestamp = document.createElement('div');
+      timestamp.className = 'timestamp';
+      timestamp.textContent = formatTime(new Date());
+      msg.appendChild(timestamp);
+      
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
 
-    // Load image when file selected
-    imageInput.addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          uploadedImage = new Image();
-          uploadedImage.onload = function() {
-            drawImageOnCanvas();
-          };
-          uploadedImage.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
+    function formatTime(date) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('userInput');
+      const msg = input.value.trim();
+      if (!msg) return;
+      
+      appendMessage(msg, true);
+      input.value = '';
+      
+      // Simulate typing indicator
+      setTimeout(() => {
+        const response = generateZoneResponse(msg);
+        appendMessage(response, false);
+      }, 800);
+    }
+
+    function generateZoneResponse(text) {
+      const lower = text.toLowerCase();
+      
+      if (lower.includes('supply') || lower.includes('sell')) {
+        return 'Supply Zone: This is where sellers dominate, typically formed after a strong downward move. Price often reacts downward when returning to this area.';
+      } else if (lower.includes('demand') || lower.includes('buy')) {
+        return 'Demand Zone: This is where buyers dominate, usually formed after a strong upward move. Price often reacts upward when returning to this area.';
+      } else if (lower.includes('breaker')) {
+        return 'Breaker Block: A previous support/resistance level that was broken aggressively. It often becomes the opposite kind of level (support becomes resistance or vice versa).';
+      } else if (lower.includes('liquidity')) {
+        return 'Liquidity Zone: Areas where many stop orders are clustered. Institutional traders often target these zones to trigger stops before reversing.';
+      } else if (lower.includes('hello') || lower.includes('hi')) {
+        return 'Hello! How can I assist with your Forex analysis today?';
+      } else if (lower.includes('thank')) {
+        return "You're welcome! Let me know if you need any more help with your analysis.";
+      } else {
+        return "I'm not sure I understand. Try asking about supply/demand zones, breaker blocks, or liquidity areas. You can also upload a chart image for analysis.";
       }
-    });
+    }
 
-    function drawImageOnCanvas() {
-      // Calculate dimensions to maintain aspect ratio
-      const maxWidth = canvas.width;
-      const maxHeight = canvas.height;
-      let width = uploadedImage.width;
-      let height = uploadedImage.height;
-
-      if (width > maxWidth) {
-        height = (maxWidth / width) * height;
-        width = maxWidth;
-      }
-
-      if (height > maxHeight) {
-        width = (maxHeight / height) * width;
-        height = maxHeight;
-      }
-
-      // Center the image on canvas
-      const x = (canvas.width - width) / 2;
-      const y = (canvas.height - height) / 2;
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(uploadedImage, x, y, width, height);
+    function previewImage() {
+      const input = document.getElementById('imageInput');
+      const file = input.files[0];
+      
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function() {
+        uploadedImage = new Image();
+        uploadedImage.onload = () => {
+          // Maintain aspect ratio but limit to canvas size
+          const ratio = Math.min(
+            canvas.width / uploadedImage.width,
+            canvas.height / uploadedImage.height
+          );
+          
+          const newWidth = uploadedImage.width * ratio;
+          const newHeight = uploadedImage.height * ratio;
+          
+          // Clear canvas and draw centered image
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(
+            uploadedImage, 
+            (canvas.width - newWidth) / 2, 
+            (canvas.height - newHeight) / 2, 
+            newWidth, 
+            newHeight
+          );
+          
+          appendMessage("Chart image uploaded successfully. Click 'Analyze Chart' to identify zones.", false);
+        }
+        uploadedImage.src = reader.result;
+      };
+      reader.readAsDataURL(file);
     }
 
     function analyzeImage() {
       if (!uploadedImage) {
-        alert("Please upload an image first");
+        appendMessage("Please upload a chart image first.", false);
         return;
       }
-
-      detectedPatterns.innerHTML = "<h3>Analyzing Chart...</h3>";
       
-      // Simulate analysis (in a real app, this would be actual pattern detection)
+      appendMessage("Analyzing chart for potential zones...", false);
+      
+      // Simulate analysis delay
       setTimeout(() => {
-        detectPatterns();
+        // Redraw the image
+        const ratio = Math.min(
+          canvas.width / uploadedImage.width,
+          canvas.height / uploadedImage.height
+        );
+        const newWidth = uploadedImage.width * ratio;
+        const newHeight = uploadedImage.height * ratio;
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(
+          uploadedImage, 
+          (canvas.width - newWidth) / 2, 
+          (canvas.height - newHeight) / 2, 
+          newWidth, 
+          newHeight
+        );
+        
+        // Simulate finding zones (demo only)
+        const centerY = (canvas.height - newHeight) / 2 + newHeight / 2;
+        const zoneHeight = newHeight * 0.15;
+        
+        // Draw demand zone (bottom)
+        ctx.fillStyle = 'rgba(0, 200, 83, 0.2)';
+        ctx.fillRect(
+          (canvas.width - newWidth) / 2,
+          centerY + zoneHeight,
+          newWidth,
+          zoneHeight
+        );
+        
+        // Draw supply zone (top)
+        ctx.fillStyle = 'rgba(239, 83, 80, 0.2)';
+        ctx.fillRect(
+          (canvas.width - newWidth) / 2,
+          centerY - zoneHeight * 2,
+          newWidth,
+          zoneHeight
+        );
+        
+        // Add labels
+        ctx.font = '14px Arial';
+        ctx.fillStyle = '#00c853';
+        ctx.fillText('Potential Demand Zone', 20, centerY + zoneHeight * 1.5);
+        
+        ctx.fillStyle = '#ef5350';
+        ctx.fillText('Potential Supply Zone', 20, centerY - zoneHeight * 1.2);
+        
+        appendMessage("Analysis complete! I've highlighted potential supply (red) and demand (green) zones on your chart.", false);
       }, 1500);
     }
-
-    function detectPatterns() {
-      // In a real implementation, this would analyze the image for patterns
-      // For demo purposes, we'll simulate finding some patterns
-      
-      // Clear previous results
-      detectedPatterns.innerHTML = "<h3>Detected Patterns</h3>";
-      
-      // Simulate finding some patterns (random for demo)
-      const possiblePatterns = Object.keys(patternDefinitions);
-      const detected = [];
-      
-      // Randomly select 1-3 patterns for demo
-      const numPatterns = Math.min(3, 1 + Math.floor(Math.random() * possiblePatterns.length));
-      for (let i = 0; i < numPatterns; i++) {
-        const randomIndex = Math.floor(Math.random() * possiblePatterns.length);
-        const pattern = possiblePatterns[randomIndex];
-        if (!detected.includes(pattern)) {
-          detected.push(pattern);
-        }
-      }
-      
-      // Display detected patterns
-      if (detected.length === 0) {
-        detectedPatterns.innerHTML += "<p>No clear patterns detected</p>";
-      } else {
-        detected.forEach(pattern => {
-          const patternInfo = patternDefinitions[pattern];
-          
-          // Add to results list
-          detectedPatterns.innerHTML += `
-            <div class="pattern-card">
-              <h4>${pattern}</h4>
-              <p>${patternInfo.description}</p>
-            </div>
-          `;
-          
-          // Highlight on canvas (simplified visualization)
-          highlightPatternOnCanvas(pattern);
-        });
-      }
-    }
-
-    function highlightPatternOnCanvas(pattern) {
-      const patternInfo = patternDefinitions[pattern];
-      if (!patternInfo) return;
-      
-      // Simplified visualization - in real app this would be precise
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
-      
-      ctx.fillStyle = patternInfo.color;
-      ctx.globalAlpha = 0.3;
-      
-      // Draw different shapes based on pattern type
-      if (pattern.includes("Head and Shoulders")) {
-        // Draw three peaks
-        const headWidth = canvas.width * 0.3;
-        const shoulderWidth = canvas.width * 0.2;
-        const headHeight = canvas.height * 0.3;
-        const shoulderHeight = headHeight * 0.7;
-        
-        // Left shoulder
-        ctx.beginPath();
-        ctx.arc(centerX - headWidth/2 - shoulderWidth, centerY - shoulderHeight, shoulderWidth, 0, Math.PI);
-        ctx.fill();
-        
-        // Head
-        ctx.beginPath();
-        ctx.arc(centerX, centerY - headHeight, headWidth/2, 0, Math.PI);
-        ctx.fill();
-        
-        // Right shoulder
-        ctx.beginPath();
-        ctx.arc(centerX + headWidth/2 + shoulderWidth, centerY - shoulderHeight, shoulderWidth, 0, Math.PI);
-        ctx.fill();
-        
-      } else if (pattern.includes("Double")) {
-        // Draw two peaks or troughs
-        const patternWidth = canvas.width * 0.4;
-        const patternHeight = canvas.height * 0.2;
-        const isTop = pattern.includes("Top");
-        
-        // First peak/trough
-        ctx.beginPath();
-        ctx.arc(centerX - patternWidth/2, centerY - (isTop ? patternHeight : 0), patternWidth/3, isTop ? 0 : Math.PI, isTop ? Math.PI : 2*Math.PI);
-        ctx.fill();
-        
-        // Second peak/trough
-        ctx.beginPath();
-        ctx.arc(centerX + patternWidth/2, centerY - (isTop ? patternHeight : 0), patternWidth/3, isTop ? 0 : Math.PI, isTop ? Math.PI : 2*Math.PI);
-        ctx.fill();
-        
-      } else if (pattern.includes("Triangle")) {
-        // Draw triangle shape
-        const triangleHeight = canvas.height * 0.3;
-        const triangleWidth = canvas.width * 0.4;
-        
-        ctx.beginPath();
-        if (pattern.includes("Ascending")) {
-          ctx.moveTo(centerX - triangleWidth/2, centerY);
-          ctx.lineTo(centerX + triangleWidth/2, centerY);
-          ctx.lineTo(centerX - triangleWidth/2, centerY - triangleHeight);
-        } else if (pattern.includes("Descending")) {
-          ctx.moveTo(centerX - triangleWidth/2, centerY - triangleHeight);
-          ctx.lineTo(centerX + triangleWidth/2, centerY - triangleHeight);
-          ctx.lineTo(centerX + triangleWidth/2, centerY);
-        } else { // Symmetrical
-          ctx.moveTo(centerX - triangleWidth/2, centerY);
-          ctx.lineTo(centerX + triangleWidth/2, centerY);
-          ctx.lineTo(centerX, centerY - triangleHeight);
-        }
-        ctx.closePath();
-        ctx.fill();
-      }
-      
-      ctx.globalAlpha = 1.0;
-    }
-
+    
     function clearCanvas() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       uploadedImage = null;
-      imageInput.value = '';
-      detectedPatterns.innerHTML = "";
+      document.getElementById('imageInput').value = '';
+      appendMessage("Chart cleared. You can upload a new image.", false);
     }
+
+    document.getElementById('userInput').addEventListener('keypress', e => {
+      if (e.key === 'Enter') sendMessage();
+    });
   </script>
 </body>
-  </html>
+</html>
