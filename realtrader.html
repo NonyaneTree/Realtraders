@@ -1,139 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Real Traders</title>
-  <meta name="admob-app-id" content="ca-app-pub-7221396727211259~2673686178"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial; text-align: center; padding: 20px; }
-    #watchAdBtn {
-      padding: 12px 24px;
-      background: green;
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+    }
+
+    header {
+      background-color: #212529;
       color: white;
-      font-size: 18px;
-      border: none;
-      border-radius: 10px;
-    }
-
-    .icon-links {
+      padding: 1rem 2rem;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .icon-wrapper {
-      position: relative;
-      width: 120px;
-      height: 120px;
-    }
-
-    .icon-wrapper video {
-      width: 100%;
-      height: 100%;
-      border-radius: 10px;
-      border: 2px solid #333;
-      object-fit: cover;
-    }
-
-    .lock-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      font-size: 24px;
-      color: white;
-      font-weight: bold;
-      border-radius: 10px;
     }
 
-    .icon-wrapper.unlocked .lock-overlay {
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    nav {
+      position: relative;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropbtn {
+      background-color: #343a40;
+      color: white;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dropdown-content {
       display: none;
+      position: absolute;
+      background-color: white;
+      min-width: 200px;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      color: #212529;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #f1f1f1;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .dropdown:hover .dropbtn {
+      background-color: #495057;
+    }
+
+    main {
+      padding: 2rem;
+    }
+
+    .offer-section {
+      margin-top: 3rem;
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .offer-section h2 {
+      color: #007bff;
+      margin-bottom: 1rem;
+    }
+
+    .offer-section ul {
+      list-style-type: square;
+      padding-left: 1.5rem;
+    }
+
+    .offer-section li {
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      padding: 1rem;
+      background-color: #212529;
+      color: #fff;
     }
   </style>
 </head>
 <body>
 
-  <h1>📡 Real Traders</h1>
-  <p>Watch 4 ads to unlock premium access</p>
-  <button id="watchAdBtn" onclick="watchAd()">Watch Ad (0/4)</button>
+  <header>
+    <div class="logo">Real Traders</div>
+    <nav>
+      <div class="dropdown">
+        <button class="dropbtn">Menu</button>
+        <div class="dropdown-content">
+          <a href="marketexpectations.html">About Us</a>
+          <a href="owner.html">About the Owner</a>
+          <a href="xio.html">Xio Chat</a>
+        </div>
+      </div>
+    </nav>
+  </header>
 
-  <div class="icon-links">
-    <!-- Locked until 4 ads -->
-    <div class="icon-wrapper locked" data-target="search.html">
-      <video src="search.mp4" autoplay muted loop></video>
-      <div class="lock-overlay">🔒</div>
+  <main>
+    <h1>Welcome to Real Traders</h1>
+    <p>Your platform for real-time market analysis and community chat.</p>
+
+    <div class="offer-section">
+      <h2>What Real Traders Offers</h2>
+      <ul>
+        <li><strong>AI-Powered Signals:</strong> Real-time buy/sell alerts powered by custom-built bots using MetaTrader 5.</li>
+        <li><strong>Market Zone Strategy:</strong> We trade using pip-distance zones for more accurate and safer entries.</li>
+        <li><strong>Crypto + Stock Integration:</strong> Trade both financial worlds with hybrid strategies.</li>
+        <li><strong>Trading Education:</strong> Learn forex, crypto, and ETF creation step-by-step with practical guidance.</li>
+        <li><strong>Xio Chat Room:</strong> Community space to chat, share signals, and get support from other traders.</li>
+        <li><strong>NonyaneInvest Token:</strong> A token backed by real stock investments from Nonyane Investment Tree.</li>
+        <li><strong>Beginner-Friendly:</strong> Simple dashboards, transparent signals, and no hype—just real trading.</li>
+      </ul>
     </div>
+  </main>
 
-    <div class="icon-wrapper locked" data-target="marketexpectations.html">
-      <video src="market.mp4" autoplay muted loop></video>
-      <div class="lock-overlay">🔒</div>
-    </div>
-
-    <div class="icon-wrapper">
-      <a href="community.html">
-        <video src="community.mp4" autoplay muted loop></video>
-      </a>
-    </div>
-
-    <div class="icon-wrapper locked" data-target="fundamental.html">
-      <video src="calendar.mp4" autoplay muted loop></video>
-      <div class="lock-overlay">🔒</div>
-    </div>
-  </div>
-
-  <script>
-    let adCount = 0;
-
-    function watchAd() {
-      if (typeof WebAppInterface !== "undefined") {
-        WebAppInterface.showRewardedAd();
-      } else {
-        simulateAdWatched();
-      }
-    }
-
-    function onAdCompleted() {
-      adCount++;
-      document.getElementById('watchAdBtn').innerText = `Watch Ad (${adCount}/4)`;
-
-      if (adCount >= 4) {
-        unlockAll();
-        document.getElementById('watchAdBtn').style.display = 'none';
-      }
-    }
-
-    function unlockAll() {
-      const locked = document.querySelectorAll('.icon-wrapper.locked');
-      locked.forEach(el => {
-        el.classList.remove('locked');
-        el.classList.add('unlocked');
-
-        const link = document.createElement('a');
-        link.href = el.dataset.target;
-        el.appendChild(link);
-
-        const video = el.querySelector('video');
-        el.removeChild(video);
-        link.appendChild(video);
-
-        const lock = el.querySelector('.lock-overlay');
-        if (lock) lock.remove();
-      });
-    }
-
-    function simulateAdWatched() {
-      alert("Simulated ad watched!");
-      onAdCompleted();
-    }
-  </script>
+  <footer>
+    &copy; 2025 Real Traders. All rights reserved.
+  </footer>
 
 </body>
   </html>
