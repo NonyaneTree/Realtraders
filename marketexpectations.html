@@ -2,122 +2,96 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Real Traders</title>
-
-  <!-- Google AdSense Script -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7221396727211259"
-     crossorigin="anonymous"></script>
-
+  <title>About Us - Real Traders</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body, html {
+    body {
       margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
       font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
     }
 
-    video.bg-video {
-      position: fixed;
-      right: 0;
-      bottom: 0;
-      min-width: 100%;
-      min-height: 100%;
-      object-fit: cover;
-      z-index: -1;
+    header {
+      background-color: #212529;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
     }
 
     .content {
-      position: relative;
-      z-index: 1;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.9);
-      max-width: 700px;
-      margin: 40px auto;
+      padding: 2rem;
+      max-width: 900px;
+      margin: auto;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-top: 2rem;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
     }
 
-    .signal {
-      background: #fff;
-      padding: 15px;
-      margin: 10px 0;
-      border-left: 4px solid #28a745;
-      box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
     }
 
-    .time {
-      font-size: 0.8em;
-      color: gray;
-      margin-top: 8px;
+    p {
+      line-height: 1.6;
+      font-size: 1rem;
+    }
+
+    .highlight {
+      font-weight: bold;
+      color: #28a745;
+    }
+
+    ul {
+      margin-left: 1rem;
     }
   </style>
 </head>
 <body>
 
-  <!-- Background video -->
-  <video class="bg-video" autoplay muted loop>
-    <source src="ba.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+  <header>
+    <h1>About Real Traders</h1>
+  </header>
 
   <div class="content">
-    <h2>📊 Signals from Last 24 Hours</h2>
-    <div id="signals">Loading...</div>
+    <h2>What is Real Traders?</h2>
+    <p>
+      <span class="highlight">Real Traders</span> is a community-driven trading platform and knowledge hub focused on helping traders make smart, real-time decisions in the financial markets. Whether you’re in forex, crypto, stocks, or indices—Real Traders gives you tools, signals, and strategies tailored for real-world market conditions.
+    </p>
+
+    <h2>Our Philosophy</h2>
+    <p>
+      We believe that trading should be realistic, disciplined, and informed—not hype-driven. At Real Traders, we focus on:
+    </p>
+    <ul>
+      <li><strong>Market Expectations:</strong> Daily insights and projections.</li>
+      <li><strong>Discipline:</strong> Strategies based on logic, not emotion.</li>
+      <li><strong>Risk Control:</strong> Proper entry zones, calculated exits, and pip analysis.</li>
+      <li><strong>Innovation:</strong> AI bots, pattern recognition, and automation tools.</li>
+    </ul>
+
+    <h2>What Makes Us Different?</h2>
+    <p>
+      Unlike generic platforms, Real Traders is built by people who trade the markets like professionals. Our system integrates:
+    </p>
+    <ul>
+      <li>AI-powered trading bots linked to MetaTrader 5</li>
+      <li>Zone-based strategy models with pip-to-dollar calculations</li>
+      <li>Trade logs, signal systems, and real-time alerts</li>
+      <li>Stablecoin-backed ETFs through Nonyane Investment Tree</li>
+    </ul>
+
+    <h2>Our Mission</h2>
+    <p>
+      To equip everyday people with the knowledge, tools, and mindset of successful traders. Whether you're managing R1,000 or R10 million, Real Traders gives you an edge in the markets.
+    </p>
+
+    <p class="highlight">
+      “We trade smart. We trade real. We are Real Traders.”
+    </p>
   </div>
-
-  <script>
-    const botToken = '7585886953:AAEhKRUa1L13hC0eUbOpkV4iAEOmCfJPdnI'; // Replace with your bot token
-    const groupChatId = '-1002714900728'; // Only used for filtering (if needed)
-
-    async function fetchRecentSignals() {
-      try {
-        const res = await fetch(`https://api.telegram.org/bot${botToken}/getUpdates`);
-        const data = await res.json();
-        const container = document.getElementById('signals');
-        container.innerHTML = '';
-
-        if (!data.result || data.result.length === 0) {
-          container.innerHTML = '<p>No signals found.</p>';
-          return;
-        }
-
-        const now = new Date();
-        const cutoff = now.getTime() - (24 * 60 * 60 * 1000); // 24 hours
-
-        const signals = data.result.filter(update => {
-          const msg = update.message;
-          if (!msg || !msg.text) return false;
-          const msgTime = msg.date * 1000;
-          return msgTime >= cutoff;
-        });
-
-        if (signals.length === 0) {
-          container.innerHTML = '<p>No signals in the last 24 hours.</p>';
-          return;
-        }
-
-        signals.forEach(update => {
-          const msg = update.message;
-          const msgDate = new Date(msg.date * 1000);
-          const div = document.createElement('div');
-          div.className = 'signal';
-          div.innerHTML = `
-            <div>${msg.text.replace(/\n/g, '<br>')}</div>
-            <div class="time">🕒 ${msgDate.toLocaleString()}</div>
-          `;
-          container.appendChild(div);
-        });
-
-      } catch (error) {
-        console.error("Failed to load messages:", error);
-        document.getElementById('signals').innerHTML = '<p>Error fetching messages.</p>';
-      }
-    }
-
-    fetchRecentSignals();
-    setInterval(fetchRecentSignals, 30000); // Refresh every 30 seconds
-  </script>
 
 </body>
 </html>
