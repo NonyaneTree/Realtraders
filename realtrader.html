@@ -1,149 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Real Traders</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-adsense-account" content="ca-pub-7221396727211259">
+  <meta name="admob-app-id" content="ca-app-pub-7221396727211259~2673686178"/>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      background: #f8f9fa;
-    }
-
-    header {
-      background-color: #212529;
-      color: white;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-
-    nav {
-      position: relative;
-    }
-
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-
-    .dropbtn {
-      background-color: #343a40;
-      color: white;
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      border: none;
-      cursor: pointer;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: white;
-      min-width: 200px;
-      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-      z-index: 1;
-    }
-
-    .dropdown-content a {
-      color: #212529;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-    }
-
-    .dropdown-content a:hover {
-      background-color: #f1f1f1;
-    }
-
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-
-    .dropdown:hover .dropbtn {
-      background-color: #495057;
-    }
-
-    main {
-      padding: 2rem;
-    }
-
-    .offer-section {
-      margin-top: 3rem;
-      background-color: #fff;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    }
-
-    .offer-section h2 {
-      color: #007bff;
-      margin-bottom: 1rem;
-    }
-
-    .offer-section ul {
-      list-style-type: square;
-      padding-left: 1.5rem;
-    }
-
-    .offer-section li {
-      margin-bottom: 1rem;
-      line-height: 1.6;
-    }
-
-    footer {
-      margin-top: 3rem;
       text-align: center;
-      padding: 1rem;
-      background-color: #212529;
-      color: #fff;
+      padding: 20px;
+      background: #f0f2f5;
+    }
+
+    h1 {
+      font-size: 32px;
+    }
+
+    p {
+      font-size: 16px;
+      color: #444;
+    }
+
+    .icon-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .icon-wrapper {
+      width: 140px;
+      text-align: center;
+    }
+
+    .icon-wrapper video {
+      width: 100%;
+      height: 120px;
+      border-radius: 10px;
+      border: 2px solid #333;
+      object-fit: cover;
+    }
+
+    .icon-wrapper h3 {
+      margin: 10px 0 5px;
+      font-size: 18px;
+      color: #007bff;
+    }
+
+    .icon-wrapper p {
+      font-size: 14px;
+      color: #555;
+    }
+
+    a {
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo">Real Traders</div>
-    <nav>
-      <div class="dropdown">
-        <button class="dropbtn">Menu</button>
-        <div class="dropdown-content">
-          <a href="marketexpectations.html">About Us</a>
-          <a href="owner.html">About the Owner</a>
-          <a href="xio.html">Xio Chat</a>
-        </div>
-      </div>
-    </nav>
-  </header>
+  <h1>📡 Real Traders</h1>
+  <p>Explore our forex trading tools and market insights.</p>
 
-  <main>
-    <h1>Welcome to Real Traders</h1>
-    <p>Your platform for real-time market analysis and community chat.</p>
+  <div class="icon-links">
 
-    <div class="offer-section">
-      <h2>What Real Traders Offers</h2>
-      <ul>
-        <li><strong>AI-Powered Signals:</strong> Real-time buy/sell alerts powered by custom-built bots using MetaTrader 5.</li>
-        <li><strong>Market Zone Strategy:</strong> We trade using pip-distance zones for more accurate and safer entries.</li>
-        <li><strong>Crypto + Stock Integration:</strong> Trade both financial worlds with hybrid strategies.</li>
-        <li><strong>Trading Education:</strong> Learn forex, crypto, and ETF creation step-by-step with practical guidance.</li>
-        <li><strong>Xio Chat Room:</strong> Community space to chat, share signals, and get support from other traders.</li>
-        <li><strong>NonyaneInvest Token:</strong> A token backed by real stock investments from Nonyane Investment Tree.</li>
-        <li><strong>Beginner-Friendly:</strong> Simple dashboards, transparent signals, and no hype—just real trading.</li>
-      </ul>
+    <div class="icon-wrapper">
+      <a href="search.html">
+        <video src="search.mp4" autoplay muted loop></video>
+        <h3>Signal Search</h3>
+        <p>Find the latest forex signals and trade ideas powered by strategy.</p>
+      </a>
     </div>
-  </main>
 
-  <footer>
-    &copy; 2025 Real Traders. All rights reserved.
-  </footer>
+    <div class="icon-wrapper">
+      <a href="marketexpectations.html">
+        <video src="market.mp4" autoplay muted loop></video>
+        <h3>Market Expectations</h3>
+        <p>Get weekly analysis and what to expect in upcoming market sessions.</p>
+      </a>
+    </div>
+
+    <div class="icon-wrapper">
+      <a href="community.html">
+        <video src="community.mp4" autoplay muted loop></video>
+        <h3>Community</h3>
+        <p>Connect with traders, share strategies, and grow your network.</p>
+      </a>
+    </div>
+
+    <div class="icon-wrapper">
+      <a href="fundamental.html">
+        <video src="calendar.mp4" autoplay muted loop></video>
+        <h3>Fundamental Calendar</h3>
+        <p>Track upcoming economic events and news that impact currency moves.</p>
+      </a>
+      
+    </div>
+        <div class="icon-wrapper">
+      <a href="xiochat.html">
+        <video src="bot.mp4" autoplay muted loop></video>
+        <h3>Ai Chat forex bot</h3>
+        <p>ask Ai about forex.</p>
+      </a>
+        </div>
+
+  </div>
 
 </body>
-  </html>
+</html>
