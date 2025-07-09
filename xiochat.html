@@ -728,9 +728,60 @@ Example: If head forms at R100, neckline at $90:
   },
       "how are you":{
         description: "I am good and You,ola ka dar"
-      }
-      
-  };
+      },
+      "currency pair": {
+  description: "A currency pair shows the value of one currency (quote) against another (base). Example: In EUR/USD, EUR is base, USD is quote."
+},
+
+"lot size": {
+  description: `Standard lot sizes in forex:
+- Standard lot = 100,000 units
+- Mini lot = 10,000 units
+- Micro lot = 1,000 units
+- Nano lot = 100 units`
+},
+
+"leverage": {
+  description: "Leverage allows controlling large positions with small capital. Example: 100:1 leverage means $1,000 can control $100,000 position."
+},
+
+"margin": {
+  description: "Margin is the collateral required to open/maintain a leveraged position. Margin call occurs when account equity falls below required margin."
+},
+
+"pip": {
+  description: "A pip (point in percentage) is the smallest price move (usually 0.0001 for most pairs). Example: EUR/USD moving from 1.1000 to 1.1001 = 1 pip."
+},
+
+  "what is forex": {
+    description: `Forex (Foreign Exchange) is the global marketplace for trading national currencies against one another. It's the largest financial market in the world with over $6 trillion traded daily.
+
+Key Features:
+- Decentralized market (no central exchange)
+- Open 24 hours, 5 days a week
+- Trades currency pairs (e.g., EUR/USD, GBP/JPY)
+- High liquidity
+- Leverage available
+
+Major Participants:
+1. Banks and financial institutions
+2. Central banks
+3. Corporations
+4. Hedge funds
+5. Retail traders
+
+Main Trading Sessions:
+- Sydney
+- Tokyo
+- London
+- New York
+
+Popular Currency Pairs:
+- Majors: EUR/USD, USD/JPY, GBP/USD
+- Commodity pairs: AUD/USD, USD/CAD
+- Exotics: USD/SGD, EUR/TRY`
+  }
+    };
     function handleUserInput() {
       const input = document.getElementById("userInput").value.toLowerCase().trim();
       const chatBox = document.getElementById("chatBox");
