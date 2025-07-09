@@ -607,14 +607,130 @@ B) Aggressive Approach:
 - Adjust position size based on stop distance
 - Consider partial profits at first target
 
-Example: If head forms at $100, neckline at $90:
-- Breakdown entry at $89.50
-- Stop loss at $92 (above right shoulder)
-- First target at $80 (head-neckline distance)
-- Second target at $72 (1.618 extension)`
-        }
-    };
+Example: If head forms at R100, neckline at $90:
+- Breakdown entry at R89.50
+- Stop loss at R92 (above right shoulder)
+- First target at R80 (head-neckline distance)
+- Second target at R72 (1.618 extension)`
+        },
+      
+  "how to trade head and shoulders": {
+    image: "headandshoulder.png",
+    description: `1. Identify the pattern after an uptrend (left shoulder, head, right shoulder).
+2. Enter short on neckline break with increased volume.
+3. Set a stop loss above the right shoulder.
+4. Target = head-to-neckline distance projected downward.`
+  },
+  
+  "how to trade inverse head and shoulders": {
+    image: "inverseheadandshoulder.png",
+    description: `1. Identify the pattern after a downtrend (left shoulder, head, right shoulder).
+2. Enter long on neckline break.
+3. Set a stop loss below the right shoulder.
+4. Target = head-to-neckline distance projected upward.`
+  },
 
+  "how to trade double top": {
+    image: "doubletop.png",
+    description: `1. Confirm the pattern after an uptrend with two similar highs.
+2. Enter short on neckline break.
+3. Set a stop loss above the second peak.
+4. Target = pattern height projected downward.`
+  },
+
+  "how to trade double bottom": {
+    image: "doublebottom.png",
+    description: `1. Confirm the pattern after a downtrend with two similar lows.
+2. Enter long on neckline break.
+3. Set a stop loss below the second trough.
+4. Target = pattern height projected upward.`
+  },
+
+  "how to trade bullish engulfing": {
+    image: "bullishengulfing.png",
+    description: `1. Occurs in a downtrend.
+2. Enter long at the close of the engulfing candle.
+3. Set a stop loss below the low of the engulfing candle.
+4. Target = 1:2 or 1:3 risk-reward ratio.`
+  },
+
+  "how to trade bearish engulfing": {
+    image: "bearishengulfing.png",
+    description: `1. Occurs in an uptrend.
+2. Enter short at the close of the engulfing candle.
+3. Set a stop loss above the high of the engulfing candle.
+4. Target = 1:2 or 1:3 risk-reward ratio.`
+  },
+
+  "how to trade morning star": {
+    image: "morningstar.png",
+    description: `1. A three-candle bullish reversal pattern in a downtrend.
+2. Enter long after the confirmation candle closes.
+3. Set a stop loss below the low of the star candle.
+4. Target = 1.5 times the pattern height.`
+  },
+
+  "how to trade evening star": {
+    image: "eveningstar.png",
+    description: `1. A three-candle bearish reversal pattern in an uptrend.
+2. Enter short after the confirmation candle closes.
+3. Set a stop loss above the high of the star candle.
+4. Target = 1.5 times the pattern height.`
+  },
+
+  "how to trade flag formation": {
+    image: "flagformation.png",
+    description: `1. Identify a strong trend followed by a consolidation flag.
+2. Enter in the direction of the trend on breakout.
+3. Set a stop loss beyond the opposite flag boundary.
+4. Target = flagpole length projected from the breakout.`
+  },
+
+  "how to trade cup and handle": {
+    image: "cupandhandle.png",
+    description: `1. Identify a U-shaped cup followed by a small handle.
+2. Enter long on the breakout of the handle.
+3. Set a stop loss below the low of the handle.
+4. Target = depth of the cup projected upward.`
+  },
+
+  // Additional patterns
+  "how to trade ascending triangle": {
+    image: "ascendingtriangle.png",
+    description: `1. Identify higher lows against a horizontal resistance line.
+2. Enter long on breakout above resistance.
+3. Set a stop loss below the most recent low.
+4. Target = height of the triangle projected upward.`
+  },
+
+  "how to trade descending triangle": {
+    image: "descendingtriangle.png",
+    description: `1. Identify lower highs against a horizontal support line.
+2. Enter short on breakdown below support.
+3. Set a stop loss above the most recent high.
+4. Target = height of the triangle projected downward.`
+  },
+
+  "how to trade rising wedge": {
+    image: "risingwedge.png",
+    description: `1. Identify converging trend lines with higher highs and higher lows.
+2. Enter short on breakdown below the lower trend line.
+3. Set a stop loss above the last high.
+4. Target = wedge height projected downward.`
+  },
+
+  "how to trade falling wedge": {
+    image: "fallingwedge.png",
+    description: `1. Identify converging trend lines with lower highs and lower lows.
+2. Enter long on breakout above the upper trend line.
+3. Set a stop loss below the last low.
+4. Target = wedge height projected upward.`
+  },
+      "how are you":{
+        description: "I am good and You"
+      }
+      
+  };
     function handleUserInput() {
       const input = document.getElementById("userInput").value.toLowerCase().trim();
       const chatBox = document.getElementById("chatBox");
