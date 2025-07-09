@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat to us</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f0f0f0; }
+    .message { background: white; padding: 10px; margin-bottom: 10px; border-left: 4px solid #007bff; }
+    .input-area { margin-top: 20px; }
+    textarea { width: 100%; height: 60px; padding: 10px; }
+    button { margin-top: 10px; padding: 10px 15px; background: #007bff; color: white; border: none; }
+  </style>
+</head>
+<body>
+
+<h2>📢 Chat to us 👨‍👩‍👦‍👦</h2>
+<div id="messages">Loading messages...</div>
+
+<div class="input-area">
+  <textarea id="userMessage" placeholder="Type your message..."></textarea><br>
+  <button onclick="sendMessage()">Send Message</button>
+</div>
+
+<script>
+  const BOT_TOKEN = '7899787397:AAHZ-JcSPq03R38sQeDCZNSQaXUM4P-uFTo'; // Replace with your bot token
+  const CHAT_ID = -1002704045278; // Replace with your group chat ID
+  const API_BASE = `https://api.telegram.org/bot${BOT_TOKEN}`;
+
+  async function loadMessages() {
+    const res = await fetch(`${API_BASE}/getUpdates`);
+    const data = await res.json();
+    const container = document.getElementById('messages');
+    container.innerHTML = '';
+
+    const messages = data.result
+      .map(update => update.message)
+      .filter(msg => msg && msg.chat && msg.chat.id === CHAT_ID && msg.text);
+
+    if (messages.length === 0) {
+      container.innerHTML = '<p>No messages yet.</p>';
+      return;
+    }
+
+    messages.forEach(msg => {
+      const div = document.createElement('div');
+      div.className = 'message';
+      div.innerHTML = `<strong>${msg.from?.first_name || 'User'}:</strong> ${msg.text}`;
+      container.appendChild(div);
+    });
+  }
+
+  async function sendMessage() {
+    const text = document.getElementById('userMessage').value.trim();
+    if (!text) return alert('Please type a message');
+
+    const response = await fetch(`${API_BASE}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: CHAT_ID,
+        text: text
+      })
+    });
+
+    const result = await response.json();
+    if (result.ok) {
+      document.getElementById('userMessage').value = '';
+      loadMessages(); // Refresh messages
+    } else {
+      alert('Failed to send message: ' + result.description);
+    }
+  }
+
+  loadMessages();
+  setInterval(loadMessages, 15000); // Refresh every 15 seconds
+</script>
+
+</body>
+</html>

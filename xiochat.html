@@ -1,0 +1,241 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Forex Bot</title>
+  <meta name="google-adsense-account" content="ca-pub-7221396727211259">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 0;
+    }
+    .chat-container {
+      width: 100%;
+      max-width: 800px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .chat-box {
+      padding: 20px;
+      height: 500px;
+      overflow-y: auto;
+    }
+    .input-box {
+      display: flex;
+      border-top: 1px solid #ddd;
+    }
+    .input-box input {
+      flex: 1;
+      padding: 15px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+    }
+    .input-box button {
+      padding: 15px 20px;
+      background: #007bff;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .message {
+      margin-bottom: 20px;
+    }
+    .bot {
+      color: #333;
+    }
+    .user {
+      color: #007bff;
+      font-weight: bold;
+      text-align: right;
+    }
+    img.pattern {
+      max-width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-box" id="chatBox">
+      <div class="message bot">Hello! I am your Forex Bot. Ask me about market formations, candlestick patterns, and more!</div>
+    </div>
+    <div class="input-box">
+      <input type="text" id="userInput" placeholder="Ask about forex..." onkeypress="if(event.keyCode==13) handleUserInput()">
+      <button onclick="handleUserInput()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const responses = {
+      "head and shoulders": {
+        image: "headandshoulder.png",  // Replace with actual image path
+        description: "The Head and Shoulders pattern is a reversal pattern that signals a change in trend direction."
+      },
+      "inverse head and shoulders": {
+        image: "inverseheadandshoulder.png", // Replace with actual image path
+        description: "The Inverse Head and Shoulders pattern indicates a potential bullish reversal after a downtrend."
+      },
+      "m formation": {
+        image: "mformation.png", // Replace with actual image path
+        description: "The M Formation is a bearish reversal pattern that resembles the letter 'M'."
+      },
+      "w formation": {
+        image: "wformation.png", // Replace with actual image path
+        description: "The W Formation is a bullish reversal pattern resembling the letter 'W'."
+      },
+      "trendline": {
+        image: "trendline.png", // Replace with actual image path
+        description: "Trendlines are straight lines that connect significant price points and indicate the direction of the market."
+      },
+      "time frame": {
+        description: "A time frame is the duration over which a particular price movement occurs, such as 1 minute, 1 hour, or daily."
+      },
+      "wicks": {
+        description: "Wicks (or shadows) are the lines above and below the body of a candlestick, representing the high and low prices during a specific time frame."
+      },
+      "spread": {
+        description: "The spread is the difference between the bid and ask price of a currency pair."
+      },
+      "triple bottom": {
+        image: "triplebottom.png", // Replace with actual image path
+        description: "The Triple Bottom pattern is a bullish reversal pattern that forms after a downtrend and consists of three distinct lows."
+      },
+      "zone": {
+        description: "A zone refers to a specific area on a chart where price action tends to react significantly, often indicating support or resistance."
+      },
+      "down trend": {
+        description: "A downtrend is characterized by lower highs and lower lows, indicating a bearish market."
+      },
+      "up trend": {
+        description: "An uptrend is characterized by higher highs and higher lows, indicating a bullish market."
+      },
+      "consolidation": {
+        description: "Consolidation is a period of price stability where the market trades within a range before making a breakout."
+      },
+      "flag formation": {
+        image: "flagformation.png", // Replace with actual image path
+        description: "The Flag Formation is a continuation pattern that indicates a brief pause in the prevailing trend before it resumes."
+      },
+      "stop hunt candlestick": {
+        image: "stophuntcandlestick.png", // Replace with actual image path
+        description: "A Stop Hunt Candlestick pattern indicates a deceptive price movement designed to trigger stop-loss orders."
+      },
+      "bearish engulfing": {
+        image: "bearishengulfing.png", // Replace with actual image path
+        description: "A Bearish Engulfing pattern is a reversal pattern that occurs when a large bearish candle engulfs a smaller bullish candle."
+      },
+      "bullish engulfing": {
+        image: "bullishengulfing.png", // Replace with actual image path
+        description: "A Bullish Engulfing pattern is a reversal pattern that occurs when a large bullish candle engulfs a smaller bearish candle."
+      },
+      "doji": {
+        image: "doji.png", // Replace with actual image path
+        description: "A Doji is a candlestick pattern that indicates indecision in the market, characterized by a small body and long wicks."
+      },
+      "hammer": {
+        image: "hammer.png", // Replace with actual image path
+        description: "A Hammer is a bullish reversal pattern that appears at the bottom of a downtrend, characterized by a small body and long lower wick."
+      },
+      "shooting star": {
+        image: "shootingstar.png", // Replace with actual image path
+        description: "A Shooting Star is a bearish reversal pattern that appears at the top of an uptrend, characterized by a small body and long upper wick."
+      },
+      "who made you": {
+        description: "I was made by Nonyane Investment Tree."
+      },
+      "who owns nonyane investment tree": {
+        description: "It is owned by Thulane Nonyane aka XIO."
+      },
+      "which girl was thulane nonyane's first love": {
+        description: "Rorisang Malathlela."
+      },
+      "which year did thulane nonyane meet rorisang malahlela": {
+        description: "2022, I am not sure about the month."
+      },
+      "what is a pip?": {
+        description: "A pip (percentage in point) is the smallest price move that a given exchange rate can make based on market convention."
+      },
+      "what is leverage?": {
+        description: "Leverage allows you to control a larger position with a smaller amount of capital, enhancing potential returns."
+      },
+      "what are candlestick patterns?": {
+        description: "Candlestick patterns are formations created by the price movements of an asset over a specific period, used to predict future price movements."
+      },
+      "what is a trend?": {
+        description: "A trend is the general direction in which the price of an asset is moving. Trends can be upward, downward, or sideways."
+      },
+      "hi":{
+        description: "hello! How can i help you with forex patterns today?"
+      },
+      "Morning":{
+        description:"Morning! How can i help you with forex patterns today?"  
+      },
+      "Afternoon":{
+        description:"Afternoon! How can i help you with forex patterns today?"  
+      }
+    };
+
+    function handleUserInput() {
+      const input = document.getElementById("userInput").value.toLowerCase().trim();
+      const chatBox = document.getElementById("chatBox");
+
+      if (!input) return;
+
+      const userMessage = document.createElement("div");
+      userMessage.className = "message user";
+      userMessage.textContent = input;
+      chatBox.appendChild(userMessage);
+
+      const botMessage = document.createElement("div");
+      botMessage.className = "message bot";
+
+      let responseKey = Object.keys(responses).find(key => 
+        input.includes(key.toLowerCase())
+      );
+
+      if (!responseKey) {
+        responseKey = Object.keys(responses).find(key => 
+          key.toLowerCase().includes(input) || input.includes(key.toLowerCase())
+        );
+      }
+
+      if (responseKey) {
+        const response = responses[responseKey];
+        
+        if (response.image) {
+          const img = document.createElement("img");
+          img.src = response.image;
+          img.alt = responseKey;
+          img.className = "pattern";
+          img.onerror = function() {
+            botMessage.innerHTML = "Image not found. Please ensure " + response.image + " is in the same folder as this HTML file.<br><br>" + response.description;
+          };
+          botMessage.appendChild(img);
+        }
+        
+        const desc = document.createElement("p");
+        desc.textContent = response.description;
+        botMessage.appendChild(desc);
+      } else {
+        botMessage.textContent = "Sorry, I don't have information about that. Try asking about: " + 
+          Object.keys(responses).filter(k => 
+            !["hi", "morning", "afternoon", "good day", "what is your name"].includes(k)
+          ).join(", ");
+      }
+
+      chatBox.appendChild(botMessage);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      document.getElementById("userInput").value = "";
+    }
+  </script>
+</body>
+</html>
