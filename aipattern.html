@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart Pattern Recognition Assistant</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: #f5f5f5;
+        }
+        .chat-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .chat-messages {
+            height: 500px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .message {
+            margin: 15px 0;
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 80%;
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .user-message {
+            background-color: #e3f2fd;
+            margin-left: auto;
+        }
+        .bot-message {
+            background-color: #f1f1f1;
+            margin-right: auto;
+        }
+        .pattern-info {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .pattern-icon {
+            font-size: 24px;
+            margin-right: 10px;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        input[type="text"], input[type="file"] {
+            width: calc(100% - 100px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #chart-container {
+            width: 100%;
+            height: 300px;
+            margin: 20px 0;
+        }
+        #preview {
+            max-width: 100%;
+            max-height: 300px;
+            display: none;
+            margin: 15px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 8px 12px;
+            background: #f0f2f5;
+            border-radius: 18px;
+            width: fit-content;
+        }
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #007bff;
+            border-radius: 50%;
+            margin: 0 3px;
+            opacity: 0;
+        }
+        .typing-dot:nth-child(1) { animation: dotPulse 1.4s infinite; }
+        .typing-dot:nth-child(2) { animation: dotPulse 1.4s infinite 0.2s; }
+        .typing-dot:nth-child(3) { animation: dotPulse 1.4s infinite 0.4s; }
+        @keyframes dotPulse {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h2>📈 Chart Pattern Recognition Assistant</h2>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                Welcome! Describe a chart pattern or upload an image for analysis.
+            </div>
+        </div>
+        
+        <input type="text" id="userInput" placeholder="Describe the pattern (e.g. 'head and shoulders', 'double top')...">
+        <button onclick="processUserMessage()">Analyze</button>
+        
+        <br><br>
+        <input type="file" id="imageInput" accept="image/*" onchange="previewImage(event)">
+        <button onclick="analyzeImage()">Scan Chart Image</button>
+        <img id="preview">
+        <div id="chart-container"></div>
+    </div>
+
+    <script>
+        const patternKnowledgeBase = {
+            "head and shoulders": {
+                keywords: ['head and shoulders', 'h&s', 'three peaks'],
+                icon: "👥",
+                definition: "A reversal pattern with three peaks - the middle one (head) being highest.",
+                characteristics: [
+                    "Forms after an uptrend",
+                    "Left shoulder forms first",
+                    "Head forms higher peak",
+                    "Right shoulder forms lower peak",
+                    "Neckline support breaks downward"
+                ],
+                tradingTips: [
+                    "Enter short on neckline break",
+                    "Stop loss above right shoulder",
+                    "Price target = head to neckline distance projected down"
+                ]
+            },
+            "double top": {
+                keywords: ['double top', 'two peaks', 'm pattern'],
+                icon: "⛰️",
+                definition: "Two distinct peaks at approximately the same price level.",
+                characteristics: [
+                    "Forms after an uptrend",
+                    "Two clear resistance tests",
+                    "Volume declines on second peak",
+                    "Confirmation on neckline break"
+                ],
+                tradingTips: [
+                    "Enter short on neckline break",
+                    "Stop loss above second peak",
+                    "Target = pattern height projected down"
+                ]
+            },
+            "cup and handle": {
+                keywords: ['cup and handle', 'cup pattern'],
+                icon: "🍵",
+                definition: "A bullish continuation pattern resembling a tea cup.",
+                characteristics: [
+                    "U-shaped cup formation",
+                    "Small downward handle",
+                    "Volume decreases in cup",
+                    "Volume increases on breakout"
+                ],
+                tradingTips: [
+                    "Enter long on handle breakout",
+                    "Stop loss below handle low",
+                    "Target = cup depth projected up"
+                ]
+            },
+            "flag": {
+                keywords: ['flag', 'flag pattern', 'continuation flag'],
+                icon: "🚩",
+                definition: "A short-term continuation pattern after strong moves.",
+                characteristics: [
+                    "Sharp price move (flagpole)",
+                    "Small rectangular consolidation",
+                    "Slopes against trend",
+                    "Volume declines in flag"
+                ],
+                tradingTips: [
+                    "Enter in trend direction on breakout",
+                    "Stop loss beyond opposite flag boundary",
+                    "Target = flagpole length projected from breakout"
+                ]
+            }
+        };
+
+        function appendMessage(message, isUser = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.innerHTML = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const indicator = document.createElement('div');
+            indicator.className = 'typing-indicator';
+            indicator.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            chatMessages.appendChild(indicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return indicator;
+        }
+
+        function analyzePattern(description) {
+            const lowerDesc = description.toLowerCase();
+            for (const [key, pattern] of Object.entries(patternKnowledgeBase)) {
+                if (pattern.keywords.some(keyword => lowerDesc.includes(keyword))) {
+                    return { name: key, ...pattern };
+                }
+            }
+            return null;
+        }
+
+        function formatPatternInfo(pattern) {
+            return `
+                <div class="pattern-info">
+                    <span class="pattern-icon">${pattern.icon}</span>
+                    <strong>${pattern.name.toUpperCase()}</strong><br><br>
+                    <em>Definition:</em> ${pattern.definition}<br><br>
+                    <em>Key Characteristics:</em><br>
+                    <ul>${pattern.characteristics.map(c => `<li>${c}</li>`).join('')}</ul>
+                    <em>Trading Strategy:</em><br>
+                    <ul>${pattern.tradingTips.map(t => `<li>${t}</li>`).join('')}</ul>
+                </div>
+            `;
+        }
+
+        function processUserMessage() {
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value.trim();
+            if (!message) return;
+            
+            appendMessage(message, true);
+            const typingIndicator = showTypingIndicator();
+            
+            setTimeout(() => {
+                const pattern = analyzePattern(message);
+                typingIndicator.remove();
+                
+                if (pattern) {
+                    appendMessage(`Pattern detected: ${formatPatternInfo(pattern)}`);
+                    renderPatternChart(pattern.name);
+                } else {
+                    appendMessage("I couldn't recognize this pattern. Try describing it differently or check these common patterns: " + 
+                        Object.keys(patternKnowledgeBase).join(', '));
+                }
+            }, 1500);
+            
+            userInput.value = '';
+        }
+
+        function renderPatternChart(patternName) {
+            const container = document.getElementById('chart-container');
+            container.innerHTML = '<canvas id="patternChart"></canvas>';
+            
+            // Sample data for different patterns
+            let data;
+            switch(patternName.toLowerCase()) {
+                case 'head and shoulders':
+                    data = {
+                        labels: Array(30).fill('').map((_,i) => i+1),
+                        datasets: [{
+                            label: 'Price',
+                            data: [50,55,60,65,70,75,80,85,80,75,70,65,70,75,80,75,70,65,60,55,50,45,40,35,30,25,20,15,10,5],
+                            borderColor: '#4CAF50',
+                            tension: 0.1,
+                            fill: false
+                        }]
+                    };
+                    break;
+                case 'double top':
+                    data = {
+                        labels: Array(20).fill('').map((_,i) => i+1),
+                        datasets: [{
+                            label: 'Price',
+                            data: [50,60,70,80,90,85,80,85,90,85,80,75,70,65,60,55,50,45,40,35],
+                            borderColor: '#FF5722',
+                            tension: 0.1,
+                            fill: false
+                        }]
+                    };
+                    break;
+                case 'cup and handle':
+                    data = {
+                        labels: Array(25).fill('').map((_,i) => i+1),
+                        datasets: [{
+                            label: 'Price',
+                            data: [50,55,60,65,70,75,80,75,70,65,60,55,50,55,60,65,70,75,80,85,90,95,100,105,110],
+                            borderColor: '#2196F3',
+                            tension: 0.1,
+                            fill: false
+                        }]
+                    };
+                    break;
+                case 'flag':
+                    data = {
+                        labels: Array(15).fill('').map((_,i) => i+1),
+                        datasets: [{
+                            label: 'Price',
+                            data: [50,60,70,80,90,85,80,75,80,85,90,95,100,110,120],
+                            borderColor: '#9C27B0',
+                            tension: 0.1,
+                            fill: false
+                        }]
+                    };
+                    break;
+            }
+            
+            new Chart(
+                document.getElementById('patternChart'),
+                {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: `${patternName} Pattern Example`
+                            }
+                        }
+                    }
+                }
+            );
+        }
+
+        function previewImage(event) {
+            const preview = document.getElementById('preview');
+            preview.src = URL.createObjectURL(event.target.files[0]);
+            preview.style.display = 'block';
+        }
+
+        function analyzeImage() {
+            const preview = document.getElementById('preview');
+            if (!preview.src) {
+                appendMessage("Please upload an image first.");
+                return;
+            }
+            
+            appendMessage("Analyzing chart image...", true);
+            const typingIndicator = showTypingIndicator();
+            
+            setTimeout(() => {
+                typingIndicator.remove();
+                
+                // Simulate random pattern detection (replace with actual AI)
+                const patterns = Object.keys(patternKnowledgeBase);
+                const randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
+                const pattern = { name: randomPattern, ...patternKnowledgeBase[randomPattern] };
+                
+                appendMessage(`Detected pattern: ${formatPatternInfo(pattern)}`);
+                renderPatternChart(pattern.name);
+            }, 2500);
+        }
+
+        document.getElementById('userInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') processUserMessage();
+        });
+    </script>
+</body>
+</html>
