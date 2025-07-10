@@ -1085,6 +1085,167 @@ Say it like you mean it. This bot's always on your vibe. 😎`
         Moving stop losses further away when trade goes against you.`,
         image: "risk-management.png"
     },
+      "bullish\buy": {
+        description: `🟢 <strong>Bullish Market Explained</strong>
+        
+        <u>What It Means:</u>
+        When prices are rising or expected to rise.
+
+        <u>Characteristics:</u>
+        • Prices making higher highs (HH) and higher lows (HL)
+        • Buyers control the market
+        • Positive market sentiment
+
+        <u>How to Trade:</u>
+        1. Look for buy opportunities
+        2. Use support levels for entries
+        3. Place stops below recent lows`,
+        image: "bullish-chart.png"
+    },
+
+    "bearish\sell": {
+        description: `🔴 <strong>Bearish Market Explained</strong>
+        
+        <u>What It Means:</u>
+        When prices are falling or expected to fall.
+
+        <u>Characteristics:</u>
+        • Prices making lower highs (LH) and lower lows (LL)
+        • Sellers control the market
+        • Negative market sentiment
+
+        <u>How to Trade:</u>
+        1. Look for sell opportunities
+        2. Use resistance levels for entries
+        3. Place stops above recent highs`,
+        image: "bearish-chart.png"
+    },
+
+   "reversal": {
+        description: `🔄 <strong>Market Reversals Explained</strong>
+        
+        <u>Types of Reversals:</u>
+        1. <strong>Bullish Reversal</strong>:
+           - Downtrend changes to uptrend
+           - Signals: Higher low forms, resistance breaks
+
+        2. <strong>Bearish Reversal</strong>:
+           - Uptrend changes to downtrend
+           - Signals: Lower high forms, support breaks
+
+        <u>Common Reversal Patterns:</u>
+        • Head & Shoulders
+        • Double Top/Bottom
+        • Engulfing Candles`,
+        image: "reversal-patterns.png"
+    },
+
+   "buy stop": {
+        description: `⏫ <strong>Buy Stop Order</strong>
+        
+        <u>What It Is:</u>
+        An order to buy ABOVE current price (activates when price rises to your level).
+
+        <u>When to Use:</u>
+        • Trading breakouts above resistance
+        • When expecting price to accelerate up
+
+        <u>Example:</u>
+        Current EUR/USD price: 1.0800
+        Set Buy Stop at: 1.0820
+        (Triggers if price reaches 1.0820)`,
+        image: "buy-stop-diagram.png"
+    },
+
+    "sell stop": {
+        description: `⏬ <strong>Sell Stop Order</strong>
+        
+        <u>What It Is:</u>
+        An order to sell BELOW current price (activates when price falls to your level).
+
+        <u>When to Use:</u>
+        • Trading breakdowns below support
+        • When expecting price to drop fast
+
+        <u>Example:</u>
+        Current GBP/USD price: 1.2600
+        Set Sell Stop at: 1.2580
+        (Triggers if price reaches 1.2580)`,
+        image: "sell-stop-diagram.png"
+    },
+
+    "buy limit": {
+        description: `⏮️ <strong>Buy Limit Order</strong>
+        
+        <u>What It Is:</u>
+        An order to buy BELOW current price (activates if price drops to your level).
+
+        <u>When to Use:</u>
+        • Buying at better prices during pullbacks
+        • Entering at identified support levels
+
+        <u>Example:</u>
+        Current Gold price: $1950
+        Set Buy Limit at: $1940
+        (Triggers if price falls to $1940)`,
+        image: "buy-limit-diagram.png"
+    },
+
+    "sell limit": {
+        description: `⏭️ <strong>Sell Limit Order</strong>
+        
+        <u>What It Is:</u>
+        An order to sell ABOVE current price (activates if price rises to your level).
+
+        <u>When to Use:</u>
+        • Selling at better prices during rallies
+        • Exiting at identified resistance levels
+
+        <u>Example:</u>
+        Current BTC price: $30,000
+        Set Sell Limit at: $30,500
+        (Triggers if price rises to $30,500)`,
+        image: "sell-limit-diagram.png"
+    },
+
+ "trailing stop": {
+        description: `🏃 <strong>Trailing Stop Explained</strong>
+        
+        <u>What It Does:</u>
+        Automatically adjusts your stop loss as price moves favorably.
+
+        <u>How to Set It:</u>
+        1. Choose trailing distance (pips/%)
+        2. As price moves up (for longs), stop follows
+        3. Locks in profits during pullbacks
+
+        <u>Example:</u>
+        Buy EUR/USD at 1.1000
+        Set 50 pip trailing stop:
+        • At 1.1050: Stop moves to 1.1000
+        • At 1.1100: Stop moves to 1.1050`,
+        image: "trailing-stop-diagram.png"
+    },
+
+    "lot size": {
+        description: `📊 <strong>How to Calculate Lot Size</strong>
+        
+        <u>Standard Lots:</u>
+        • 1.0 lot = 100,000 units
+        • 0.1 lot = 10,000 units (mini)
+        • 0.01 lot = 1,000 units (micro)
+
+        <u>Calculation Formula:</u>
+        (Account Risk %) × (Account Balance) ÷ (Stop Loss in Pips × Pip Value)
+
+        <u>Example:</u>
+        • Account: $10,000
+        • Risk: 2% ($200)
+        • Stop Loss: 50 pips
+        • Pip Value: $10 per lot
+        Calculation: (0.02 × 10,000) ÷ (50 × 10) = 0.4 lots`,
+        image: "lot-size-calculator.png"
+    }
 
       
     };
