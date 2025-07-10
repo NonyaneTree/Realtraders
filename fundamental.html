@@ -13,29 +13,17 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      overflow: hidden;
       font-family: Arial, sans-serif;
-    }
-
-    video.bg-video {
-      position: fixed;
-      right: 0;
-      bottom: 0;
-      min-width: 100%;
-      min-height: 100%;
-      object-fit: cover;
-      z-index: -1;
+      background: linear-gradient(to right, #f5f7fa, #e4ecf3);
     }
 
     .content {
-      position: relative;
-      z-index: 1;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.9);
-      max-width: 700px;
+      max-width: 800px;
       margin: 40px auto;
+      padding: 20px;
+      background: #fff;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
     .signal {
@@ -51,24 +39,57 @@
       color: gray;
       margin-top: 8px;
     }
+
+    h2 {
+      color: #333;
+    }
+
+    h3 {
+      margin-top: 30px;
+      color: #1a202c;
+    }
+
+    p {
+      line-height: 1.6;
+      color: #444;
+    }
+
+    ul {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Background video -->
-  <video class="Tman-video" autoplay muted loop>
-    <source src="Tman.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-
   <div class="content">
     <h2>📊 Signals from Last 24 Hours</h2>
     <div id="signals">Loading...</div>
+
+    <h3>📘 Understanding Fundamental Analysis</h3>
+    <p>
+      Fundamental analysis is a method used by traders and investors to evaluate the intrinsic value of an asset by examining related economic, financial, and other qualitative and quantitative factors.
+    </p>
+
+    <p>Key elements considered in fundamental analysis include:</p>
+    <ul>
+      <li><strong>Interest Rates:</strong> Changes in central bank rates can impact currency strength.</li>
+      <li><strong>Inflation:</strong> High inflation typically weakens a currency’s value.</li>
+      <li><strong>GDP (Gross Domestic Product):</strong> A strong GDP indicates a growing economy.</li>
+      <li><strong>Employment Data:</strong> Reports like Non-Farm Payrolls (NFP) are major market movers.</li>
+      <li><strong>Political Stability:</strong> Geopolitical risk can lead to increased market volatility.</li>
+    </ul>
+
+    <p>
+      Traders use this data to anticipate price movements and to make decisions about entering or exiting trades. Unlike technical analysis, which looks at price charts, fundamental analysis looks at the "why" behind market movements.
+    </p>
+
+    <p>Stay informed and use both fundamental and technical insights to become a smarter trader.</p>
   </div>
 
   <script>
     const botToken = '8134819355:AAEd9ILnRv5e7Hje1pccMvShXNzSrqJ-42o'; // Replace with your bot token
-    const groupChatId = '-1002654219465'; // Only used for filtering (if needed)
+    const groupChatId = '-1002654219465'; // Optional: used for filtering
 
     async function fetchRecentSignals() {
       try {
