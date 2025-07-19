@@ -1,18 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Chat to us</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-adsense-account" content="ca-pub-7221396727211259">
+  <title>Chat to us – Nonyane Investment Tree</title>
   <style>
-    body { font-family: Arial; padding: 20px; background: #f0f0f0; }
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
     .message { background: white; padding: 10px; margin-bottom: 10px; border-left: 4px solid #007bff; }
     .input-area { margin-top: 20px; }
     textarea { width: 100%; height: 60px; padding: 10px; }
-    button { margin-top: 10px; padding: 10px 15px; background: #007bff; color: white; border: none; }
+    button { margin-top: 10px; padding: 10px 15px; background: #007bff; color: white; border: none; cursor: pointer; }
+    footer { margin-top: 40px; font-size: 14px; color: #666; }
+    nav a { margin-right: 15px; text-decoration: none; color: #007bff; }
   </style>
 </head>
 <body>
 
-<h2>📢 Chat to us 👨‍👩‍👦‍👦</h2>
+<h1>📢 Chat to us – Nonyane Investment Tree</h1>
+<p>Welcome to our support and communication hub. Nonyane Investment Tree is here to assist you with investments, opportunities, and financial literacy. Ask us anything and we’ll get back to you.</p>
+
 <div id="messages">Loading messages...</div>
 
 <div class="input-area">
@@ -20,53 +27,70 @@
   <button onclick="sendMessage()">Send Message</button>
 </div>
 
+<footer>
+  <hr>
+  <p><strong>About Nonyane Investment Tree:</strong> We're focused on building sustainable investment opportunities for South Africa's low and middle-income communities. We offer asset-backed tokens, stock portfolios, and financial education.</p>
+  <nav>
+    <a href="#">About Us</a>
+    <a href="#">Privacy Policy</a>
+  <a href="#">Contact</a>
+  </nav>
+  <p>&copy; 2025 Nonyane Investment Tree. All rights reserved.</p>
+</footer>
+
 <script>
   const BOT_TOKEN = '7899787397:AAHZ-JcSPq03R38sQeDCZNSQaXUM4P-uFTo'; // Replace with your bot token
   const CHAT_ID = -1002704045278; // Replace with your group chat ID
   const API_BASE = `https://api.telegram.org/bot${BOT_TOKEN}`;
 
   async function loadMessages() {
-    const res = await fetch(`${API_BASE}/getUpdates`);
-    const data = await res.json();
-    const container = document.getElementById('messages');
-    container.innerHTML = '';
+    try {
+      const res = await fetch(`${API_BASE}/getUpdates`);
+      const data = await res.json();
+      const container = document.getElementById('messages');
+      container.innerHTML = '';
 
-    const messages = data.result
-      .map(update => update.message)
-      .filter(msg => msg && msg.chat && msg.chat.id === CHAT_ID && msg.text);
+      const messages = data.result
+        .map(update => update.message)
+        .filter(msg => msg && msg.chat && msg.chat.id === CHAT_ID && msg.text);
 
-    if (messages.length === 0) {
-      container.innerHTML = '<p>No messages yet.</p>';
-      return;
+      if (messages.length === 0) {
+        container.innerHTML = '<p>No messages yet.</p>';
+        return;
+      }
+
+      messages.forEach(msg => {
+        const div = document.createElement('div');
+        div.className = 'message';
+        div.innerHTML = `<strong>${msg.from?.first_name || 'User'}:</strong> ${msg.text}`;
+        container.appendChild(div);
+      });
+    } catch (err) {
+      console.error('Error loading messages', err);
     }
-
-    messages.forEach(msg => {
-      const div = document.createElement('div');
-      div.className = 'message';
-      div.innerHTML = `<strong>${msg.from?.first_name || 'User'}:</strong> ${msg.text}`;
-      container.appendChild(div);
-    });
   }
 
   async function sendMessage() {
     const text = document.getElementById('userMessage').value.trim();
     if (!text) return alert('Please type a message');
 
-    const response = await fetch(`${API_BASE}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: CHAT_ID,
-        text: text
-      })
-    });
+    try {
+      const response = await fetch(`${API_BASE}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: CHAT_ID, text })
+      });
 
-    const result = await response.json();
-    if (result.ok) {
-      document.getElementById('userMessage').value = '';
-      loadMessages(); // Refresh messages
-    } else {
-      alert('Failed to send message: ' + result.description);
+      const result = await response.json();
+      if (result.ok) {
+        document.getElementById('userMessage').value = '';
+        loadMessages();
+      } else {
+        alert('Failed to send message: ' + result.description);
+      }
+    } catch (err) {
+      console.error('Sending failed:', err);
+      alert('Sending failed. Check internet or try again later.');
     }
   }
 
