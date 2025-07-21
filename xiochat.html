@@ -1239,15 +1239,167 @@ Say it like you mean it. This bot's always on your vibe. 😎`
         (Account Risk %) × (Account Balance) ÷ (Stop Loss in Pips × Pip Value)
 
         <u>Example:</u>
-        • Account: $10,000
-        • Risk: 2% ($200)
+        • Account: R10,000
+        • Risk: 2% (R200)
         • Stop Loss: 50 pips
-        • Pip Value: $10 per lot
+        • Pip Value: R10 per lot
         Calculation: (0.02 × 10,000) ÷ (50 × 10) = 0.4 lots`,
         image: "lot-size-calculator.png"
-    }
+    }, 
+  "trend trading": {
+    description: `📈 <strong>Trend Trading Strategy</strong>
+    
+<u>ENTRY RULES:</u>
+1. Identify trend direction (higher highs/lows = uptrend, lower highs/lows = downtrend)
+2. Wait for pullback to trendline or moving average (21/50 EMA)
+3. Enter on confirmation candle close with:
+   - RSI between 30-70 (no extremes)
+   - Volume above 20-period average
+4. For longs: Buy stop 1 pip above pullback high
+5. For shorts: Sell stop 1 pip below pullback low
 
-      
+<u>EXIT RULES:</u>
+TP1: 1:1 risk-reward at nearest swing level
+TP2: Trail stop at 2:1 ratio using parabolic SAR
+SL: 1.5% beyond recent swing low/high
+Close 50% position at TP1, move SL to breakeven
+
+<u>BEST TIME:</u> During London/New York overlap (1pm-5pm GMT)`,
+    image: "https://source.unsplash.com/random/600x400/?trend,trading,forex,chart"
+  },
+
+  "swing trading": {
+    description: `🔄 <strong>Swing Trading Strategy</strong>
+    
+<u>ENTRY RULES:</u>
+1. Identify key support/resistance levels on daily chart
+2. Wait for 50-61.8% Fibonacci retracement
+3. Confirm with:
+   - Bullish engulfing pattern (for longs)
+   - Bearish engulfing pattern (for shorts)
+   - MACD histogram turning up/down
+4. Enter on close of confirmation candle
+
+<u>EXIT RULES:</u>
+TP: Equal to prior impulse wave length
+SL: Beyond 78.6% Fib level
+Trail stop using 20-period ATR (1.5x) after TP1 hit
+Close full position if price stays flat for 3 sessions
+
+<u>IDEAL PAIRS:</u> GBP/JPY, AUD/USD (volatile pairs)`,
+    image: "https://source.unsplash.com/random/600x400/?swing,trading,forex,chart"
+  },
+
+  "day trading": {
+    description: `🌞 <strong>Day Trading Strategy</strong>
+    
+<u>ENTRY RULES:</u>
+1. Analyze 15-min chart for Asian session range
+2. Set alerts at highs/lows of first 2 hours
+3. Enter on break with:
+   - Minimum 2x average volume
+   - Stochastic exiting overbought/sold
+4. Use buy/sell stop orders 2 pips beyond key levels
+
+<u>EXIT RULES:</u>
+TP1: 1.5x risk (scalp partial)
+TP2: Previous day high/low
+SL: Middle of Asian range
+Must close all positions by 5pm EST
+
+<u>RISK MANAGEMENT:</u>
+Max 1% risk per trade, 3% daily loss limit`,
+    image: "https://source.unsplash.com/random/600x400/?day,trading,forex,chart"
+  },
+
+  "scalping": {
+    description: `⚡ <strong>Scalping Strategy (1-5 min charts)</strong>
+    
+<u>ENTRY RULES:</u>
+1. Trade only during high liquidity (London/NY open)
+2. Look for tight spreads (<1 pip on majors)
+3. Enter when:
+   - Price breaks 10-period EMA
+   - Volume spikes 3x average
+   - No major news within 15 mins
+4. Use market orders for fastest execution
+
+<u>EXIT RULES:</u>
+TP: Fixed 5-8 pips
+SL: Fixed 5 pips
+Close after 2 mins if target not hit
+Maximum 10 trades/day
+
+<u>TOOLS NEEDED:</u>
+- Direct market access broker
+- Tick chart for precise entries`,
+    image: "https://source.unsplash.com/random/600x400/?scalping,trading,forex"
+  },
+
+  "position trading": {
+    description: `⏳ <strong>Position Trading (Weekly/Monthly)</strong>
+    
+<u>ENTRY RULES:</u>
+1. Fundamental analysis first (interest rate trends)
+2. Technical confirmation on weekly chart:
+   - Break of 3-month consolidation
+   - 200 MA crossover
+   - RSI divergence
+3. Scale in with 3 equal positions
+
+<u>EXIT RULES:</u>
+TP1: 1:2 at major resistance/support
+TP2: Let runner with trailing stop (weekly ATR)
+SL: Beyond quarterly pivot point
+Review fundamentals monthly
+
+<u>EXAMPLE:</u> Long USD/CAD during oil price collapse`,
+    image: "https://source.unsplash.com/random/600x400/?position,trading,forex"
+  },
+
+  "breakout trading/breakout": {
+    description: `🚀 <strong>Breakout Trading Rules</strong>
+    
+<u>ENTRY RULES:</u>
+1. Identify 3+ touches of support/resistance
+2. Wait for consolidation (range <30% of breakout size)
+3. Enter on close outside range with:
+   - Minimum 2x average volume
+   - MACD crossing zero line
+4. Use stop-limit orders to avoid false breaks
+
+<u>EXIT RULES:</u>
+TP: 1.5x pattern height
+SL: Other side of consolidation range
+Close if price returns inside range
+Best for EUR/USD, Gold breakouts
+
+<u>AVOID:</u> News events, low volume periods`,
+    image: "https://source.unsplash.com/random/600x400/?breakout,trading,forex"
+  },
+
+  "news trading/Fundamentals trading/Fundamental": {
+    description: `📢 <strong>News Trading Protocol</strong>
+    
+<u>ENTRY RULES:</u>
+1. Prepare 5 mins before high-impact news (NFP, CPI)
+2. Set pending orders 10 pips above/below current price
+3. Enter only if:
+   - Deviation >0.3 from forecast
+   - Initial spike >20 pips in 1 min
+4. Use VPS for fastest execution
+
+<u>EXIT RULES:</u>
+TP: 1.5x initial spike size
+SL: 50% of initial spike
+Close all within 15 mins (before pullback)
+Never hold through low liquidity
+
+<u>REQUIREMENTS:</u>
+- Economic calendar and real Traders Fundamental signals
+- Low latency connection`,
+    image: "https://source.unsplash.com/random/600x400/?news,trading,forex"
+      }
     };
     function handleUserInput() {
       const input = document.getElementById("userInput").value.toLowerCase().trim();
