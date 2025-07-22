@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>XIO Assistant</title>
-<meta name="google-adsense-account" content="ca-pub-7221396727211259">
+  <meta name="google-adsense-account" content="ca-pub-7221396727211259">
   <style>
     body {
       margin: 0;
@@ -87,8 +87,9 @@
     }
     .pattern-img {
       max-width: 100%;
-      border: 1px solid #ddd;
-      border-radius: 6px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
       margin-top: 10px;
     }
   </style>
@@ -384,10 +385,10 @@
 
     function formatResponse(pair) {
       if (pair.image) {
-        return `<img src="${pair.image}" alt="${pair.question}" class="pattern-img"><br>${pair.answer}`;
+        return `${pair.answer}<img src="${pair.image}" alt="${pair.question}" class="pattern-img">`;
       }
       return pair.answer;
     }
   </script>
 </body>
-  </html>
+</html>
