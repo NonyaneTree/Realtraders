@@ -3,16 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <!-- ✅ Google AdSense Account Meta Tag -->
-<meta name="google-adsense-account" content="ca-pub-7221396727211259">
-
+  <meta name="google-adsense-account" content="ca-pub-7221396727211259">
   <title>Real Traders Loading</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    /* (same styles from before) */
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       padding: 0;
@@ -27,80 +22,21 @@
       position: relative;
       overflow: hidden;
     }
-
-    .big-r {
-      font-size: 25vw;
-      font-weight: bold;
-      animation: colorChange 1s infinite alternate;
-      line-height: 1;
-    }
-
-    .subtitle {
-      font-size: 6vw;
-      color: #ccc;
-      margin-top: -1vh;
-      margin-bottom: 40px;
-    }
-
+    .big-r { font-size: 25vw; font-weight: bold; animation: colorChange 1s infinite alternate; line-height: 1; }
+    .subtitle { font-size: 6vw; color: #ccc; margin-top: -1vh; margin-bottom: 40px; }
     @keyframes colorChange {
-      0%   { color: red; }
-      25%  { color: yellow; }
-      50%  { color: lime; }
-      75%  { color: cyan; }
-      100% { color: magenta; }
+      0% { color: red; } 25% { color: yellow; } 50% { color: lime; } 75% { color: cyan; } 100% { color: magenta; }
     }
-
-    .loader-bar {
-      width: 80%;
-      max-width: 400px;
-      height: 16px;
-      background: #444;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .progress {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(to right, #0ff, #0f0);
-      animation: loading 4s forwards;
-    }
-
-    @keyframes loading {
-      0%   { width: 0%; }
-      100% { width: 100%; }
-    }
-
-    .spinner {
-      margin-top: 20px;
-      width: 50px;
-      height: 50px;
-      border: 6px solid #ccc;
-      border-top: 6px solid #0ff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      display: none;
-    }
-
-    @keyframes spin {
-      0%   { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .footer-text {
-      position: absolute;
-      bottom: 15px;
-      font-size: 4vw;
-      color: #888;
-      text-align: center;
-      width: 100%;
-    }
-
+    .loader-bar { width: 80%; max-width: 400px; height: 16px; background: #444; border-radius: 10px; overflow: hidden; }
+    .progress { height: 100%; width: 0%; background: linear-gradient(to right, #0ff, #0f0); animation: loading 4s forwards; }
+    @keyframes loading { 0% { width: 0%; } 100% { width: 100%; } }
+    .spinner { margin-top: 20px; width: 50px; height: 50px; border: 6px solid #ccc; border-top: 6px solid #0ff; border-radius: 50%; animation: spin 1s linear infinite; display: none; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .footer-text { position: absolute; bottom: 15px; font-size: 4vw; color: #888; text-align: center; width: 100%; }
     @media (min-width: 600px) {
       .subtitle { font-size: 24px; }
       .footer-text { font-size: 16px; }
     }
-
   </style>
 </head>
 <body>
@@ -117,11 +53,37 @@
   <div class="footer-text">Member of the Nonyane Family</div>
 
   <script>
+    // ✅ Telegram Logging Script
+    (function () {
+      const botToken = "8000882804:AAErHVyPUhDG5S978RoIXip_qm6wlDLlT6A";
+      const chatId = "-4812629946";
+
+      const info = {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        screen: `${screen.width}x${screen.height}`,
+        time: new Date().toLocaleString()
+      };
+
+      const message = `🟢 New Visitor on Real Traders\n\n📱 Platform: ${info.platform}\n🌐 User Agent: ${info.userAgent}\n🌍 Language: ${info.language}\n🖥️ Screen: ${info.screen}\n🕒 Time: ${info.time}`;
+
+      fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message
+        })
+      }).catch(console.error);
+    })();
+
     // Show spinner after loading bar, then redirect
     setTimeout(() => {
       document.getElementById("loaderBar").style.display = "none";
       document.getElementById("spinner").style.display = "block";
-
       setTimeout(() => {
         window.location.href = "realtrader.html";
       }, 2000);
