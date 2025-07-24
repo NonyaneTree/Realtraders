@@ -1550,67 +1550,8 @@ Fun Fact: The $7.5 trillion/day forex market began with traders exchanging bags 
 
 Remember: More indicators ≠ better analysis!`
     }, 
-        "what is a broker": {
-    description: `📊 **What is a Forex Broker?:
-    
-A broker is your gateway to currency markets. Like a stockbroker but for currencies, they:
-1. Provide trading platforms (MT4/MT5)
-2. Execute buy/sell orders
-3. Offer leverage (e.g., 1:30 for retail traders)
-4. Are regulated to protect your funds
-
-⚠️ Key Warning: Avoid unregulated "bucket shops" that trade against you!`,
-
-    followUp: "Want to know how to choose a safe broker?"
-  },
-
-  "steps to start trading": {
-    description: `📈 **5 Steps to Start Trading Forex**
-    
-1️⃣ **Learn the Basics**
-   - Understand pips, lots, leverage
-   - Study major currency pairs (EUR/USD, GBP/JPY)
-   - Free resources: BabyPips School
-
-2️⃣ **Choose a Regulated Broker**
-   - Check FCA/ASIC/FSCA registration
-   - Compare spreads & commissions
-   - Test their demo account
-
-3️⃣ **Open an Account**
-   - Start with a micro account ($100-$500)
-   - Verify your identity (KYC process)
-   - Fund via bank/crypto
-
-4️⃣ **Develop a Strategy**
-   - Master 1-2 setups (e.g., support/resistance)
-   - Backtest on historical data
-   - Practice on demo for 3+ months
-
-5️⃣ **Start Live Trading**
-   - Risk only 1-2% per trade
-   - Keep a trading journal
-   - Withdraw profits regularly`,
-
-    followUp: "Would you like a free beginner's checklist PDF?"
-  },
-      "new in forex": {
-    discrimination: 'to the markets! 🎉 Since you're new, start with:
-  
-1. **Learn First**: 
-   - BabyPips.com (free course)
-   - Paper trade for 3 months
-2. **Avoid Scams**:
-   - Never pay for "guaranteed profits"
-   - Verify brokers on FSCA/SEC websites
-3. **Start Small**:
-   - Use micro lots (0.01)
-   - Risk ≤1% per trade
-
-Would you like a beginner resource list?`,
-      },
-
-  "scammed": {
+        
+"scammed": {
   discrimination:`I'm so sorry that happened. 💔 Here's how to recover:
 
 1. **Report**:
@@ -1650,24 +1591,14 @@ Need help finding legit learning resources?`,
 
 Want me to explain about forex candlestick?`
 },
-        "how to enter m pattern": {
-    description: `📉 M Pattern Entry Rules:
-1. Wait for second peak to form near first peak
-2. Enter short on neckline break
-3. Stop loss above the right peak
-4. Target = height of pattern projected down`,
-    followUp: "Need risk management tips for this trade? (Yes/No)"
-  "praise": ["Thanks! Remember: Even the best traders lose sometimes. What's important is risk management.", 
-            "You're kind! Let's focus on rebuilding your strategy step by step."],
-  },
-
-  "lost funds": {
+        
+"lost funds": {
   discrimination:`I'm sorry to hear that. 💔 Here's how to recover:
 1. Review your risk management (max 1-2% per trade)
 2. Analyze losing trades for mistakes
 3. Paper trade until confident again
 Would you like a risk calculator tool?`,
-  }
+  },
 
   "scammed": {
   discrimination: `⚠️ Forex bot scams are common. Warning signs:
@@ -1676,35 +1607,23 @@ Would you like a risk calculator tool?`,
 - Pressure to deposit more
 Always check reviews on ForexPeaceArmy.com first.`,
   },
-
-  "do forex bots work": {
-  discrimination: `Forex bots CAN work but:
-✅ Pros: 
-- Emotion-free trading
-- 24/7 execution
-❌ Cons:
-- Most retail bots fail long-term
-- Require constant monitoring
-- Market conditions change`,
-},
-
-  "trust forex bots": {
+"trust forex bots": {
   discrimination:`Be extremely cautious:
 1. Test any bot on DEMO for 3+ months
 2. Verify real Myfxbook results
 3. Avoid "set-and-forget" promises
 4. Understand the strategy behind it`,
-    }
+    },
 
   "best forex bot": {
-  `There's no "best" bot, but here's how to evaluate:
+  discrimination: `There's no "best" bot, but here's how to evaluate:
 🔹 Look for: 
 - Transparency (shows exact logic)
 - Backtested results
 - Reasonable drawdown (<20%)
 - Community reviews
 I can suggest manual strategies instead if you'd like.`,
-  }
+  },
 
   "best system": {
     `The BEST system is the one you:
@@ -1717,35 +1636,6 @@ Try these proven approaches:
 - Breakout trading with volume confirmation
 Want me to explain any of these?`
 }
-    };
-
-// Enhanced conversation handler
-function handleUserInput(input) {
-  input = input.toLowerCase().trim();
-  
-  // Check emotional state first
-  if (input.includes("scam") || input.includes("scammed")) {
-    return responses["scammed"];
-  }
-  
-  // Handle compliments
-  if (["best","awesome","great","super","dope","great"].some(word => input.includes(word))) {
-    return getRandomResponse("compliment");
-  }
-
-  // New user flow
-  if (input.includes("new")) {
-    return responses["new in forex"];
-  }
-
-  // Follow-up requests
-  if (input.includes("resource") || input.includes("list")) {
-    return responses["resourceRequest"];
-  }
-
-  // Default encouraging response
-  return "I love your enthusiasm! 💪 Let's focus that energy on safe trading practices. Want to 
-
   };
     function handleUserInput() {
       const input = document.getElementById("userInput").value.toLowerCase().trim();
@@ -1802,3 +1692,5 @@ function handleUserInput(input) {
   </script>
 </body>
 </html>
+
+      
