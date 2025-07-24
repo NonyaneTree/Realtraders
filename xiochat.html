@@ -1,157 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>XIO Assistant</title>
   <meta name="google-adsense-account" content="ca-pub-7221396727211259">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <style>
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      margin: 0;
-      padding: 0;
-      background: #eef1f5;
-      font-family: 'Segoe UI', sans-serif;
-      min-height: 100vh;
-      overflow-y: auto;
-    }
-    .chat-container {
-      width: 100%;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      background: #fff;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    }
-    .header {
-      background-color: #0066ff;
-      color: white;
-      padding: 15px 20px;
-      font-size: 18px;
-      font-weight: bold;
-      flex-shrink: 0;
-    }
-    #messages {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      -webkit-overflow-scrolling: touch;
-    }
-    .msg {
-      max-width: 85%;
-      padding: 12px 15px;
-      border-radius: 15px;
-      line-height: 1.5;
-      word-break: break-word;
-      display: flex;
-      align-items: flex-start;
-    }
-    .msg img.xio-icon {
-      width: 34px;
-      height: 34px;
-      margin-right: 8px;
-      margin-top: 4px;
-      flex-shrink: 0;
-    }
-    .msg .pattern-img {
-      max-width: 100%;
-      max-height: 300px;
-      height: auto;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      margin-top: 10px;
-      display: block;
-      object-fit: contain;
-    }
-    .user {
-      align-self: flex-end;
-      background: #d7ebff;
-      color: #003366;
-      border-top-right-radius: 0;
-    }
-    .xio {
-      align-self: flex-start;
-      background: #f1f1f1;
-      color: #222;
-      border-top-left-radius: 0;
-    }
-    .input-container {
-      padding: 10px;
-      background: #fff;
-      border-top: 1px solid #ddd;
-      flex-shrink: 0;
-    }
-    .input-box {
-      display: flex;
-      width: 100%;
-    }
-    #inputBox {
-      flex: 1;
-      padding: 12px 15px;
-      border: 1px solid #ddd;
-      border-radius: 20px;
-      font-size: 16px;
-      margin-right: 10px;
-    }
-    #inputBox:focus {
-      outline: none;
-      border-color: #0066ff;
-    }
-    button {
-      padding: 0 20px;
-      background: #0066ff;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      font-size: 16px;
-      cursor: pointer;
-      min-width: 80px;
-    }
-    button:active {
-      background: #0055cc;
-    }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 0; background: #eef1f5; font-family: 'Segoe UI', sans-serif; min-height: 100vh; overflow-y: auto; }
+    .chat-container { width: 100%; min-height: 100vh; display: flex; flex-direction: column; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+    .header { background-color: #0066ff; color: white; padding: 15px 20px; font-size: 18px; font-weight: bold; flex-shrink: 0; }
+    #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; -webkit-overflow-scrolling: touch; }
+    .msg { max-width: 85%; padding: 12px 15px; border-radius: 15px; line-height: 1.5; word-break: break-word; display: flex; align-items: flex-start; }
+    .msg img.xio-icon { width: 34px; height: 34px; margin-right: 8px; margin-top: 4px; flex-shrink: 0; }
+    .msg .pattern-img { max-width: 100%; max-height: 300px; height: auto; border: 1px solid #ddd; border-radius: 8px; margin-top: 10px; display: block; object-fit: contain; }
+    .user { align-self: flex-end; background: #d7ebff; color: #003366; border-top-right-radius: 0; }
+    .xio { align-self: flex-start; background: #f1f1f1; color: #222; border-top-left-radius: 0; }
+    .input-container { padding: 10px; background: #fff; border-top: 1px solid #ddd; flex-shrink: 0; }
+    .input-box { display: flex; width: 100%; }
+    #inputBox { flex: 1; padding: 12px 15px; border: 1px solid #ddd; border-radius: 20px; font-size: 16px; margin-right: 10px; }
+    #inputBox:focus { outline: none; border-color: #0066ff; }
+    button { padding: 0 20px; background: #0066ff; color: white; border: none; border-radius: 20px; font-size: 16px; cursor: pointer; min-width: 80px; }
+    button:active { background: #0055cc; }
     @media screen and (max-width: 480px) {
-      .msg {
-        max-width: 90%;
-      }
-      #inputBox {
-        padding: 10px 15px;
-      }
-      button {
-        padding: 0 15px;
-      }
+      .msg { max-width: 90%; }
+      #inputBox { padding: 10px 15px; }
+      button { padding: 0 15px; }
     }
-    .loading-spinner {
-      border: 3px solid rgba(0,0,0,0.1);
-      border-radius: 50%;
-      border-top: 3px solid #0066ff;
-      width: 20px;
-      height: 20px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    .loading-spinner { border: 3px solid rgba(0,0,0,0.1); border-radius: 50%; border-top: 3px solid #0066ff; width: 20px; height: 20px; animation: spin 1s linear infinite; margin: 0 auto; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
   <div class="chat-container">
     <div class="header">🤖 XIO Chat 3.3.4 -- AI Forex Assistant</div>
-    <div id="messages">
-      <div class="msg xio">
-        <img src="xioicon.png" alt="XIO Icon" class="xio-icon">
-        <div>
-          Hello! I'm <strong>XIO</strong>, your AI market mentor.<br><br>
-          Ask me anything about forex, candles, support/resistance, or Nonyane Investment Tree.
-        </div>
-      </div>
-    </div>
+    <div id="messages"></div>
     <div class="input-container">
       <div class="input-box">
         <input id="inputBox" placeholder="Type your question..." onkeydown="if(event.key==='Enter') sendMessage()">
@@ -161,184 +44,27 @@
   </div>
 
   <script>
-    // Telegram Bot API configuration
     const TELEGRAM_BOT_TOKEN = '8355963600:AAGUoYaMCAi7XJslIhgHIfCNEGmDtymjdRg'; // Replace with your bot token
     const TELEGRAM_CHAT_ID = '-1002843915894'; // Replace with your chat ID
     const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
     
     let qaPairs = [];
     const responses = {};
-    let telegramMessages = []; // Store fetched Telegram messages
+    let telegramMessages = [];
     const synonyms = {
-  // General Terms
-    "founder": ["creator", "owner", "started", "created", "established", "made", "built", "inventor", "developer", "author"],
-      "who": ["whom", "who"],
-      "what": ["explain", "describe", "tell me about"],
-      "how": ["method", "way", "process", "strategy"],
-      
-      // Forex Basics
-      "forex": ["fx", "currency trading", "foreign exchange", "forex market"],
-      "trading": ["trades", "transactions", "exchanges"],
-      "price action": ["price movement", "naked trading", "clean chart trading", "raw price analysis", "PAT strategies"],
-      "fundamental trading": ["macro trading", "economic-data-based trading", "news trading"],
-      
-      // Chart Patterns
-      "head and shoulders": ["H&S", "head shoulders chart", "bearish reversal H&S", "head shoulders neckline"],
-      "inverse head and shoulders": ["inverse H&S", "bullish reversal H&S", "reverse head and shoulders"],
-      "m formation": ["double top pattern", "bearish M-top", "two-peak reversal"],
-      "w formation": ["double bottom pattern", "bullish W-bottom", "two-trough reversal"],
-      "trendline": ["support/resistance line", "dynamic trend line", "diagonal S/R"],
-      "double top": ["M-top", "two peaks reversal", "bearish double high"],
-      "double bottom": ["W-bottom", "two lows reversal", "bullish double low"],
-      "triple bottom": ["triple low reversal", "three-trough pattern"],
-      "flag formation": ["bull flag", "bear flag", "continuation flag"],
-      "cup and handle": ["cup pattern", "bullish cup breakout"],
-      "falling wedge": ["descending wedge", "bullish wedge breakout"],
-      "rising wedge": ["ascending wedge", "bearish wedge breakout"],
-      "pennant": ["small triangle", "continuation pennant"],
-      "rounding bottom": ["saucer bottom", "U-shaped reversal"],
-      "bump and run": ["BARR pattern", "parabolic reversal"],
-      "diamond bottom": ["diamond reversal", "complex top/bottom"],
-      "broadening formation": ["megaphone pattern", "expanding triangle"],
-      "measured move": ["ABC pattern", "three-wave move"],
-      "island reversal": ["price gap exhaustion", "island cluster"],
-      "fibonacci retracement": ["fib levels", "golden ratio trading"],
-      "ichimoku cloud": ["ichimoku kinko hyo", "cloud trading"],
-      "order blocks": ["smart money zones", "institutional levels"],
-      "fair value gap": ["FVG", "liquidity void", "imbalance zone"],
-      "liquidity pools": ["stop hunt zones", "order clusters"],
-      "volume profile": ["volume-by-price", "market profile"],
-      
-      // Candlestick Patterns
-      "bullish engulfing": ["engulfing bottom", "bullish reversal candle"],
-      "bearish engulfing": ["engulfing top", "bearish reversal candle"],
-      "doji": ["indecision candle", "neutral reversal signal"],
-      "hammer": ["pin bar bullish", "rejection candle"],
-      "shooting star": ["inverted hammer bearish", "reversal candle"],
-      "hanging man": ["bearish hammer", "top reversal signal"],
-      "inverted hammer": ["potential bullish reversal candle"],
-      "morning star": ["bullish 3-candle reversal"],
-      "evening star": ["bearish 3-candle reversal"],
-      "marubozu": ["no-wick candle", "strong momentum bar"],
-      "belt hold": ["strong reversal candle"],
-      "gravestone doji": ["bearish reversal doji"],
-      "dragonfly doji": ["bullish reversal doji"],
-      "abandoned baby": ["island candle", "rare reversal"],
-      "dark cloud cover": ["bearish reversal pattern"],
-      "piercing pattern": ["bullish reversal pattern"],
-      "three white soldiers": ["strong bullish continuation"],
-      "three black crows": ["strong bearish continuation"],
-      "tweezer top": ["rejection candles", "reversal signals"],
-      "tweezer bottom": ["rejection candles", "reversal signals"],
-      "harami": ["inside bar reversal"],
-      
-      // Trading Strategies
-      "trend trading": ["momentum trading", "follow-the-trend strategy"],
-      "swing trading": ["medium-term trading", "wave trading"],
-      "scalping": ["micro-trading", "high-frequency trading", "HFT"],
-      "breakout trading": ["range breakout", "volatility surge strategy"],
-      "position trading": ["long-term trading", "investment trading"],
-      "news trading": ["event-driven trading", "high-impact news"],
-      
-      // Market Entry
-      "entry": ["enter", "get in", "start position"],
-      "buy stop": ["breakout entry order", "pending buy above price"],
-      "sell stop": ["breakdown entry order", "pending sell below price"],
-      "buy limit": ["pullback entry order", "buy at lower price"],
-      "sell limit": ["rally entry order", "sell at higher price"],
-      
-      // Risk Management
-      "stop loss": ["SL", "protective stop", "risk exit"],
-      "take profit": ["TP", "profit target", "reward zone"],
-      "risk management": ["capital preservation", "money management"],
-      "lot size": ["trade size", "position volume"],
-      "leverage": ["margin multiplier", "trading power"],
-      "margin": ["collateral", "required deposit"],
-      "pip": ["percentage in point", "smallest price move"],
-      
-      // People/Entities
-      "real traders": ["realtraders.store", "real traders site", "realtraders"],
-      "nonyane investment tree": ["NIT", "thulane nonyane", "XIO"],
-      "thulane nonyane": ["XIO", "NIT founder"],
-      "rorisang malathlela": ["thulane's first love", "xio's girlfriend"],
-      
-      // Technical Indicators
-      "rsi": ["relative strength index", "momentum oscillator"],
-      "macd": ["moving average convergence divergence", "trend-following momentum indicator"],
-      "bollinger bands": ["volatility bands", "price channel"],
-      "moving average": ["MA", "SMA", "EMA", "trend-following indicator"],
-      "stochastic oscillator": ["momentum indicator", "overbought/sold"],
-      "adx": ["average directional index", "trend strength indicator"],
-      
-      // Market Concepts
-      "support": ["demand zone", "buying area", "floor price"],
-      "resistance": ["supply zone", "selling area", "ceiling price"],
-      "breakout": ["price surge", "trend continuation"],
-      "fakeout": ["false breakout", "stop hunt"],
-      "liquidity": ["market depth", "order flow"],
-      "volume": ["trading activity", "order size"],
-      "market cycles": ["accumulation/distribution phases"],
-      "smart money concepts": ["institutional trading strategies"],
-      
-      // Time Frames
-      "time frame": ["chart period", "trading duration", "time interval"],
-      
-      // Candlestick Components
-      "wicks": ["shadows", "candle tails", "price extremes"],
-      
-      // Trading Terms
-      "spread": ["bid-ask difference", "trading cost"],
-      "consolidation": ["range", "sideways movement", "accumulation"],
-      "zone": ["price area", "reaction zone", "trading zone"],
-      "up trend": ["bullish trend", "rising market"],
-      "down trend": ["bearish trend", "falling market"],
-      
-      // South African Slang
-      "howzit": ["hello", "hi", "what's up", "SA greeting"],
-      "aweh": ["cheers", "cool", "hello"],
-      "lekker": ["nice", "good", "awesome"],
-      "boet": ["bro", "mate", "friend"],
-      "bru": ["bro", "mate", "friend"],
-      "china": ["friend", "pal"],
-      "eish": ["wow", "oh no", "expression"],
-      "kiff": ["cool", "chilled"],
-      "yoh": ["surprise", "expression"],
-      "sharp": ["okay", "confirmed", "agreed"],
-      
-      // MetaTrader
-      "metatrader": ["MT4", "MT5", "trading platform"],
-      
-      // Economic Terms
-      "economic calendar": ["forex news events", "macro data releases"],
-      "inflation": ["CPI", "PPI", "price stability metrics"],
-      "interest rate decisions": ["central bank policy", "Fed/ECB rate changes"],
-      "non-farm payrolls": ["NFP", "US jobs report", "employment data"],
-      
-      // Founder/History Terms
-      "who created forex": ["history of forex", "origin of currency trading,who developed forex"],
-      "who invented candlesticks": ["munehisa homma", "japanese rice trader"],
-      "rsi founder": ["j. welles wilder jr", "relative strength index creator"],
-      "macd founder": ["gerald appel", "moving average convergence divergence inventor"],
-      "bollinger bands creator": ["john bollinger", "volatility bands developer"],
-      "fibonacci trading": ["leonardo fibonacci", "golden ratio trading"],
-      "smart money concepts": ["ICT", "inner circle trader", "institutional trading strategies"],
-      "metatrader developer": ["metaquotes software", "renat fatkhullin"]
+      // Add your synonym mappings here
     };
-// Initialize the application
+
     async function initialize() {
       await loadResponses();
-      await fetchTelegramMessages(); // Fetch messages from Telegram on startup
-      
-      // Set up periodic refresh of Telegram messages (every 5 minutes)
+      await fetchTelegramMessages();
       setInterval(fetchTelegramMessages, 300000);
     }
 
-    // Fetch messages from Telegram channel/group
     async function fetchTelegramMessages() {
       try {
         const response = await fetch(`${TELEGRAM_API_URL}/getUpdates`);
         const data = await response.json();
-        
         if (data.ok && data.result.length > 0) {
           telegramMessages = data.result
             .filter(update => update.message && update.message.chat.id.toString() === TELEGRAM_CHAT_ID)
@@ -347,7 +73,6 @@
               date: new Date(update.message.date * 1000),
               message_id: update.message.message_id
             }));
-          
           console.log('Fetched Telegram messages:', telegramMessages);
         }
       } catch (error) {
@@ -355,24 +80,16 @@
       }
     }
 
-    // Send message to Telegram
     async function sendToTelegram(message) {
       try {
         const response = await fetch(`${TELEGRAM_API_URL}/sendMessage`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            chat_id: TELEGRAM_CHAT_ID,
-            text: message
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message })
         });
-        
         const data = await response.json();
         if (data.ok) {
           console.log('Message sent to Telegram:', data.result);
-          // Refresh messages after sending
           await fetchTelegramMessages();
         }
       } catch (error) {
@@ -380,26 +97,21 @@
       }
     }
 
-    // Search Telegram messages for relevant content
     function searchTelegramMessages(query) {
       if (!telegramMessages.length) return null;
-      
       const lowerQuery = query.toLowerCase();
       const relevantMessages = telegramMessages.filter(msg => 
         msg.text && msg.text.toLowerCase().includes(lowerQuery)
-        .slice(0, 3); // Return max 3 relevant messages
-      
+      ).slice(0, 3);
       return relevantMessages.length ? relevantMessages : null;
     }
 
-    // Fetch and parse xio2.html
     async function loadResponses() {
       try {
         const response = await fetch('xio2.html');
         const html = await response.text();
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
-        
         const scriptContent = doc.querySelector('script').textContent;
         const responsesMatch = scriptContent.match(/const responses = ({[\s\S]*?});/);
         
@@ -429,8 +141,6 @@
 
       addMessage("You", text, "user");
       const thinkingMsg = addMessage("XIO", "<div class='loading-spinner'></div>", "xio", true);
-
-      // Send to Telegram in the background
       sendToTelegram(`User query: ${text}`);
       
       setTimeout(async () => {
@@ -459,15 +169,12 @@
         return "My knowledge base is still loading. Please try again in a moment.";
       }
 
-      // First try exact match
-      const exactMatch = qaPairs.find(pair => pair.question === userInput.toLowerCase());
+      const exactMatch = qaPairs.find(pair => pair.question === userInput);
       if (exactMatch) return formatResponse(exactMatch);
 
-      // Then try synonym expansion
       const expandedInput = expandSynonyms(userInput);
       for (const pair of qaPairs) {
         const expandedQuestion = expandSynonyms(pair.question);
-        
         if (expandedInput.includes(expandedQuestion) || expandedQuestion.includes(expandedInput)) {
           return formatResponse(pair);
         }
@@ -481,7 +188,6 @@
         }
       }
 
-      // Check Telegram messages for relevant content
       const telegramResults = searchTelegramMessages(userInput);
       if (telegramResults) {
         let telegramResponse = "I found these relevant discussions from our Telegram group:<br><br>";
@@ -494,7 +200,6 @@
         return telegramResponse;
       }
 
-      // Fallback: Show available topics
       const availableTopics = [...new Set(qaPairs.map(pair => pair.question))].slice(0, 5).join(", ");
       return `I'm not sure about that. Try asking about: ${availableTopics} or other forex concepts. You can also check our Telegram group for more discussions.`;
     }
@@ -515,16 +220,12 @@
       if (pair.image) {
         response += `<img src="${pair.image}" alt="${pair.question}" class="pattern-img">`;
       }
-      
-      // Add source attribution if available
       if (pair.source === 'telegram') {
         response += `<br><small>Source: Telegram group message</small>`;
       }
-      
       return response;
     }
 
-    // Initialize the application
     initialize();
   </script>
 </body>
