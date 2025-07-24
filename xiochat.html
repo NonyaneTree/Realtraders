@@ -9,20 +9,20 @@
       box-sizing: border-box;
     }
     body {
-  margin: 0;
-  padding: 0;
-  background: #eef1f5;
-  font-family: 'Segoe UI', sans-serif;
-  min-height: 100vh;
-  overflow-y: auto;
+      margin: 0;
+      padding: 0;
+      background: #eef1f5;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      overflow-y: auto;
     }
     .chat-container {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: #fff;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
     .header {
       background-color: #0066ff;
@@ -50,7 +50,6 @@
       display: flex;
       align-items: flex-start;
     }
-    /* XIO icon styling */
     .msg img.xio-icon {
       width: 34px;
       height: 34px;
@@ -58,7 +57,6 @@
       margin-top: 4px;
       flex-shrink: 0;
     }
-    /* Pattern image styling */
     .msg .pattern-img {
       max-width: 100%;
       max-height: 300px;
@@ -127,6 +125,19 @@
         padding: 0 15px;
       }
     }
+    .loading-spinner {
+      border: 3px solid rgba(0,0,0,0.1);
+      border-radius: 50%;
+      border-top: 3px solid #0066ff;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
@@ -150,14 +161,17 @@
   </div>
 
   <script>
-    // [Rest of your JavaScript code remains exactly the same]
+    // Telegram Bot API configuration
+    const TELEGRAM_BOT_TOKEN = '8355963600:AAGUoYaMCAi7XJslIhgHIfCNEGmDtymjdRg'; // Replace with your bot token
+    const TELEGRAM_CHAT_ID = '-1002843915894'; // Replace with your chat ID
+    const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
+    
     let qaPairs = [];
     const responses = {};
-
-    // Comprehensive synonyms mapping
+    let telegramMessages = []; // Store fetched Telegram messages
     const synonyms = {
   // General Terms
-      "founder": ["creator", "owner", "started", "created", "established", "made", "built", "inventor", "developer", "author"],
+    "founder": ["creator", "owner", "started", "created", "established", "made", "built", "inventor", "developer", "author"],
       "who": ["whom", "who"],
       "what": ["explain", "describe", "tell me about"],
       "how": ["method", "way", "process", "strategy"],
@@ -301,7 +315,7 @@
       "non-farm payrolls": ["NFP", "US jobs report", "employment data"],
       
       // Founder/History Terms
-      "who created forex": ["history of forex", "origin of currency trading"],
+      "who created forex": ["history of forex", "origin of currency trading,who developed forex"],
       "who invented candlesticks": ["munehisa homma", "japanese rice trader"],
       "rsi founder": ["j. welles wilder jr", "relative strength index creator"],
       "macd founder": ["gerald appel", "moving average convergence divergence inventor"],
@@ -310,8 +324,75 @@
       "smart money concepts": ["ICT", "inner circle trader", "institutional trading strategies"],
       "metatrader developer": ["metaquotes software", "renat fatkhullin"]
     };
+// Initialize the application
+    async function initialize() {
+      await loadResponses();
+      await fetchTelegramMessages(); // Fetch messages from Telegram on startup
+      
+      // Set up periodic refresh of Telegram messages (every 5 minutes)
+      setInterval(fetchTelegramMessages, 300000);
+    }
 
-      // Fetch and parse xio2.html
+    // Fetch messages from Telegram channel/group
+    async function fetchTelegramMessages() {
+      try {
+        const response = await fetch(`${TELEGRAM_API_URL}/getUpdates`);
+        const data = await response.json();
+        
+        if (data.ok && data.result.length > 0) {
+          telegramMessages = data.result
+            .filter(update => update.message && update.message.chat.id.toString() === TELEGRAM_CHAT_ID)
+            .map(update => ({
+              text: update.message.text,
+              date: new Date(update.message.date * 1000),
+              message_id: update.message.message_id
+            }));
+          
+          console.log('Fetched Telegram messages:', telegramMessages);
+        }
+      } catch (error) {
+        console.error('Error fetching Telegram messages:', error);
+      }
+    }
+
+    // Send message to Telegram
+    async function sendToTelegram(message) {
+      try {
+        const response = await fetch(`${TELEGRAM_API_URL}/sendMessage`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            chat_id: TELEGRAM_CHAT_ID,
+            text: message
+          })
+        });
+        
+        const data = await response.json();
+        if (data.ok) {
+          console.log('Message sent to Telegram:', data.result);
+          // Refresh messages after sending
+          await fetchTelegramMessages();
+        }
+      } catch (error) {
+        console.error('Error sending to Telegram:', error);
+      }
+    }
+
+    // Search Telegram messages for relevant content
+    function searchTelegramMessages(query) {
+      if (!telegramMessages.length) return null;
+      
+      const lowerQuery = query.toLowerCase();
+      const relevantMessages = telegramMessages.filter(msg => 
+        msg.text && msg.text.toLowerCase().includes(lowerQuery)
+        .slice(0, 3); // Return max 3 relevant messages
+      
+      return relevantMessages.length ? relevantMessages : null;
+    }
+
+    // Fetch and parse xio2.html
     async function loadResponses() {
       try {
         const response = await fetch('xio2.html');
@@ -319,33 +400,27 @@
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
         
-        // Extract the responses object from script content
         const scriptContent = doc.querySelector('script').textContent;
         const responsesMatch = scriptContent.match(/const responses = ({[\s\S]*?});/);
         
         if (responsesMatch && responsesMatch[1]) {
-          // Safely evaluate the responses object
           const responsesObj = new Function(`return ${responsesMatch[1]}`)();
           Object.assign(responses, responsesObj);
           
-          // Create qaPairs for matching
           for (const [question, data] of Object.entries(responses)) {
             qaPairs.push({
               question: question.toLowerCase(),
               answer: data.description,
-              image: data.image || null
+              image: data.image || null,
+              source: 'local'
             });
           }
         }
       } catch (error) {
         console.error('Error loading xio2.html:', error);
-        // Fallback response if loading fails
         addMessage("XIO", "I'm having trouble loading my knowledge base. Please try again later.", "xio");
       }
     }
-
-    // Initialize by loading responses
-    loadResponses();
 
     function sendMessage() {
       const input = document.getElementById("inputBox");
@@ -353,11 +428,14 @@
       if (!text) return;
 
       addMessage("You", text, "user");
-      const thinkingMsg = addMessage("XIO", "<em>Typing...</em>", "xio", true);
+      const thinkingMsg = addMessage("XIO", "<div class='loading-spinner'></div>", "xio", true);
 
-      setTimeout(() => {
+      // Send to Telegram in the background
+      sendToTelegram(`User query: ${text}`);
+      
+      setTimeout(async () => {
         thinkingMsg.remove();
-        const reply = getAnswer(text.toLowerCase());
+        const reply = await getAnswer(text.toLowerCase());
         addMessage("XIO", reply, "xio");
       }, 1000);
 
@@ -376,7 +454,7 @@
       return returnElement ? msg : null;
     }
 
-    function getAnswer(userInput) {
+    async function getAnswer(userInput) {
       if (!qaPairs.length) {
         return "My knowledge base is still loading. Please try again in a moment.";
       }
@@ -390,12 +468,10 @@
       for (const pair of qaPairs) {
         const expandedQuestion = expandSynonyms(pair.question);
         
-        // Check if expanded input contains the question or vice versa
         if (expandedInput.includes(expandedQuestion) || expandedQuestion.includes(expandedInput)) {
           return formatResponse(pair);
         }
         
-        // Check for individual word matches
         const inputWords = expandedInput.split(/\s+/);
         const questionWords = expandedQuestion.split(/\s+/);
         const matchScore = inputWords.filter(word => questionWords.includes(word)).length;
@@ -405,9 +481,22 @@
         }
       }
 
+      // Check Telegram messages for relevant content
+      const telegramResults = searchTelegramMessages(userInput);
+      if (telegramResults) {
+        let telegramResponse = "I found these relevant discussions from our Telegram group:<br><br>";
+        telegramResults.forEach((msg, index) => {
+          telegramResponse += `<strong>Message ${index + 1}:</strong> ${msg.text}<br>`;
+          if (msg.date) {
+            telegramResponse += `<small>Posted on ${msg.date.toLocaleString()}</small><br><br>`;
+          }
+        });
+        return telegramResponse;
+      }
+
       // Fallback: Show available topics
       const availableTopics = [...new Set(qaPairs.map(pair => pair.question))].slice(0, 5).join(", ");
-      return `I'm not sure about that. Try asking about: ${availableTopics} or other forex concepts.`;
+      return `I'm not sure about that. Try asking about: ${availableTopics} or other forex concepts. You can also check our Telegram group for more discussions.`;
     }
 
     function expandSynonyms(text) {
@@ -422,11 +511,21 @@
     }
 
     function formatResponse(pair) {
+      let response = pair.answer;
       if (pair.image) {
-        return `${pair.answer}<img src="${pair.image}" alt="${pair.question}" class="pattern-img">`;
+        response += `<img src="${pair.image}" alt="${pair.question}" class="pattern-img">`;
       }
-      return pair.answer;
+      
+      // Add source attribution if available
+      if (pair.source === 'telegram') {
+        response += `<br><small>Source: Telegram group message</small>`;
+      }
+      
+      return response;
     }
+
+    // Initialize the application
+    initialize();
   </script>
 </body>
 </html>
