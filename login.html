@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Real Traders Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .bot-image {
+      width: 150px;
+      animation: floatBot 3s infinite;
+    }
+
+    @keyframes floatBot {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .chat-box {
+      background: #ffffff;
+      display: inline-block;
+      padding: 10px 15px;
+      border-radius: 12px;
+      margin: 20px auto;
+      color: #0A84FF;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input {
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      padding: 10px 15px;
+      background: #0A84FF;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .link {
+      display: block;
+      margin-top: 10px;
+      color: #0A84FF;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<!-- PNG Bot on Top -->
+<img src="bot.png" alt="AI Bot" class="bot-image" />
+
+<!-- Dynamic Chat Bubble -->
+<div id="chat" class="chat-box">🤖 Hello! Please login.</div>
+
+<!-- Login Form -->
+<form id="loginForm">
+  <input type="text" id="username" placeholder="Enter your name" required />
+  <input type="password" id="password" placeholder="Enter your password" required />
+  <button type="submit">Login</button>
+  <span class="link" onclick="showForgot()">Forgot Password?</span>
+</form>
+
+<!-- Forgot Password Section -->
+<form id="forgotForm" style="display:none;">
+  <input type="text" id="secretName" placeholder="Enter your name" required />
+  <input type="text" id="secretAnswer" placeholder="Enter your secret answer" required />
+  <button type="button" onclick="recoverPassword()">Recover Password</button>
+</form>
+
+<script>
+  const chatBox = document.getElementById("chat");
+  const usernameInput = document.getElementById("username");
+
+  usernameInput.addEventListener("blur", () => {
+    const name = usernameInput.value.trim();
+    if (name) {
+      chatBox.innerText = `👋 Welcome back, ${name}`;
+    }
+  });
+
+  // Handle login
+  document.getElementById("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+
+    // Check stored values in localStorage (simulated DB)
+    const storedPassword = localStorage.getItem(`user_${username}_password`);
+    if (storedPassword && storedPassword === password) {
+      chatBox.innerText = "✅ Login successful! Redirecting...";
+      setTimeout(() => {
+        window.location.href = "realtrader.html";
+      }, 1500);
+    } else {
+      chatBox.innerText = "❌ Invalid username or password!";
+    }
+  });
+
+  function showForgot() {
+    document.getElementById("loginForm").style.display = "none";
+    document.getElementById("forgotForm").style.display = "block";
+    chatBox.innerText = "🕵️ Enter your details to recover password.";
+  }
+
+  async function recoverPassword() {
+    const name = document.getElementById("secretName").value.trim();
+    const answer = document.getElementById("secretAnswer").value.trim();
+
+    // Use Telegram Bot API to get messages
+    const botToken = "YOUR_BOT_TOKEN";
+    const chatId = "YOUR_CHAT_ID";
+    const url = `https://api.telegram.org/bot${botToken}/getUpdates`;
+
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+
+      const messages = data.result.map(item => item.message?.text || "");
+      const matched = messages.find(msg => msg.includes(`Name: ${name}`) && msg.includes(`Secret: ${answer}`));
+
+      if (matched) {
+        const match = matched.match(/Password: ([^\s]+)/);
+        const password = match ? match[1] : "unknown";
+        chatBox.innerText = `🔓 Your password is: ${password}`;
+
+        // Save for login testing
+        localStorage.setItem(`user_${name}_password`, password);
+        document.getElementById("forgotForm").style.display = "none";
+        document.getElementById("loginForm").style.display = "block";
+      } else {
+        chatBox.innerText = "❌ No match found!";
+      }
+    } catch (err) {
+      chatBox.innerText = "⚠️ Error connecting to Telegram API!";
+    }
+  }
+</script>
+
+</body>
+  </html>
