@@ -61,12 +61,23 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
-    input, select {
+    input, select, button {
       width: 100%;
       margin-bottom: 15px;
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 8px;
+    }
+
+    button {
+      background-color: #0A84FF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #007AFF;
     }
 
     .wave {
@@ -102,6 +113,9 @@
     <form id="traderForm">
       <input type="text" id="username" name="username" placeholder="Enter your name" required />
       <input type="email" id="email" name="email" placeholder="Enter your email" required />
+      <button type="button" id="sendCodeBtn">Send Verification Code</button>
+      <input type="text" id="verificationCode" placeholder="Enter code from email" required />
+      <span id="codeStatus" style="font-size: 14px; display: block; margin-bottom: 10px;"></span>
       <select id="experience" name="experience" required>
         <option value="">Select trading experience</option>
         <option value="1">Less than 1 year</option>
@@ -109,16 +123,18 @@
         <option value="5+">5 years or more</option>
       </select>
       <input type="text" id="secret" name="secret" placeholder="Your secret question answer" required />
-      <input type="text" id="password" name="password" placeholder="Enter your password" required />
+      <input type="password" id="password" name="password" placeholder="Enter your password" required />
       <input type="submit" value="Join Real Traders" />
     </form>
   </div>
 </div>
+
 <script>
   const chatBox = document.getElementById("chat");
   const botContainer = document.getElementById("botContainer");
 
   let userName = "";
+  let verified = false;
 
   document.getElementById("username").addEventListener("blur", function () {
     userName = this.value.trim();
@@ -142,14 +158,67 @@
     }
   });
 
+  // Handle email verification
+  document.getElementById("sendCodeBtn").addEventListener("click", function () {
+    const email = document.getElementById("email").value.trim();
+    if (!email) {
+      alert("Please enter your email first.");
+      return;
+    }
+
+    fetch("/send-code", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("codeStatus").innerText = data.message;
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById("codeStatus").innerText = "❌ Failed to send code.";
+      });
+  });
+
+  document.getElementById("verificationCode").addEventListener("blur", function () {
+    const code = this.value.trim();
+    const email = document.getElementById("email").value.trim();
+
+    if (!code || !email) return;
+
+    fetch("/verify-code", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, code }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.verified) {
+          document.getElementById("codeStatus").innerText = "✅ Email verified!";
+          verified = true;
+        } else {
+          document.getElementById("codeStatus").innerText = "❌ Incorrect code.";
+          verified = false;
+        }
+      });
+  });
+
+  // Submit final form
   document.getElementById("traderForm").addEventListener("submit", function (e) {
     e.preventDefault();
+
+    if (!verified) {
+      alert("Please verify your email before continuing.");
+      return;
+    }
 
     const formData = {
       username: document.getElementById("username").value,
       email: document.getElementById("email").value,
       experience: document.getElementById("experience").value,
       secret: document.getElementById("secret").value,
+      password: document.getElementById("password").value,
     };
 
     fetch("/register", {
@@ -157,14 +226,14 @@
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     })
-    .then(res => res.json())
-    .then(data => {
-      chatBox.innerText = `🎉 Thanks ${formData.username}, you're now registered!`;
-    })
-    .catch(err => {
-      console.error(err);
-      chatBox.innerText = "⚠️ Something went wrong. Try again later.";
-    });
+      .then(res => res.json())
+      .then(data => {
+        chatBox.innerText = `🎉 Thanks ${formData.username}, you're now registered!`;
+      })
+      .catch(err => {
+        console.error(err);
+        chatBox.innerText = "⚠️ Something went wrong. Try again later.";
+      });
   });
 </script>
 </body>
