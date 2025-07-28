@@ -1,0 +1,52 @@
+/* Add these new styles to your existing CSS */
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tools {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.detections {
+    display: flex;
+    gap: 20px;
+}
+
+.detected-items {
+    flex: 1;
+}
+
+.element-card {
+    background: white;
+    border-left: 4px solid #2962ff;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.element-card h4 {
+    margin-top: 0;
+    color: #2962ff;
+}
+
+.element-card button {
+    padding: 5px 10px;
+    margin-right: 5px;
+    background: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.element-card button:hover {
+    background: #e0e0e0;
+}
+
+canvas {
+    cursor: crosshair;
+}
