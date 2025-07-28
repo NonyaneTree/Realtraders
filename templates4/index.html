@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Forex Pattern Recognition</title>
+  <link rel="stylesheet" href="{{ url_for('static4', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Advanced Forex Pattern Recognition</h1>
+    
+    <div class="controls">
+      <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="imageInput" name="file" accept="image/*">
+        <button type="button" id="analyzeBtn">Analyze Chart</button>
+        <button type="button" id="clearBtn">Clear</button>
+        
+        <div class="tools">
+          <button type="button" id="drawTrendlineBtn">Draw Trendline</button>
+          <button type="button" id="drawZoneBtn">Mark Zone</button>
+          <button type="button" id="undoBtn">Undo</button>
+        </div>
+      </form>
+    </div>
+    
+    <div class="canvas-container">
+      <canvas id="chartCanvas" width="900" height="500"></canvas>
+    </div>
+    
+    <div class="detections">
+      <div class="detected-items" id="detectedItems">
+        <h3>Detected Elements</h3>
+        <!-- Items will be added here dynamically -->
+      </div>
+      
+      <div class="pattern-info">
+        <h3>Pattern Reference</h3>
+        <!-- Keep pattern info as before -->
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static4', filename='script.js') }}"></script>
+</body>
+</html>
