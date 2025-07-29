@@ -4,3 +4,4 @@ gunicorn==21.2.0
 opencv-python
 numpy==1.26.4
 scikit-image==0.22.0
+pandas==2.2.2
