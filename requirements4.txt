@@ -5,6 +5,5 @@ opencv-python-headless==4.10.0.84
 scikit-image==0.21.0
 pandas==2.2.2
 tensorflow-cpu==2.13.0
-tensorflow-cpu==2.13.0
 scikit-learn==1.4.2
-TA-Lib==0.4.0
+ta==0.11.0 
