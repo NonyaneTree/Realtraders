@@ -3,3 +3,6 @@ gunicorn
 requests
 email-validator
 dnspython
+flask-cors
+flask-sqlalchemy
+psycopg2-binary
