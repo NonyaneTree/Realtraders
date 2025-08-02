@@ -6,7 +6,7 @@ import smtplib
 import random
 
 # === CONFIGURATION ===
-DATABASE_URI = "postgresql://real_traders_user:9hqUS4p6Vx7T4gam40WJ0y8hIUmct9al@dpg-d274k83uibrs73cup0j0-a.oregon-postgres.render.com/real_traders"
+DATABASE_URI = ""
 EMAIL = "nonyaneinvestmenttree@gmail.com"  # 🔁 Replace with your Gmail
 APP_PASSWORD = "qiku gpty uxso ygwi"  # 🔁 Replace with your Gmail App Password
 
