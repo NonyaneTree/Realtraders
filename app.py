@@ -5,27 +5,41 @@ from email.mime.text import MIMEText
 import smtplib
 import random
 
-from config import DATABASE_URI, EMAIL, APP_PASSWORD
-from models import db, User
+# === CONFIGURATION ===
+DATABASE_URI = "postgresql://real_traders_user:9hqUS4p6Vx7T4gam40WJ0y8hIUmct9al@dpg-d274k83uibrs73cup0j0-a.oregon-postgres.render.com/real_traders"
+EMAIL = "nonyaneinvestmenttree@gmail.com"  # 🔁 Replace with your Gmail
+APP_PASSWORD = "qiku gpty uxso ygwi"  # 🔁 Replace with your Gmail App Password
 
+# === FLASK APP SETUP ===
 app = Flask(__name__)
 CORS(app)
 
-# Database setup
+# === DATABASE SETUP ===
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db.init_app(app)
+db = SQLAlchemy(app)
 
-# Verification storage
-verification_store = {}
+# === DATABASE MODEL ===
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    experience = db.Column(db.String(100))
+    secret = db.Column(db.String(100))
+    password = db.Column(db.String(200), nullable=False)
 
+# === CREATE TABLES BEFORE FIRST REQUEST ===
 @app.before_first_request
 def create_tables():
     db.create_all()
 
+# === IN-MEMORY VERIFICATION STORE ===
+verification_store = {}
+
+# === ROUTES ===
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html')  # Optional: index.html in templates folder
 
 @app.route('/send-code', methods=['POST'])
 def send_code():
@@ -48,7 +62,6 @@ def send_code():
             server.send_message(msg)
 
         return jsonify({"message": "✅ Code sent!"})
-
     except Exception as e:
         print(e)
         return jsonify({"message": "❌ Failed to send email."}), 500
@@ -81,5 +94,6 @@ def register():
         print(e)
         return jsonify({"message": "❌ Registration failed."}), 500
 
+# === RUN ===
 if __name__ == '__main__':
     app.run(debug=True)
