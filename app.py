@@ -1,148 +1,69 @@
-from flask import Flask, request, jsonify, render_template
-from flask_sqlalchemy import SQLAlchemy
-import random
-import smtplib
-import ssl
-from email.message import EmailMessage
-import requests
-from werkzeug.security import generate_password_hash, check_password_hash
-import os
+from flask import Flask, request, jsonify, session from flask_sqlalchemy import SQLAlchemy from flask_mail import Mail, Message from datetime import datetime import random import os from werkzeug.security import generate_password_hash, check_password_hash
 
-app = Flask(__name__)
+app = Flask(name)
 
-# Render PostgreSQL configuration
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL', "postgresql://real_traders_user:9hqUS4p6Vx7T4gam40WJ0y8hIUmct9al@dpg-d274k83uibrs73cup0j0-a/real_traders")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-db = SQLAlchemy(app)
+Configuration
 
-# Environment variables for secrets
-BOT_TOKEN = os.environ.get('BOT_TOKEN', "7271224033:AAH22jbuHkyvJQuiP_HhqMeN9NjADo6J7vk")
-CHAT_ID = os.environ.get('CHAT_ID', "-1002826854422")
-EMAIL_SENDER = os.environ.get('EMAIL_SENDER', "nonyaneinvestmenttree@gmail.com")
-EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', "qiku gpty uxso ygwi")
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://real_traders_user:9hqUS4p6Vx7T4gam40WJ0y8hIUmct9al@dpg-d274k83uibrs73cup0j0-a/real_traders" app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False app.config["SECRET_KEY"] = "qiku gpty uxso ygwi" app.config["MAIL_SERVER"] = "smtp.gmail.com" app.config["MAIL_PORT"] = 587 app.config["MAIL_USE_TLS"] = True app.config["MAIL_USERNAME"] = "nonyaneinvestmenttree@gmail.com" app.config["MAIL_PASSWORD"] = os.environ.get("EMAIL_PASSWORD")  # Use environment variable for security
 
-verification_codes = {}
+Initialize extensions
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100))
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
-    experience = db.Column(db.String(100))
-    secret = db.Column(db.String(100))
+db = SQLAlchemy(app) mail = Mail(app)
 
-@app.route("/")
-def home():
-    return render_template("index.html")
+Models
 
-@app.route("/send-code", methods=["POST"])
-def send_code():
-    data = request.get_json()
-    email = data.get("email")
+class User(db.Model): id = db.Column(db.Integer, primary_key=True) email = db.Column(db.String(100), unique=True, nullable=False) name = db.Column(db.String(50), nullable=False) password_hash = db.Column(db.String(200), nullable=False) verified = db.Column(db.Boolean, default=False) joined_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    if not email:
-        return jsonify({"message": "❌ Email is required"}), 400
+def set_password(self, password):
+    self.password_hash = generate_password_hash(password)
 
-    if User.query.filter_by(email=email).first():
-        return jsonify({"message": "❌ This email is already registered."}), 400
+def check_password(self, password):
+    return check_password_hash(self.password_hash, password)
 
-    code = str(random.randint(100000, 999999))
-    verification_codes[email] = code
+class VerificationCode(db.Model): id = db.Column(db.Integer, primary_key=True) email = db.Column(db.String(100), nullable=False) code = db.Column(db.String(6), nullable=False) created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    try:
-        msg = EmailMessage()
-        msg.set_content(f"Your verification code is: {code}")
-        msg["Subject"] = "Your Real Traders Verification Code"
-        msg["From"] = EMAIL_SENDER
-        msg["To"] = email
+Routes
 
-        context = ssl.create_default_context()
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-            server.login(EMAIL_SENDER, EMAIL_PASSWORD)
-            server.send_message(msg)
+@app.route("/send-code", methods=["POST"]) def send_code(): email = request.json.get("email") if not email: return jsonify({"success": False, "message": "Email is required"}), 400
 
-        return jsonify({"message": "📩 Code sent to your email!"}), 200
+code = str(random.randint(100000, 999999))
+verification = VerificationCode(email=email, code=code)
+db.session.add(verification)
+db.session.commit()
 
-    except Exception as e:
-        return jsonify({"message": f"❌ Failed to send email: {str(e)}"}), 500
+msg = Message("Your Verification Code", recipients=[email])
+msg.body = f"Your verification code is: {code}"
+mail.send(msg)
 
-@app.route("/verify-code", methods=["POST"])
-def verify_code():
-    data = request.get_json()
-    email = data.get("email")
-    code = data.get("code")
+return jsonify({"success": True, "message": "Verification code sent"})
 
-    if not email or not code:
-        return jsonify({"verified": False, "message": "Email and code are required"})
+@app.route("/register", methods=["POST"]) def register(): name = request.json.get("name") email = request.json.get("email") password = request.json.get("password") code = request.json.get("code")
 
-    if verification_codes.get(email) == code:
-        return jsonify({"verified": True, "message": "✅ Email verified!"})
-    return jsonify({"verified": False, "message": "❌ Incorrect code."})
+if not all([name, email, password, code]):
+    return jsonify({"success": False, "message": "Missing fields"}), 400
 
-@app.route("/register", methods=["POST"])
-def register():
-    data = request.get_json()
-    
-    required_fields = ["username", "email", "experience", "secret", "password"]
-    if not all(field in data for field in required_fields):
-        return jsonify({"status": "failed", "error": "All fields are required"}), 400
+latest_code = VerificationCode.query.filter_by(email=email).order_by(VerificationCode.created_at.desc()).first()
+if not latest_code or latest_code.code != code:
+    return jsonify({"success": False, "message": "Invalid or expired code"}), 400
 
-    username = data.get("username")
-    email = data.get("email")
-    experience = data.get("experience")
-    secret = data.get("secret")
-    password = data.get("password")
+if User.query.filter_by(email=email).first():
+    return jsonify({"success": False, "message": "User already exists"}), 400
 
-    if User.query.filter_by(email=email).first():
-        return jsonify({"status": "failed", "error": "Email already registered"}), 400
+user = User(name=name, email=email, verified=True)
+user.set_password(password)
+db.session.add(user)
+db.session.commit()
 
-    hashed_password = generate_password_hash(password)
+return jsonify({"success": True, "message": "User registered successfully"})
 
-    new_user = User(
-        username=username,
-        email=email,
-        password=hashed_password,
-        experience=experience,
-        secret=secret
-    )
+@app.route("/login", methods=["POST"]) def login(): email = request.json.get("email") password = request.json.get("password")
 
-    try:
-        db.session.add(new_user)
-        db.session.commit()
+user = User.query.filter_by(email=email).first()
+if not user or not user.check_password(password):
+    return jsonify({"success": False, "message": "Invalid credentials"}), 401
 
-        message = (
-            f"🧠 New Real Trader Registered!\n"
-            f"Name: {username}\n"
-            f"Email: {email}\n"
-            f"Experience: {experience}\n"
-            f"Secret: {secret}"
-        )
+session["user_id"] = user.id
+return jsonify({"success": True, "message": "Logged in successfully"})
 
-        url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-        payload = {"chat_id": CHAT_ID, "text": message}
-        requests.post(url, json=payload)
+if name == "main": with app.app_context(): db.create_all() app.run(debug=True)
 
-        return jsonify({"status": "success", "username": username}), 200
-
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"status": "failed", "error": str(e)}), 500
-
-@app.route("/login", methods=["POST"])
-def login():
-    data = request.get_json()
-    email = data.get("email")
-    password = data.get("password")
-
-    if not email or not password:
-        return jsonify({"status": "failed", "error": "Email and password are required"}), 400
-
-    user = User.query.filter_by(email=email).first()
-    if user and check_password_hash(user.password, password):
-        return jsonify({"status": "success", "username": user.username}), 200
-    return jsonify({"status": "failed", "error": "Invalid credentials"}), 401
-
-if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 10000)))
