@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify, session, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from datetime import datetime
@@ -45,6 +45,10 @@ class VerificationCode(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 # Routes
+@app.route("/")
+def index():
+    return render_template("index.html")
+
 @app.route("/send-code", methods=["POST"])
 def send_code():
     email = request.json.get("email")
