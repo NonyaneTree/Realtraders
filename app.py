@@ -14,7 +14,7 @@ app = Flask(__name__)
 BOT_TOKEN = "7271224033:AAH22jbuHkyvJQuiP_HhqMeN9NjADo6J7vk"
 CHAT_ID = "-1002826854422"
 EMAIL_SENDER = "nonyaneinvestmenttree@gmail.com"
-EMAIL_PASSWORD = "qiku gpty uxso ygwi"
+EMAIL_PASSWORD = "uafm mdts tnzw enrf"
 
 # PostgreSQL configuration
 DATABASE_URL = "postgresql://real_traders_user:9hqUS4p6Vx7T4gam40WJ0y8hIUmct9al@dpg-d274k83uibrs73cup0j0-a/real_traders"
