@@ -29,7 +29,7 @@ def allowed_file(filename):
 # Route: home page
 @app.route('/')
 def index():
-    return render_templates4('index.html')
+    return render_template('xio.html')
 
 # Route: image upload
 @app.route('/upload', methods=['POST'])
