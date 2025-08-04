@@ -3,8 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Real Traders - Welcome</title>
+  <title>Real Traders - Developer Access</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: 'Arial', sans-serif;
       margin: 0;
@@ -15,8 +21,11 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
       text-align: center;
+      overflow-x: hidden;
+      position: relative;
+      padding: 20px;
     }
 
     .welcome-message {
@@ -28,6 +37,10 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
       margin-bottom: 30px;
+      position: relative;
+      z-index: 10;
+      max-width: 800px;
+      animation: fadeIn 1s ease-out;
     }
 
     .auth-container {
@@ -38,6 +51,12 @@
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
       text-align: center;
       border: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 30px;
+      animation: slideUp 0.8s ease-out;
     }
 
     .btn {
@@ -79,6 +98,19 @@
       box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
     }
 
+    .dev-btn {
+      background-color: rgba(155, 89, 182, 0.8);
+      color: white;
+      box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+      margin-top: 10px;
+    }
+
+    .dev-btn:hover {
+      background-color: rgba(155, 89, 182, 1);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+
     h2 {
       margin-bottom: 10px;
       font-size: 28px;
@@ -92,9 +124,147 @@
       opacity: 0.9;
       color: rgba(255, 255, 255, 0.8);
     }
+
+    .dev-container {
+      display: none;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      padding: 25px;
+      border-radius: 15px;
+      max-width: 500px;
+      margin: 20px auto;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .dev-container.visible {
+      display: block;
+    }
+
+    .dev-title {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: #9b59b6;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .dev-input {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 15px 0;
+      border: none;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 16px;
+      text-align: center;
+      outline: none;
+      transition: all 0.3s;
+      border: 1px solid transparent;
+    }
+
+    .dev-input:focus {
+      border-color: #9b59b6;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .submit-btn {
+      background: linear-gradient(45deg, #9b59b6, #8e44ad);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 12px 35px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 10px;
+      box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+
+    .message {
+      margin-top: 15px;
+      min-height: 20px;
+      font-size: 14px;
+      color: #e74c3c;
+    }
+
+    .success {
+      color: #2ecc71;
+    }
+
+    .dev-hint {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 15px;
+      font-style: italic;
+    }
+
+    .floating-letters {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .floating-letter {
+      position: absolute;
+      color: rgba(255, 255, 255, 0.05);
+      font-size: 24px;
+      font-weight: bold;
+      user-select: none;
+      animation: float 15s linear infinite;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) translateX(0); }
+      100% { transform: translateY(-100px) translateX(calc(100vw - 100px)); }
+    }
+
+    @media (max-width: 768px) {
+      .welcome-message {
+        font-size: 18px;
+        padding: 15px;
+      }
+      
+      .auth-container {
+        padding: 1.5rem;
+      }
+      
+      .btn {
+        padding: 10px 25px;
+        margin: 10px;
+        font-size: 14px;
+      }
+    }
   </style>
 </head>
 <body>
+  <div class="floating-letters" id="floatingLetters"></div>
+  
   <div class="welcome-message">
     Welcome to RealTraders AI website powered by XIOChat3.33.<br>
     Real Traders is a member of Nonyane Investment Tree<br>
@@ -108,6 +278,117 @@
       <a href="https://realtraders-login.onrender.com" class="btn login-btn">Login</a>
       <a href="https://realtraders-reg.onrender.com" class="btn register-btn">Register</a>
     </div>
+    <button id="devBtn" class="btn dev-btn">XIO.3</button>
   </div>
+  
+  <div class="dev-container" id="devContainer">
+    <div class="dev-title">Developer Access Portal</div>
+    <p>Enter bypass code for elevated privileges</p>
+    
+    <input type="text" class="dev-input" id="devInput" placeholder="Enter bypass code" autocomplete="off">
+    <div class="message" id="message"></div>
+    
+    <button class="submit-btn" id="submitBtn">Authenticate</button>
+    
+  </div>
+
+  <script>
+    // Create floating letters in background
+    function createFloatingLetters() {
+      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const container = document.getElementById('floatingLetters');
+      
+      for (let i = 0; i < 30; i++) {
+        const letter = document.createElement('div');
+        letter.className = 'floating-letter';
+        letter.textContent = letters.charAt(Math.floor(Math.random() * letters.length));
+        
+        // Random position
+        const leftPos = Math.random() * 100;
+        letter.style.left = `${leftPos}vw`;
+        
+        // Random animation delay and duration
+        const delay = Math.random() * 15;
+        const duration = 10 + Math.random() * 20;
+        letter.style.animation = `float ${duration}s linear ${delay}s infinite`;
+        
+        // Random size and opacity
+        const size = 20 + Math.random() * 30;
+        letter.style.fontSize = `${size}px`;
+        letter.style.opacity = 0.05 + Math.random() * 0.1;
+        
+        container.appendChild(letter);
+      }
+    }
+    
+    // Initialize page
+    window.onload = function() {
+      createFloatingLetters();
+      
+      const devBtn = document.getElementById('devBtn');
+      const devContainer = document.getElementById('devContainer');
+      const devInput = document.getElementById('devInput');
+      const submitBtn = document.getElementById('submitBtn');
+      const message = document.getElementById('message');
+      
+      // Toggle dev container
+      devBtn.addEventListener('click', () => {
+        devContainer.classList.toggle('visible');
+        if (devContainer.classList.contains('visible')) {
+          devInput.focus();
+        }
+      });
+      
+      // Submit bypass code
+      function submitCode() {
+        const code = devInput.value.trim().toUpperCase();
+        const validCodes = ['THULANENONYANEPRO', 'SFISOMSIBI'];
+        
+        if (validCodes.includes(code)) {
+          message.textContent = "Access granted! Redirecting...";
+          message.classList.add('success');
+          message.classList.remove('error');
+          
+          // Add a visual effect
+          document.body.style.background = 'linear-gradient(135deg, #1a1a2e, #0f3460, #1a1a2e)';
+          
+          setTimeout(() => {
+            window.location.href = 'realtraders.html';
+          }, 1500);
+        } else {
+          message.textContent = "Invalid access code. Please try again.";
+          message.classList.add('error');
+          message.classList.remove('success');
+          
+          // Shake animation for error
+          devInput.style.animation = 'shake 0.5s';
+          setTimeout(() => {
+            devInput.style.animation = '';
+          }, 500);
+        }
+      }
+      
+      // Handle submit button
+      submitBtn.addEventListener('click', submitCode);
+      
+      // Handle Enter key in input
+      devInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          submitCode();
+        }
+      });
+      
+      // Add shake animation for errors
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-5px); }
+          75% { transform: translateX(5px); }
+        }
+      `;
+      document.head.appendChild(style);
+    };
+  </script>
 </body>
-</html>
+      </html>
