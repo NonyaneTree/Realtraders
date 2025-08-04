@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Real Traders Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      background: #fff;
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background-color: #0A84FF;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0066cc;
+    }
+    .link {
+      margin-top: 10px;
+      color: #0A84FF;
+      cursor: pointer;
+      text-decoration: underline;
+      display: inline-block;
+    }
+    #message {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    #forgotForm {
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Enter your email" required />
+      <input type="password" id="password" placeholder="Enter your password" required />
+      <button type="submit">Login</button>
+    </form>
+    <span class="link" id="showForgot">Forgot Password?</span>
+    <div id="message"></div>
+
+    <form id="forgotForm">
+      <h3>Recover Password</h3>
+      <input type="email" id="recoverEmail" placeholder="Enter your email" required />
+      <input type="text" id="secretAnswer" placeholder="Enter your secret answer" required />
+      <button type="submit">Recover Password</button>
+    </form>
+  </div>
+
+<script>
+  const loginForm = document.getElementById('loginForm');
+  const forgotForm = document.getElementById('forgotForm');
+  const showForgot = document.getElementById('showForgot');
+  const messageDiv = document.getElementById('message');
+
+  showForgot.addEventListener('click', () => {
+    forgotForm.style.display = forgotForm.style.display === 'block' ? 'none' : 'block';
+    messageDiv.textContent = '';
+  });
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    messageDiv.textContent = 'Logging in...';
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    try {
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.status === 'success') {
+        messageDiv.style.color = 'green';
+        messageDiv.textContent = data.message + ' Redirecting...';
+        setTimeout(() => {
+          window.location.href = '../realtraders.html';
+        }, 1500);
+      } else {
+        messageDiv.style.color = 'red';
+        messageDiv.textContent = data.message || 'Login failed';
+      }
+    } catch (err) {
+      messageDiv.style.color = 'red';
+      messageDiv.textContent = 'Error connecting to server.';
+    }
+  });
+
+  forgotForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    messageDiv.textContent = 'Recovering password...';
+
+    const email = document.getElementById('recoverEmail').value.trim();
+    const secret = document.getElementById('secretAnswer').value.trim();
+
+    try {
+      const res = await fetch('/recover-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, secret })
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.status === 'success') {
+        messageDiv.style.color = 'green';
+        messageDiv.textContent = `Your password is: ${data.password}`;
+        forgotForm.style.display = 'none';
+      } else {
+        messageDiv.style.color = 'red';
+        messageDiv.textContent = data.message || 'Recovery failed';
+      }
+    } catch (err) {
+      messageDiv.style.color = 'red';
+      messageDiv.textContent = 'Error connecting to server.';
+    }
+  });
+</script>
+
+</body>
+        </html>
