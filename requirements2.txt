@@ -1,3 +1,8 @@
 Flask
 gunicorn
 requests
+dnspython
+flask-cors
+flask-sqlalchemy
+psycopg2-binary
+Flask-Mail>=0.9.1
