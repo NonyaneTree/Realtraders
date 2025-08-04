@@ -154,23 +154,3 @@ def get_chatgpt_analysis(image_path):
 
 if __name__ == '__main__':
     app.run(debug=True)
-```
-
-### Summary of Changes:
-- **Environment Variable Loading**: The `dotenv` package is imported, and `load_dotenv()` is called at the start to load your environment variables from a `.env` file.
-- **OpenAI API Key Initialization**: The OpenAI API key is fetched from the environment using `os.getenv('OPENAI_API_KEY')`.
-
-### Additional Steps:
-1. **Create a `.env` File**: If you haven't already, create a `.env` file in your project directory and add your OpenAI API key:
-   ```
-   OPENAI_API_KEY=your_openai_api_key_here
-   ```
-
-2. **Install Python Dotenv**: Ensure you have the `python-dotenv` package installed in your environment:
-   ```bash
-   pip install python-dotenv
-   ```
-
-3. **Secure Your Environment**: Make sure to add `.env` to your `.gitignore` file to prevent it from being tracked by version control.
-
-This setup will help ensure that your API key is kept secure while allowing your application to function properly.
