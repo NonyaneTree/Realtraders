@@ -1,46 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Advanced Forex Pattern Recognition</title>
-  <link rel="stylesheet" href="{{ url_for('static4', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Chart Analyzer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .upload-box {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        .upload-box:hover {
+            border-color: #4CAF50;
+        }
+        .file-input {
+            display: none;
+        }
+        .upload-label {
+            display: block;
+            padding: 15px 25px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background 0.3s;
+        }
+        .upload-label:hover {
+            background: #45a049;
+        }
+        .analyze-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        .analyze-btn:hover {
+            background: #2980b9;
+        }
+        .analyze-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+        .loading {
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .results {
+            margin-top: 40px;
+            display: none;
+        }
+        .image-comparison {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .image-container {
+            flex: 1;
+            min-width: 300px;
+        }
+        .image-container img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        .analysis-data {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        .error {
+            color: #e74c3c;
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Advanced Forex Pattern Recognition</h1>
-    
-    <div class="controls">
-      <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" id="imageInput" name="file" accept="image/*">
-        <button type="button" id="analyzeBtn">Analyze Chart</button>
-        <button type="button" id="clearBtn">Clear</button>
+    <div class="container">
+        <h1>Trading Chart Analyzer</h1>
         
-        <div class="tools">
-          <button type="button" id="drawTrendlineBtn">Draw Trendline</button>
-          <button type="button" id="drawZoneBtn">Mark Zone</button>
-          <button type="button" id="undoBtn">Undo</button>
+        <div class="upload-box">
+            <input type="file" id="chartFile" class="file-input" accept="image/png, image/jpeg">
+            <label for="chartFile" class="upload-label">Choose Chart Image</label>
+            <p id="fileName" style="margin-top: 10px;"></p>
         </div>
-      </form>
+        
+        <button id="analyzeBtn" class="analyze-btn" disabled>Analyze Chart</button>
+        
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Analyzing chart with AI...</p>
+        </div>
+        
+        <div id="error" class="error">
+            An error occurred. Please try again.
+        </div>
+        
+        <div id="results" class="results">
+            <h2>Analysis Results</h2>
+            
+            <div class="image-comparison">
+                <div class="image-container">
+                    <h3>Original Chart</h3>
+                    <img id="originalImage" alt="Original chart">
+                </div>
+                <div class="image-container">
+                    <h3>Annotated Chart</h3>
+                    <img id="annotatedImage" alt="Annotated chart">
+                </div>
+            </div>
+            
+            <h3>Analysis Details</h3>
+            <div class="analysis-data">
+                <pre id="analysisData"></pre>
+            </div>
+        </div>
     </div>
-    
-    <div class="canvas-container">
-      <canvas id="chartCanvas" width="900" height="500"></canvas>
-    </div>
-    
-    <div class="detections">
-      <div class="detected-items" id="detectedItems">
-        <h3>Detected Elements</h3>
-        <!-- Items will be added here dynamically -->
-      </div>
-      
-      <div class="pattern-info">
-        <h3>Pattern Reference</h3>
-        <!-- Keep pattern info as before -->
-      </div>
-    </div>
-  </div>
 
-  <script src="{{ url_for('static4', filename='script.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('chartFile');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const fileName = document.getElementById('fileName');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const error = document.getElementById('error');
+            
+            // Handle file selection
+            fileInput.addEventListener('change', function() {
+                if (this.files.length) {
+                    fileName.textContent = this.files[0].name;
+                    analyzeBtn.disabled = false;
+                } else {
+                    fileName.textContent = '';
+                    analyzeBtn.disabled = true;
+                }
+            });
+            
+            // Handle form submission
+            analyzeBtn.addEventListener('click', async function() {
+                if (!fileInput.files.length) return;
+                
+                // Show loading state
+                analyzeBtn.disabled = true;
+                loading.style.display = 'block';
+                results.style.display = 'none';
+                error.style.display = 'none';
+                
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                
+                try {
+                    const response = await fetch('/analyze', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Analysis failed');
+                    }
+                    
+                    const result = await response.json();
+                    
+                    // Display results
+                    document.getElementById('originalImage').src = `/uploads/${result.original}`;
+                    document.getElementById('annotatedImage').src = `/uploads/${result.annotated}`;
+                    document.getElementById('analysisData').textContent = 
+                        JSON.stringify(result.analysis, null, 2);
+                    
+                    results.style.display = 'block';
+                    
+                } catch (err) {
+                    console.error('Error:', err);
+                    error.style.display = 'block';
+                } finally {
+                    loading.style.display = 'none';
+                    analyzeBtn.disabled = false;
+                }
+            });
+        });
+    </script>
 </body>
-</html>
+  </html>
