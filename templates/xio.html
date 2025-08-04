@@ -8,6 +8,7 @@
   <h2>Upload an Image</h2>
   <form id="uploadForm" enctype="multipart/form-data">
     <input type="file" id="imageInput" name="image" accept="image/*" required><br><br>
+    <img id="preview" width="200" style="display:none;" /><br>
     <button type="submit">Analyze Image</button>
   </form>
 
@@ -15,11 +16,26 @@
   <div id="response"></div>
 
   <script>
+    const imageInput = document.getElementById("imageInput");
+    const preview = document.getElementById("preview");
+
+    imageInput.addEventListener("change", () => {
+      const file = imageInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          preview.src = reader.result;
+          preview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
     document.getElementById("uploadForm").addEventListener("submit", async (event) => {
       event.preventDefault();
 
       const formData = new FormData();
-      const file = document.getElementById("imageInput").files[0];
+      const file = imageInput.files[0];
       formData.append("image", file);
 
       try {
@@ -27,6 +43,11 @@
           method: "POST",
           body: formData,
         });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Server error: ${errorText}`);
+        }
 
         const result = await response.json();
         document.getElementById("response").innerText = result.description;
