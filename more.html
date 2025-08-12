@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forex Trading Glossary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #2c3e50);
+            color: #f0f2f5;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            color: #00c9ff;
+            text-shadow: 0 0 10px rgba(0, 201, 255, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .search-container {
+            max-width: 600px;
+            margin: 30px auto;
+            position: relative;
+        }
+        
+        #searchInput {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding-left: 20px;
+            border: 2px solid rgba(0, 201, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        #searchInput:focus {
+            outline: none;
+            border-color: #00c9ff;
+            box-shadow: 0 0 15px rgba(0, 201, 255, 0.5);
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: #00c9ff;
+            color: #1a2a6c;
+            box-shadow: 0 0 15px rgba(0, 201, 255, 0.5);
+        }
+        
+        .glossary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .term-card {
+            background: rgba(30, 40, 80, 0.6);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(0, 201, 255, 0.2);
+            padding: 20px;
+        }
+        
+        .term-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .term-title {
+            font-size: 1.4rem;
+            color: #00c9ff;
+            margin-bottom: 10px;
+        }
+        
+        .term-type {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            display: inline-block;
+            padding: 3px 10px;
+            background: rgba(0, 201, 255, 0.2);
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .term-image {
+            width: 100%;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #2c3e50;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00c9ff;
+            font-weight: bold;
+        }
+        
+        .term-description {
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .term-details {
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .no-results {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 50px;
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+        
+        .category-title {
+            font-size: 1.8rem;
+            margin: 40px 0 20px;
+            color: #00c9ff;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(0, 201, 255, 0.3);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 768px) {
+            .glossary-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Forex Trading Glossary</h1>
+            <p class="subtitle">Comprehensive definitions for all forex patterns, concepts, and strategies</p>
+            
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search for patterns or concepts...">
+            </div>
+            
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">All Terms</button>
+                <button class="filter-btn" data-filter="chart-patterns">Chart Patterns</button>
+                <button class="filter-btn" data-filter="candlestick">Candlestick Patterns</button>
+                <button class="filter-btn" data-filter="market-concepts">Market Concepts</button>
+                <button class="filter-btn" data-filter="trading-terms">Trading Terms</button>
+            </div>
+        </header>
+        
+        <main>
+            <div class="glossary-grid" id="glossaryGrid">
+                <!-- Terms will be inserted here by JavaScript -->
+            </div>
+        </main>
+        
+        <footer>
+            <p>Forex Trading Glossary | Created by Nonyane Investment Tree</p>
+        </footer>
+    </div>
+
+    <script>
+        // Forex glossary data
+        const forexGlossary = [
+            {
+                id: "head-shoulders",
+                title: "Head and Shoulders",
+                type: "chart-patterns",
+                description: "A bearish reversal pattern signaling a change in trend direction",
+                details: "Characterized by three peaks - left shoulder, head, and right shoulder. The head is the highest peak, while the shoulders are lower. A neckline connects the swing lows. When price breaks below the neckline, it signals a bearish reversal.",
+                imageName: "headandshoulder.png"
+            },
+            {
+                id: "inverse-head-shoulders",
+                title: "Inverse Head and Shoulders",
+                type: "chart-patterns",
+                description: "A bullish reversal pattern indicating potential reversal after a downtrend",
+                details: "The inverse of the head and shoulders pattern. Characterized by three troughs - left shoulder, head, and right shoulder. The head is the lowest point. When price breaks above the neckline, it signals a bullish reversal.",
+                imageName: "inverseheadandshoulder.png"
+            },
+            {
+                id: "m-formation",
+                title: "M Formation",
+                type: "chart-patterns",
+                description: "Bearish reversal pattern resembling the letter 'M'",
+                details: "The M formation is a classic chart pattern in technical analysis used in trading financial markets (stocks, forex, crypto, etc.). It looks like the letter "M" on a price chart and generally signals a potential trend reversal from bullish to bearish (a price top).
+
+What it looks like:
+
+Price rises to a peak (first top of the M)
+
+Then drops to a support level (the valley between the two peaks)
+
+Price rises again but fails to break above the first peak (second top of the M)
+
+Then price falls again — often breaking the support level (the valley), confirming the reversal
+
+Why is it important?
+
+The M formation suggests the buyers tried twice to push the price higher but failed the second time.
+
+This pattern often signals that the upward momentum is weakening and the price may start to drop.
+
+Traders often use it to spot selling opportunities or prepare for a downtrend.
+ 1. Detailed Structure of the M Formation (Double Top)
+
+First Peak: Price rises strongly and forms a high point (first top).
+
+Pullback: After hitting the peak, price retraces down to a support zone (valley or neckline).
+
+Second Peak: Price rallies again but fails to surpass or significantly break the first peak. This forms the second top.
+
+Breakdown: After the second peak, price falls and breaks below the valley (support level between the two peaks).
+2. Psychology Behind the M Formation
+
+First Top: Buyers push the price up, showing bullish strength.
+
+Pullback: Sellers step in, profit-taking or new shorts push price down to support.
+
+Second Top: Buyers attempt to continue the rally but lack the strength to break the previous high.
+
+Breakdown: Sellers overwhelm buyers, pushing price below the support — signaling a shift from bullish to bearish control.
+
+3. Important Characteristics and Variations
+
+Volume: Often, volume is high on the first peak but lower on the second peak, showing weakening buying interest.
+
+Timeframe: Can form on any timeframe — from minutes to months. Longer timeframes (daily, weekly) are more reliable.
+
+Symmetry: The two peaks should be roughly at the same price level for a textbook pattern, but some variation is acceptable.
+
+Neckline: The valley or support line connecting the low between the two peaks. Breaking this line confirms the pattern.
+4. Confirmation of the Pattern
+
+The pattern is confirmed only when the price breaks below the neckline/support between the two peaks.
+
+Sometimes, price might bounce back after breaking the neckline (a retest), offering a good entry for shorts.
+
+Without this breakdown, the pattern might fail, and price could resume its uptrend.
+5. Trading Strategies Using the M Formation
+
+Entry: Short (sell) when price breaks and closes below the neckline.
+
+Stop-loss: Usually placed just above the second top or slightly above the neckline if you enter on a retest.
+
+Target: Measure the distance from the neckline to the peaks and project it down from the neckline. For example, if the peak is 50 pips above the neckline, expect a drop of about 50 pips after breakdown.
+
+6. Common Mistakes & Risks
+
+False Breakouts: Price may temporarily break the neckline and reverse, trapping sellers.
+
+Unclear Peaks: Sometimes the tops aren’t well-formed, making pattern recognition difficult.
+
+Ignoring Volume: Low volume on the breakdown might signal weak bearish conviction.
+
+Context: M pattern in a strong uptrend might be less reliable; always consider overall trend and market conditions.
+7. Example in Real Markets
+
+In stock charts, you might see an M pattern after a strong rally.
+
+In forex, pairs often form this pattern at resistance levels.
+
+In crypto, due to volatility, M formations can appear quickly and be less reliable without confirmation.",
+                imageName: "mformation.png"
+            },
+            {
+                id: "w-formation",
+                title: "W Formation",
+                type: "chart-patterns",
+                description: "Bullish reversal pattern resembling the letter 'W'",
+                details: "Also known as a double bottom. Forms after a downtrend with two similar lows. The pattern is confirmed when price breaks above the swing high between the two troughs. Signals potential trend reversal to bullish.",
+                imageName: "wformation.png"
+            },
+            {
+                id: "trendline",
+                title: "Trendline",
+                type: "market-concepts",
+                description: "Straight line connecting significant price points",
+                details: "Used to identify trend direction. In an uptrend, trendlines connect higher lows. In a downtrend, they connect lower highs. Break of a trendline often signals potential trend change.",
+                imageName: "trendline.png"
+            },
+            {
+                id: "time-frame",
+                title: "Time Frame",
+                type: "trading-terms",
+                description: "Duration represented by each candle/bar on a price chart",
+                details: "Common time frames include 1-minute, 5-minute, 15-minute, 1-hour, 4-hour, daily, weekly. Different time frames serve different trading styles: scalpers use short time frames, swing traders use medium, and position traders use long time frames.",
+                imageName: null
+            },
+            {
+                id: "wicks",
+                title: "Wicks",
+                type: "candlestick",
+                description: "Lines above and below the body of a candlestick",
+                details: "Also called shadows or tails. Represent the highest and lowest prices during the time period. Long wicks indicate rejection of prices at those levels. Upper wick shows rejection of higher prices, lower wick shows rejection of lower prices.",
+                imageName: null
+            },
+            {
+                id: "spread",
+                title: "Spread",
+                type: "trading-terms",
+                description: "Difference between bid (buy) and ask (sell) price",
+                details: "Represents the cost of trading. Measured in pips. Major currency pairs typically have lower spreads than exotic pairs. Spreads widen during volatile market conditions and news events.",
+                imageName: null
+            },
+            {
+                id: "triple-bottom",
+                title: "Triple Bottom",
+                type: "chart-patterns",
+                description: "Bullish reversal pattern with three distinct lows",
+                details: "Forms after a downtrend. Characterized by three similar lows followed by a breakout above resistance. The pattern is confirmed when price breaks above the highest point between the troughs. Signals potential reversal to bullish trend.",
+                imageName: "triplebottom.png"
+            },
+            {
+                id: "zone",
+                title: "Zone",
+                type: "market-concepts",
+                description: "Specific price area with significant support/resistance",
+                details: "Areas where price has previously reacted. Support zones are where buying interest emerges. Resistance zones are where selling pressure appears. Zones are more reliable than single price levels as they account for market volatility.",
+                imageName: null
+            },
+            {
+                id: "downtrend",
+                title: "Downtrend",
+                type: "market-concepts",
+                description: "Market condition with lower highs and lower lows",
+                details: "Characterized by a series of lower swing highs and lower swing lows. Indicates bearish market sentiment. Traders look for selling opportunities in downtrends, using rallies to enter short positions.",
+                imageName: null
+            },
+            {
+                id: "uptrend",
+                title: "Uptrend",
+                type: "market-concepts",
+                description: "Market condition with higher highs and higher lows",
+                details: "Characterized by a series of higher swing highs and higher swing lows. Indicates bullish market sentiment. Traders look for buying opportunities in uptrends, using pullbacks to enter long positions.",
+                imageName: null
+            },
+            {
+                id: "consolidation",
+                title: "Consolidation",
+                type: "market-concepts",
+                description: "Period of price stability within a range",
+                details: "Also known as sideways movement or range-bound market. Occurs when neither buyers nor sellers dominate. Often precedes breakouts. Characterized by support and resistance levels that contain price action.",
+                imageName: null
+            },
+            {
+                id: "flag-formation",
+                title: "Flag Formation",
+                type: "chart-patterns",
+                description: "Continuation pattern resembling a flag on a pole",
+                details: "Forms after a strong price move (the flagpole). The flag is a small consolidation area with parallel trendlines. Breakout in the direction of the previous trend signals continuation. Measured move target is equal to the flagpole length.",
+                imageName: "flagformation.png"
+            },
+            {
+                id: "bearish-engulfing",
+                title: "Bearish Engulfing",
+                type: "candlestick",
+                description: "Two-candle reversal pattern at the top of an uptrend",
+                details: "First candle is bullish, second candle is bearish and completely engulfs the body of the first candle. Signals potential reversal to bearish. More significant when occurring at resistance or after a strong uptrend.",
+                imageName: "bearishengulfing.png"
+            },
+            {
+                id: "bullish-engulfing",
+                title: "Bullish Engulfing",
+                type: "candlestick",
+                description: "Two-candle reversal pattern at the bottom of a downtrend",
+                details: "First candle is bearish, second candle is bullish and completely engulfs the body of the first candle. Signals potential reversal to bullish. More significant when occurring at support or after a strong downtrend.",
+                imageName: "bullishengulfing.png"
+            },
+            {
+                id: "doji",
+                title: "Doji",
+                type: "candlestick",
+                description: "Candlestick pattern indicating market indecision",
+                details: "Forms when open and close prices are nearly equal. Characterized by small body and long wicks. Signals balance between buyers and sellers. More significant at key support/resistance levels. Different types: standard, gravestone, dragonfly.",
+                imageName: "doji.png"
+            },
+            {
+                id: "hammer",
+                title: "Hammer",
+                type: "candlestick",
+                description: "Bullish reversal pattern after a downtrend",
+                details: "Characterized by small body at the top and long lower wick. The long lower wick shows rejection of lower prices. Signals potential bullish reversal. Confirmation with next candle is recommended.",
+                imageName: "hammer.png"
+            },
+            {
+                id: "shooting-star",
+                title: "Shooting Star",
+                type: "candlestick",
+                description: "Bearish reversal pattern after an uptrend",
+                details: "Characterized by small body at the bottom and long upper wick. The long upper wick shows rejection of higher prices. Signals potential bearish reversal. Confirmation with next candle is recommended.",
+                imageName: "shootingstar.png"
+            },
+            {
+                id: "double-top",
+                title: "Double Top",
+                type: "chart-patterns",
+                description: "Bearish reversal pattern with two similar highs",
+                details: "Forms after an uptrend. Two distinct peaks at approximately the same price level. Pattern confirmed when price breaks below the swing low between the peaks. Measured move target is the height of the pattern projected downward.",
+                imageName: "doubletop.png"
+            },
+            {
+                id: "double-bottom",
+                title: "Double Bottom",
+                type: "chart-patterns",
+                description: "Bullish reversal pattern with two similar lows",
+                details: "Forms after a downtrend. Two distinct troughs at approximately the same price level. Pattern confirmed when price breaks above the swing high between the troughs. Measured move target is the height of the pattern projected upward.",
+                imageName: "doublebottom.png"
+            },
+            {
+                id: "cup-and-handle",
+                title: "Cup and Handle",
+                type: "chart-patterns",
+                description: "Bullish continuation pattern resembling a tea cup",
+                details: "The 'cup' is a U-shaped recovery, the 'handle' is a small downward drift. Breakout above the handle signals continuation of the prior uptrend. Measured move target is the depth of the cup added to the breakout point.",
+                imageName: "cupandhandle.png"
+            },
+            {
+                id: "piercing-pattern",
+                title: "Piercing Pattern",
+                type: "candlestick",
+                description: "Bullish reversal pattern in a downtrend",
+                details: "Two-candle pattern. First candle is long bearish. Second candle opens lower but closes above the midpoint of the first candle's body. Signals potential bullish reversal. More effective when occurring at support.",
+                imageName: "piercingpattern.png"
+            },
+            {
+                id: "morning-star",
+                title: "Morning Star",
+                type: "candlestick",
+                description: "Three-candle bullish reversal pattern",
+                details: "First candle is long bearish. Second candle is small-bodied (indecision). Third candle is long bullish that closes into the first candle's body. Signals potential reversal after a downtrend. More reliable with gap between candles.",
+                imageName: "morningstar.png"
+            },
+            {
+                id: "evening-star",
+                title: "Evening Star",
+                type: "candlestick",
+                description: "Three-candle bearish reversal pattern",
+                details: "First candle is long bullish. Second candle is small-bodied (indecision). Third candle is long bearish that closes into the first candle's body. Signals potential reversal after an uptrend. More reliable with gap between candles.",
+                imageName: "eveningstar.png"
+            },
+            {
+                id: "pip",
+                title: "Pip",
+                type: "trading-terms",
+                description: "Smallest price move a currency pair can make",
+                details: "Stands for 'Percentage in Point'. For most pairs, 1 pip = 0.0001. For JPY pairs, 1 pip = 0.01. Represents the fourth decimal place for most pairs (second for JPY pairs). Used to calculate profit/loss and spread costs.",
+                imageName: null
+            },
+            {
+                id: "leverage",
+                title: "Leverage",
+                type: "trading-terms",
+                description: "Using borrowed capital to increase position size",
+                details: "Expressed as a ratio (e.g., 50:1, 100:1). Allows controlling large positions with small capital. Increases both profit and loss potential. Requires careful risk management to avoid significant losses.",
+                imageName: null
+            },
+            {
+                id: "margin",
+                title: "Margin",
+                type: "trading-terms",
+                description: "Collateral required to open/maintain a position",
+                details: "Expressed as a percentage of the full position size. Margin requirement = (Position size) / Leverage. Margin call occurs when account equity falls below required margin. Stop losses help manage margin requirements.",
+                imageName: null
+            },
+            {
+                id: "support",
+                title: "Support",
+                type: "market-concepts",
+                description: "Price level where buying interest emerges",
+                details: "Area where price has historically reversed to the upside. Created by accumulation of buy orders. Break below support signals potential bearish continuation. Often becomes resistance after being broken.",
+                imageName: null
+            },
+            {
+                id: "resistance",
+                title: "Resistance",
+                type: "market-concepts",
+                description: "Price level where selling pressure emerges",
+                details: "Area where price has historically reversed to the downside. Created by accumulation of sell orders. Break above resistance signals potential bullish continuation. Often becomes support after being broken.",
+                imageName: null
+            },
+            {
+                id: "breakout",
+                title: "Breakout",
+                type: "market-concepts",
+                description: "Price movement through a support or resistance level",
+                details: "Signals potential continuation of trend. Valid breakouts typically have increased volume. False breakouts (fakeouts) occur when price moves beyond a level but quickly reverses. Breakout trading strategies aim to capture new trends early.",
+                imageName: null
+            }
+        ];
+
+        // Function to render glossary terms
+        function renderTerms(terms) {
+            const glossaryGrid = document.getElementById('glossaryGrid');
+            glossaryGrid.innerHTML = '';
+            
+            if (terms.length === 0) {
+                glossaryGrid.innerHTML = '<div class="no-results">No terms found matching your criteria</div>';
+                return;
+            }
+            
+            terms.forEach(term => {
+                const card = document.createElement('div');
+                card.className = 'term-card';
+                card.dataset.type = term.type;
+                
+                card.innerHTML = `
+                    <h3 class="term-title">${term.title}</h3>
+                    <span class="term-type">${getTypeLabel(term.type)}</span>
+                    <p class="term-description">${term.description}</p>
+                    
+                    ${term.imageName ? 
+                        `<div class="term-image">
+                            <img src="${term.imageName}" alt="${term.title}" onerror="this.parentNode.innerHTML='Image: ${term.imageName}'">
+                        </div>` : 
+                        `<div class="term-image">Image: ${term.imageName || 'Not available'}</div>`
+                    }
+                    
+                    <div class="term-details">${term.details}</div>
+                `;
+                
+                glossaryGrid.appendChild(card);
+            });
+        }
+        
+        // Get type label
+        function getTypeLabel(type) {
+            const labels = {
+                'chart-patterns': 'Chart Pattern',
+                'candlestick': 'Candlestick Pattern',
+                'market-concepts': 'Market Concept',
+                'trading-terms': 'Trading Term'
+            };
+            return labels[type] || type;
+        }
+        
+        // Filter terms
+        function filterTerms() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+            
+            const filtered = forexGlossary.filter(term => {
+                const matchesSearch = term.title.toLowerCase().includes(searchTerm) ||
+                    term.description.toLowerCase().includes(searchTerm) ||
+                    term.details.toLowerCase().includes(searchTerm);
+                
+                const matchesFilter = activeFilter === 'all' || term.type === activeFilter;
+                
+                return matchesSearch && matchesFilter;
+            });
+            
+            renderTerms(filtered);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTerms(forexGlossary);
+            
+            // Setup search
+            document.getElementById('searchInput').addEventListener('input', filterTerms);
+            
+            // Setup filter buttons
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    filterTerms();
+                });
+            });
+        });
+    </script>
+</body>
+  </html>
