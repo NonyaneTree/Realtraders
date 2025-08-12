@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Real Traders</title>
   <style>
     * {
@@ -213,25 +213,7 @@
       font-style: italic;
     }
 
-    .floating-letters {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1;
-      overflow: hidden;
-    }
-
-    .floating-letter {
-      position: absolute;
-      color: rgba(255, 255, 255, 0.05);
-      font-size: 24px;
-      font-weight: bold;
-      user-select: none;
-      animation: float 15s linear infinite;
-    }
+    /* floating-letters CSS removed */
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
@@ -241,11 +223,6 @@
     @keyframes slideUp {
       from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes float {
-      0% { transform: translateY(100vh) translateX(0); }
-      100% { transform: translateY(-100px) translateX(calc(100vw - 100px)); }
     }
 
     @keyframes shake {
@@ -259,11 +236,11 @@
         font-size: 18px;
         padding: 15px;
       }
-      
+
       .auth-container {
         padding: 1.5rem;
       }
-      
+
       .btn {
         padding: 10px 25px;
         margin: 10px;
@@ -273,8 +250,8 @@
   </style>
 </head>
 <body>
-  <div class="floating-letters" id="floatingLetters"></div>
-  
+  <!-- floating-letters DIV removed -->
+
   <div class="welcome-message">
     Welcome to RealTraders AI website powered by XIOChat3.33.<br>
     Real Traders is a member of Nonyane Investment Tree<br>
@@ -290,54 +267,37 @@
     </div>
     <button id="devBtn" class="btn dev-btn">XIO.3</button>
   </div>
-  
+
   <div class="dev-container" id="devContainer">
     <div class="dev-title">Developer Access Portal</div>
     <p>Enter bypass code for elevated privileges</p>
-    
+
     <input type="text" class="dev-input" id="devInput" placeholder="Enter bypass code" autocomplete="off">
     <div class="message" id="message"></div>
-    
+
     <button class="submit-btn" id="submitBtn">Authenticate</button>
-    
+
   </div>
 
   <script>
-    function createFloatingLetters() {
-      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      const container = document.getElementById('floatingLetters');
-      for (let i = 0; i < 30; i++) {
-        const letter = document.createElement('div');
-        letter.className = 'floating-letter';
-        letter.textContent = letters.charAt(Math.floor(Math.random() * letters.length));
-        letter.style.left = `${Math.random() * 100}vw`;
-        letter.style.animation = `float ${10 + Math.random() * 20}s linear ${Math.random() * 15}s infinite`;
-        letter.style.fontSize = `${20 + Math.random() * 30}px`;
-        letter.style.opacity = 0.05 + Math.random() * 0.1;
-        container.appendChild(letter);
-      }
-    }
-
     window.onload = function() {
-      createFloatingLetters();
-      
       const devBtn = document.getElementById('devBtn');
       const devContainer = document.getElementById('devContainer');
       const devInput = document.getElementById('devInput');
       const submitBtn = document.getElementById('submitBtn');
       const message = document.getElementById('message');
-      
+
       devBtn.addEventListener('click', () => {
         devContainer.classList.toggle('visible');
         if (devContainer.classList.contains('visible')) {
           devInput.focus();
         }
       });
-      
+
       function submitCode() {
         const code = devInput.value.trim().toUpperCase();
         const validCodes = ['THULANENONYANEPRO', 'SFISOMSIBI', 'RORISANG', 'KEABETWE@1'];
-        
+
         if (validCodes.includes(code)) {
           message.textContent = "Access granted! Redirecting...";
           message.classList.add('success');
@@ -349,10 +309,10 @@
           setTimeout(() => { devInput.style.animation = ''; }, 500);
         }
       }
-      
+
       submitBtn.addEventListener('click', submitCode);
       devInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') submitCode(); });
     };
   </script>
 </body>
-</html>
+      </html>
