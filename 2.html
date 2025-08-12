@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Real Traders </title>
+  <title>Real Traders</title>
   <style>
     * {
       box-sizing: border-box;
@@ -38,7 +38,7 @@
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
       margin-bottom: 30px;
       position: relative;
-      z-index: 10;
+      z-index: 1000;
       max-width: 800px;
       animation: fadeIn 1s ease-out;
     }
@@ -52,7 +52,7 @@
       text-align: center;
       border: 1px solid rgba(255, 255, 255, 0.2);
       position: relative;
-      z-index: 10;
+      z-index: 1000;
       width: 100%;
       max-width: 500px;
       margin-bottom: 30px;
@@ -103,6 +103,8 @@
       color: white;
       box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
       margin-top: 10px;
+      z-index: 1001;
+      position: relative;
     }
 
     .dev-btn:hover {
@@ -136,6 +138,8 @@
       border: 1px solid rgba(255, 255, 255, 0.15);
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       animation: fadeIn 0.5s ease-out;
+      z-index: 1000;
+      position: relative;
     }
 
     .dev-container.visible {
@@ -244,6 +248,12 @@
       100% { transform: translateY(-100px) translateX(calc(100vw - 100px)); }
     }
 
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
     @media (max-width: 768px) {
       .welcome-message {
         font-size: 18px;
@@ -293,35 +303,21 @@
   </div>
 
   <script>
-    // Create floating letters in background
     function createFloatingLetters() {
       const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
       const container = document.getElementById('floatingLetters');
-      
       for (let i = 0; i < 30; i++) {
         const letter = document.createElement('div');
         letter.className = 'floating-letter';
         letter.textContent = letters.charAt(Math.floor(Math.random() * letters.length));
-        
-        // Random position
-        const leftPos = Math.random() * 100;
-        letter.style.left = `${leftPos}vw`;
-        
-        // Random animation delay and duration
-        const delay = Math.random() * 15;
-        const duration = 10 + Math.random() * 20;
-        letter.style.animation = `float ${duration}s linear ${delay}s infinite`;
-        
-        // Random size and opacity
-        const size = 20 + Math.random() * 30;
-        letter.style.fontSize = `${size}px`;
+        letter.style.left = `${Math.random() * 100}vw`;
+        letter.style.animation = `float ${10 + Math.random() * 20}s linear ${Math.random() * 15}s infinite`;
+        letter.style.fontSize = `${20 + Math.random() * 30}px`;
         letter.style.opacity = 0.05 + Math.random() * 0.1;
-        
         container.appendChild(letter);
       }
     }
-    
-    // Initialize page
+
     window.onload = function() {
       createFloatingLetters();
       
@@ -331,7 +327,6 @@
       const submitBtn = document.getElementById('submitBtn');
       const message = document.getElementById('message');
       
-      // Toggle dev container
       devBtn.addEventListener('click', () => {
         devContainer.classList.toggle('visible');
         if (devContainer.classList.contains('visible')) {
@@ -339,56 +334,25 @@
         }
       });
       
-      // Submit bypass code
       function submitCode() {
         const code = devInput.value.trim().toUpperCase();
-        const validCodes = ['THULANENONYANEPRO', 'SFISOMSIBI', 'Rorisang', 'Keabetswe@1'];
+        const validCodes = ['THULANENONYANEPRO', 'SFISOMSIBI', 'RORISANG', 'KEABETWE@1'];
         
         if (validCodes.includes(code)) {
           message.textContent = "Access granted! Redirecting...";
           message.classList.add('success');
-          message.classList.remove('error');
-          
-          // Add a visual effect
-          document.body.style.background = 'linear-gradient(135deg, #1a1a2e, #0f3460, #1a1a2e)';
-          
-          setTimeout(() => {
-            window.location.href = 'realtraders.html';
-          }, 1500);
+          setTimeout(() => { window.location.href = 'realtraders.html'; }, 1500);
         } else {
           message.textContent = "Invalid access code. Please try again.";
-          message.classList.add('error');
           message.classList.remove('success');
-          
-          // Shake animation for error
           devInput.style.animation = 'shake 0.5s';
-          setTimeout(() => {
-            devInput.style.animation = '';
-          }, 500);
+          setTimeout(() => { devInput.style.animation = ''; }, 500);
         }
       }
       
-      // Handle submit button
       submitBtn.addEventListener('click', submitCode);
-      
-      // Handle Enter key in input
-      devInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-          submitCode();
-        }
-      });
-      
-      // Add shake animation for errors
-      const style = document.createElement('style');
-      style.textContent = `
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          75% { transform: translateX(5px); }
-        }
-      `;
-      document.head.appendChild(style);
+      devInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') submitCode(); });
     };
   </script>
 </body>
-      </html>
+</html>
