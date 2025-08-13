@@ -9,7 +9,7 @@
         * { box-sizing: border-box; }
         body { margin: 0; padding: 0; background: #eef1f5; font-family: 'Segoe UI', sans-serif; min-height: 100vh; overflow-y: auto; }
         .chat-container { width: 100%; min-height: 100vh; display: flex; flex-direction: column; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
-        .header { background-color: #0066ff; color: white; padding: 15px 20px; font-size: 18px; font-weight: bold; flex-shrink: 0; }
+        .header { background-color: #0066ff; color: white; padding: 15px 20px; font-size: 18px; font-weight: bold; flex-shrink: 0; position: relative; }
         #messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; -webkit-overflow-scrolling: touch; }
         .msg { max-width: 85%; padding: 12px 15px; border-radius: 15px; line-height: 1.5; word-break: break-word; display: flex; align-items: flex-start; }
         .msg img.xio-icon { width: 34px; height: 34px; margin-right: 8px; margin-top: 4px; flex-shrink: 0; }
@@ -29,12 +29,20 @@
         .dropdown-content a { color: #222; padding: 10px 16px; text-decoration: none; display: block; }
         .dropdown-content a:hover { background-color: #f1f1f1; }
         .dropdown:hover .dropdown-content { display: block; }
+        .usage-info { text-align: center; padding: 10px; font-size: 14px; color: #666; background: rgba(0, 102, 255, 0.05); border-top: 1px solid #ddd; }
+        .pattern-img { max-width: 100%; border-radius: 10px; margin-top: 15px; border: 1px solid #eee; }
 
         /* Dark theme styles */
         .dark-theme { background: #1e1e1e; color: #fff; }
         .dark-theme .header { background: #222; }
         .dark-theme .msg.user { background: #444; color: white; }
         .dark-theme .msg.xio { background: #333; color: white; }
+        .dark-theme .search-container { background: #222; border-top: 1px solid #333; }
+        .dark-theme #searchInput { background: #333; border-color: #444; color: #fff; }
+        .dark-theme .dropdown-content { background: #333; }
+        .dark-theme .dropdown-content a { color: #fff; }
+        .dark-theme .dropdown-content a:hover { background: #444; }
+        .dark-theme .usage-info { background: rgba(0, 0, 0, 0.2); border-top: 1px solid #333; color: #aaa; }
     </style>
 </head>
 <body>
@@ -51,9 +59,12 @@
             </div>
         </div>
         <div id="messages"></div>
-        
+        <div class="usage-info">
+            <span id="usageText">You have <strong>5</strong> free queries remaining today. <a href="pay.html">Upgrade to premium</a> for unlimited access.</span>
+        </div>
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Type your question...">
+            <button class="photo-icon" onclick="sendMessage()">📤</button>
             <div class="photo-icon" onclick="window.location.href='search.html'">📷</div>
         </div>
     </div>
@@ -62,9 +73,13 @@
         const GENERAL_BOT_TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN';
         const GENERAL_CHAT_ID = 'YOUR_CHAT_ID';
         const synonyms = {};
+        const responses = {};
+        let qaPairs = [];
         let userPaid = false;
         let dailyLimit = 5;
+        let initialized = false;
 
+        // Cookie functions
         function setCookie(name, value, days) {
             const d = new Date();
             d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -82,6 +97,7 @@
             return null;
         }
 
+        // Payment status check
         async function checkPaymentStatus() {
             try {
                 const res = await fetch('pay.html');
@@ -96,6 +112,7 @@
             }
         }
 
+        // Initialize daily usage limit
         function initDailyLimit() {
             const savedCount = getCookie("xio_usage");
             if (savedCount === null) {
@@ -105,6 +122,7 @@
             return parseInt(savedCount, 10);
         }
 
+        // Decrement usage count
         function decrementUsage() {
             let count = parseInt(getCookie("xio_usage"), 10);
             if (count > 0) {
@@ -114,14 +132,48 @@
             return count;
         }
 
+        // Update usage display
+        function updateUsageDisplay() {
+            const usageText = document.getElementById("usageText");
+            if (userPaid) {
+                usageText.innerHTML = "<strong>Premium Account</strong> - Unlimited access";
+            } else {
+                const remaining = parseInt(getCookie("xio_usage"), 10);
+                usageText.innerHTML = `You have <strong>${remaining}</strong> free queries remaining today. <a href="pay.html">Upgrade to premium</a> for unlimited access.`;
+            }
+        }
+
+        // Main initialization
         async function initialize() {
             await checkPaymentStatus();
             dailyLimit = initDailyLimit();
             await loadSynonyms();
-            await searchXio2WithSynonyms();
+            await loadResponses();
+            updateUsageDisplay();
+            
+            // Add welcome message
+            addMessage("XIO", `
+                <p>Welcome to XIO Assistant - your AI Forex trading assistant!</p>
+                <p>I can help with:</p>
+                <ul>
+                    <li>Forex trading patterns</li>
+                    <li>Technical analysis</li>
+                    <li>Risk management</li>
+                    <li>Strategy development</li>
+                </ul>
+                <p>Try asking about: <strong>head and shoulders pattern</strong>, <strong>Fibonacci retracement</strong>, or <strong>candlestick patterns</strong></p>
+            `, "xio");
+            
+            initialized = true;
         }
 
+        // Send message function
         function sendMessage() {
+            if (!initialized) {
+                addMessage("XIO", "System is still initializing. Please try again in a moment.", "xio");
+                return;
+            }
+            
             if (!userPaid) {
                 let remaining = parseInt(getCookie("xio_usage"), 10);
                 if (remaining <= 0) {
@@ -129,7 +181,9 @@
                     return;
                 }
                 decrementUsage();
+                updateUsageDisplay();
             }
+            
             const input = document.getElementById("searchInput");
             const text = input.value.trim();
             if (!text) return;
@@ -146,6 +200,41 @@
             input.value = "";
         }
 
+        // Add message to chat
+        function addMessage(sender, text, className, isTemp = false) {
+            const messagesDiv = document.getElementById("messages");
+            const msgDiv = document.createElement("div");
+            msgDiv.className = `msg ${className}`;
+            
+            // Get current time
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            // Create message content
+            if (className === 'xio') {
+                msgDiv.innerHTML = `
+                    <img src="https://i.imgur.com/mW7eB2d.png" class="xio-icon" alt="XIO">
+                    <div class="msg-content">
+                        ${text}
+                        <div class="timestamp">${timeString}</div>
+                    </div>
+                `;
+            } else {
+                msgDiv.innerHTML = `
+                    <div class="msg-content">
+                        ${text}
+                        <div class="timestamp">${timeString}</div>
+                    </div>
+                `;
+            }
+            
+            messagesDiv.appendChild(msgDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            return isTemp ? msgDiv : null;
+        }
+
+        // Load synonyms from synonyms.html
         async function loadSynonyms() {
             try {
                 const response = await fetch('synonyms.html');
@@ -161,65 +250,22 @@
                         patterns.forEach(pattern => {
                             synonyms[pattern.title.toLowerCase()] = (pattern.synonyms || []).map(s => s.toLowerCase());
                         });
+                        console.log("Synonyms loaded:", synonyms);
                     }
                 }
-                console.log("Synonyms loaded:", synonyms);
             } catch (err) {
                 console.error('Error loading synonyms:', err);
+                // Fallback to default synonyms
+                synonyms['head and shoulders'] = ['hns', 'head and shoulder', 'head shoulders'];
+                synonyms['double top'] = ['double tops', 'dual top', 'm pattern'];
+                synonyms['double bottom'] = ['double bottoms', 'dual bottom', 'w pattern'];
+                synonyms['triangle'] = ['symmetrical triangle', 'ascending triangle', 'descending triangle'];
+                synonyms['fibonacci'] = ['fib retracement', 'fib levels', 'fibonacci retracement'];
+                console.log("Using default synonyms");
             }
         }
 
-        async function searchXio2WithSynonyms() {
-            try {
-                const response = await fetch('xio2.html');
-                const html = await response.text();
-
-                const results = [];
-                for (const [title, synList] of Object.entries(synonyms)) {
-                    const allTerms = [title, ...synList];
-                    for (const term of allTerms) {
-                        const regex = new RegExp(`\\b${term}\\b`, 'i');
-                        if (regex.test(html)) {
-                            results.push({ match: term, source: 'xio2.html' });
-                        }
-                    }
-                }
-
-                displayResults(results);
-            } catch (err) {
-                console.error('Error searching xio2.html:', err);
-            }
-        }
-
-        function displayResults(matches) {
-            const outputDiv = document.getElementById("results");
-            outputDiv.innerHTML = matches.length
-                ? matches.map(m => `<div>Found: <strong>${m.match}</strong> in ${m.source}</div>`).join("")
-                : "<div>No matches found</div>";
-        }
-
-        function toggleTheme() {
-            document.body.classList.toggle("dark-theme");
-        }
-
-        async function fetchTelegramMessages() {
-            try {
-                const response = await fetch(`https://api.telegram.org/bot${GENERAL_BOT_TOKEN}/getUpdates`);
-                const data = await response.json();
-                if (data.ok && data.result.length > 0) {
-                    telegramMessages = data.result
-                        .filter(update => update.message && update.message.chat.id.toString() === GENERAL_CHAT_ID)
-                        .map(update => ({
-                            text: update.message.text,
-                            date: new Date(update.message.date * 1000),
-                            message_id: update.message.message_id
-                        }));
-                }
-            } catch (error) {
-                console.error('Error fetching Telegram messages:', error);
-            }
-        }
-
+        // Load responses from xio2.html
         async function loadResponses() {
             try {
                 const response = await fetch('xio2.html');
@@ -227,13 +273,15 @@
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
                 const scriptContent = doc.querySelector('script').textContent;
-                const responsesMatch = scriptContent.match(/const responses = ({[\s\S]*?});/);
+                const responsesMatch = scriptContent.match(/const responses\s*=\s*({[\s\S]*?});/);
                 
                 if (responsesMatch && responsesMatch[1]) {
                     const responsesObj = new Function(`return ${responsesMatch[1]}`)();
-                    Object.assign(responses, responsesObj);
                     
-                    for (const [question, data] of Object.entries(responses)) {
+                    // Clear qaPairs
+                    qaPairs = [];
+                    
+                    for (const [question, data] of Object.entries(responsesObj)) {
                         qaPairs.push({
                             question: question.toLowerCase(),
                             answer: data.description,
@@ -241,13 +289,36 @@
                             source: 'local'
                         });
                     }
+                    console.log("Responses loaded:", qaPairs);
                 }
             } catch (error) {
                 console.error('Error loading xio2.html:', error);
-                addMessage("XIO", "I'm having trouble loading my knowledge base. Please try again later.", "xio");
+                // Fallback to default responses
+                qaPairs = [
+                    {
+                        question: "head and shoulders",
+                        answer: `
+                            <h3>Head and Shoulders Pattern</h3>
+                            <p>The Head and Shoulders is a reversal pattern that predicts a bullish-to-bearish trend reversal.</p>
+                            <p><strong>Trading Strategy:</strong> Enter short when price breaks below the neckline. Place stop-loss above the right shoulder.</p>
+                        `,
+                        image: "https://i.imgur.com/7G5Vx9D.png"
+                    },
+                    {
+                        question: "double top",
+                        answer: `
+                            <h3>Double Top Pattern</h3>
+                            <p>The Double Top is a bearish reversal pattern that forms after an uptrend.</p>
+                            <p><strong>Trading Strategy:</strong> Enter short when price closes below the neckline. Place stop-loss above the peaks.</p>
+                        `,
+                        image: "https://i.imgur.com/5tQmZ8d.png"
+                    }
+                ];
+                console.log("Using default responses");
             }
         }
 
+        // Expand input with synonyms
         function expandInputWithSynonyms(input) {
             let expanded = input;
             for (const [key, syns] of Object.entries(synonyms)) {
@@ -259,6 +330,7 @@
             return expanded;
         }
 
+        // Get answer for user input
         async function getAnswer(userInput) {
             if (!qaPairs.length) {
                 return "My knowledge base is still loading. Please try again in a moment.";
@@ -266,13 +338,28 @@
 
             const expandedInput = expandInputWithSynonyms(userInput);
 
+            // Look for exact match
             const exactMatch = qaPairs.find(pair => pair.question === expandedInput);
-            if (exactMatch) return formatResponse(exactMatch);
+            if (exactMatch) {
+                return formatResponse(exactMatch);
+            }
 
+            // Look for partial match
+            const partialMatches = qaPairs.filter(pair => 
+                pair.question.includes(expandedInput) || 
+                userInput.includes(pair.question)
+            );
+            
+            if (partialMatches.length > 0) {
+                return formatResponse(partialMatches[0]);
+            }
+
+            // If no match found
             const availableTopics = [...new Set(qaPairs.map(pair => pair.question))].slice(0, 5).join(", ");
             return `I'm not sure about that. Try asking about: ${availableTopics} or check our Telegram group.`;
         }
 
+        // Format response with image if available
         function formatResponse(pair) {
             let response = pair.answer;
             if (pair.image) {
@@ -281,8 +368,33 @@
             return response;
         }
 
-        // Initialize the application
-        window.onload = initialize;
+        // Toggle dark theme
+        function toggleTheme() {
+            document.body.classList.toggle("dark-theme");
+            // Save theme preference
+            setCookie("xio_theme", document.body.classList.contains("dark-theme") ? "dark" : "light", 30);
+        }
+
+        // Apply saved theme preference
+        function applySavedTheme() {
+            const savedTheme = getCookie("xio_theme");
+            if (savedTheme === "dark") {
+                document.body.classList.add("dark-theme");
+            }
+        }
+
+        // Initialize when page loads
+        window.onload = function() {
+            applySavedTheme();
+            initialize();
+            
+            // Add event listener for Enter key
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        };
     </script>
 </body>
-  </html>
+</html>
