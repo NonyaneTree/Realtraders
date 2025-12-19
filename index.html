@@ -2,8 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
+    <!-- Mobile Responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google AdSense -->
+    <meta name="google-adsense-account" content="ca-pub-7221396727211259">
+
     <title>Real Traders | Forex Education</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
         body {
@@ -38,7 +44,7 @@
             cursor: pointer;
         }
 
-        /* CONTENT */
+        /* MAIN CONTENT */
         .container {
             padding: 30px;
             max-width: 1100px;
@@ -62,7 +68,7 @@
             margin-bottom: 8px;
         }
 
-        /* CHART */
+        /* CHART BOX */
         .chart-box {
             margin-top: 35px;
             background: white;
@@ -80,6 +86,18 @@
             font-size: 14px;
             color: #0f9b4f;
         }
+
+        /* MOBILE */
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            header h1 {
+                font-size: 18px;
+            }
+        }
     </style>
 </head>
 
@@ -90,7 +108,7 @@
 
     <select onchange="navigate(this.value)">
         <option value="">Menu</option>
-        <option value="owner.html">About the Founder</option>
+        <option value="founder.html">About the Founder</option>
         <option value="fundamental.html">Forex Fundamentals Signals</option>
     </select>
 </header>
@@ -99,23 +117,23 @@
 
     <h2>What is Forex Trading?</h2>
     <p>
-        Forex trading is the exchange of one currency for another in order to
-        make profit from price movements. It is the most liquid market in the
-        world, with trillions of dollars traded daily.
+        Forex (Foreign Exchange) trading is the process of buying and selling
+        currencies to profit from price movements. It is the largest financial
+        market in the world, operating 24 hours a day, five days a week.
     </p>
 
     <p>
         Traders analyze currency pairs such as <strong>EUR/USD</strong>,
-        <strong>GBP/USD</strong>, and <strong>USD/JPY</strong> to identify
-        opportunities to buy low and sell high.
+        <strong>GBP/USD</strong>, and <strong>USD/JPY</strong>. If you expect the
+        price to rise, you buy. If you expect it to fall, you sell.
     </p>
 
     <h2>How Forex Works</h2>
     <ul>
         <li>Currencies are traded in pairs</li>
         <li>Prices move based on supply and demand</li>
-        <li>Economic news and interest rates drive the market</li>
-        <li>Risk management protects trading capital</li>
+        <li>Economic news and interest rates influence the market</li>
+        <li>Risk management is essential for consistency</li>
     </ul>
 
     <div class="chart-box">
@@ -160,4 +178,4 @@
 </script>
 
 </body>
-  </html>
+</html>
