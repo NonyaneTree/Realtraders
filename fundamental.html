@@ -8,6 +8,8 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7221396727211259"
      crossorigin="anonymous"></script>
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body, html {
       margin: 0;
@@ -18,18 +20,18 @@
     }
 
     .content {
-      max-width: 800px;
+      max-width: 900px;
       margin: 40px auto;
-      padding: 20px;
+      padding: 25px;
       background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
     }
 
     .signal {
       background: #fff;
       padding: 15px;
-      margin: 10px 0;
+      margin: 12px 0;
       border-left: 4px solid #28a745;
       box-shadow: 0 0 6px rgba(0,0,0,0.1);
     }
@@ -41,55 +43,118 @@
     }
 
     h2 {
-      color: #333;
+      color: #1f2937;
     }
 
     h3 {
-      margin-top: 30px;
+      margin-top: 35px;
       color: #1a202c;
     }
 
     p {
-      line-height: 1.6;
+      line-height: 1.7;
       color: #444;
     }
 
     ul {
-      margin: 10px 0;
-      padding-left: 20px;
+      margin: 12px 0;
+      padding-left: 22px;
+    }
+
+    .highlight {
+      background: #f0fff4;
+      border-left: 4px solid #22c55e;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 6px;
+    }
+
+    .warning {
+      background: #fff5f5;
+      border-left: 4px solid #ef4444;
+      padding: 15px;
+      margin: 25px 0;
+      border-radius: 6px;
+      font-size: 0.9em;
     }
   </style>
 </head>
 <body>
 
   <div class="content">
+
     <h2>📊 Signals from Last 24 Hours</h2>
     <div id="signals">Loading...</div>
 
     <h3>📘 Understanding Fundamental Analysis</h3>
     <p>
-      Fundamental analysis is a method used by traders and investors to evaluate the intrinsic value of an asset by examining related economic, financial, and other qualitative and quantitative factors.
+      Fundamental analysis is a method used by traders to evaluate currencies by studying economic data, central bank decisions, and global events that influence supply and demand.
     </p>
 
-    <p>Key elements considered in fundamental analysis include:</p>
     <ul>
-      <li><strong>Interest Rates:</strong> Changes in central bank rates can impact currency strength.</li>
-      <li><strong>Inflation:</strong> High inflation typically weakens a currency’s value.</li>
-      <li><strong>GDP (Gross Domestic Product):</strong> A strong GDP indicates a growing economy.</li>
-      <li><strong>Employment Data:</strong> Reports like Non-Farm Payrolls (NFP) are major market movers.</li>
-      <li><strong>Political Stability:</strong> Geopolitical risk can lead to increased market volatility.</li>
+      <li><strong>Interest Rates:</strong> Higher rates usually strengthen a currency.</li>
+      <li><strong>Inflation (CPI & PPI):</strong> Rising inflation may weaken purchasing power.</li>
+      <li><strong>GDP:</strong> Measures economic growth and stability.</li>
+      <li><strong>Employment Data:</strong> NFP and unemployment rate strongly impact volatility.</li>
+      <li><strong>Central Bank Statements:</strong> Forward guidance often moves markets before price reacts.</li>
     </ul>
 
+    <h3>📈 How to Use These Forex Signals</h3>
     <p>
-      Traders use this data to anticipate price movements and to make decisions about entering or exiting trades. Unlike technical analysis, which looks at price charts, fundamental analysis looks at the "why" behind market movements.
+      Signals shared here are based on real-time market conditions and macroeconomic sentiment. They are best used as a confirmation tool, not as blind entries.
     </p>
 
-    <p>Stay informed and use both fundamental and technical insights to become a smarter trader.</p>
+    <div class="highlight">
+      <strong>Best practice:</strong>
+      <ul>
+        <li>Confirm signals with your own technical analysis</li>
+        <li>Check higher timeframes for trend direction</li>
+        <li>Avoid trading during high-impact news unless experienced</li>
+      </ul>
+    </div>
+
+    <h3>🧠 Risk Management Rules</h3>
+    <p>
+      Successful trading is not about winning every trade, but about protecting capital and managing risk consistently.
+    </p>
+
+    <ul>
+      <li>Risk only <strong>1–2%</strong> of your account per trade</li>
+      <li>Always use a stop-loss</li>
+      <li>Do not overtrade or revenge trade</li>
+      <li>Let profits run, cut losses early</li>
+    </ul>
+
+    <h3>🕒 Economic Calendar Awareness</h3>
+    <p>
+      High-impact events such as interest rate decisions, CPI, GDP, and employment reports can cause sudden spikes in volatility.
+    </p>
+
+    <p>
+      Traders should always be aware of upcoming news and adjust position sizes accordingly or stay out of the market during extreme uncertainty.
+    </p>
+
+    <h3>🎯 Who Is Real Traders For?</h3>
+    <ul>
+      <li>Beginner traders learning market structure</li>
+      <li>Intermediate traders improving consistency</li>
+      <li>Advanced traders seeking confirmation & sentiment</li>
+    </ul>
+
+    <div class="warning">
+      <strong>⚠️ Risk Disclaimer:</strong><br>
+      Forex trading involves significant risk and may not be suitable for everyone. Past performance does not guarantee future results. Trade responsibly and only with money you can afford to lose.
+    </div>
+
+    <p style="text-align:center; margin-top:30px;">
+      🚀 <strong>Welcome to Real Traders — Trade Smart, Trade Real.</strong>
+    </p>
+
   </div>
 
   <script>
-    const botToken = '8000882804:AAGC54TT67FC_l4GeyEFKH3r72TBc89EuXU'; // Replace with your bot token
-    const groupChatId = '-1002654219465'; // Optional: used for filtering
+    const botToken = '8000882804:AAGC54TT67FC_l4GeyEFKH3r72TBc89EuXU';
+    const groupChatId = '-1002654219465';
 
     async function fetchRecentSignals() {
       try {
@@ -103,14 +168,13 @@
           return;
         }
 
-        const now = new Date();
-        const cutoff = now.getTime() - (24 * 60 * 60 * 1000); // 24 hours
+        const now = new Date().getTime();
+        const cutoff = now - (24 * 60 * 60 * 1000);
 
         const signals = data.result.filter(update => {
           const msg = update.message;
           if (!msg || !msg.text) return false;
-          const msgTime = msg.date * 1000;
-          return msgTime >= cutoff;
+          return (msg.date * 1000) >= cutoff;
         });
 
         if (signals.length === 0) {
@@ -131,13 +195,12 @@
         });
 
       } catch (error) {
-        console.error("Failed to load messages:", error);
         document.getElementById('signals').innerHTML = '<p>Error fetching messages.</p>';
       }
     }
 
     fetchRecentSignals();
-    setInterval(fetchRecentSignals, 30000); // Refresh every 30 seconds
+    setInterval(fetchRecentSignals, 30000);
   </script>
 
 </body>
