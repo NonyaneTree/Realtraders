@@ -1,195 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Forex Pattern Game | Real Traders</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: #e5e7eb;
-}
-
-header {
-  background: #020617;
-  padding: 1rem;
-  text-align: center;
-}
-
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 1.5rem;
-}
-
-canvas {
-  background: #020617;
-  border-radius: 10px;
-  width: 100%;
-  height: 300px;
-}
-
-.quiz {
-  margin-top: 1.5rem;
-  background: #020617;
-  padding: 1rem;
-  border-radius: 10px;
-}
-
-select, button {
-  width: 100%;
-  padding: 0.7rem;
-  margin-top: 0.8rem;
-  border-radius: 6px;
-  border: none;
-  font-size: 1rem;
-}
-
-button {
-  background: #22c55e;
-  color: #020617;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #16a34a;
-}
-
-.result {
-  margin-top: 1rem;
-  font-weight: bold;
-}
-
-.terms {
-  margin-top: 2rem;
-  font-size: 0.9rem;
-  color: #9ca3af;
-  background: #020617;
-  padding: 1rem;
-  border-radius: 10px;
-}
-</style>
+    <meta charset="UTF-8">
+    <title>Forex Pattern Game | Real Traders</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
+        }
+        header {
+            background: #020617;
+            padding: 1rem;
+            text-align: center;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 1.5rem;
+        }
+        canvas {
+            background: #020617;
+            border-radius: 10px;
+            width: 100%;
+            height: 300px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        select, button {
+            flex: 1;
+            padding: 0.7rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 1rem;
+        }
+        button {
+            background: #22c55e;
+            color: #020617;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #16a34a;
+        }
+        .quiz {
+            margin-top: 1.5rem;
+            background: #020617;
+            padding: 1rem;
+            border-radius: 10px;
+        }
+        .result {
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+        .score {
+            margin-top: 0.5rem;
+            color: #38bdf8;
+        }
+        .terms {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #9ca3af;
+            background: #020617;
+            padding: 1rem;
+            border-radius: 10px;
+        }
+    </style>
 </head>
-
 <body>
 
 <header>
-  <h1>Forex Chart Pattern Game</h1>
-  <p>Identify the chart formation</p>
+    <h1>Forex Chart Pattern Game</h1>
+    <p>Swipe left/right or identify the pattern</p>
 </header>
 
 <div class="container">
+    <canvas id="chart"></canvas>
 
-  <canvas id="chart"></canvas>
+    <div class="controls">
+        <select id="difficulty">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+        </select>
+        <button onclick="newPattern()">New Pattern</button>
+    </div>
 
-  <div class="quiz">
-    <h3>What formation is this?</h3>
+    <div class="quiz">
+        <h3>What formation is this?</h3>
+        <select id="answer">
+            <option value="">-- Select --</option>
+            <option value="M">M Formation</option>
+            <option value="W">W Formation</option>
+            <option value="HS">Head & Shoulders</option>
+            <option value="IHS">Inverse Head & Shoulders</option>
+        </select>
+        <button onclick="checkAnswer()">Submit</button>
+        <div class="result" id="result"></div>
+        <div class="score" id="score"></div>
+    </div>
 
-    <select id="answer">
-      <option value="">-- Select a formation --</option>
-      <option value="M">M Formation</option>
-      <option value="W">W Formation</option>
-      <option value="HS">Head and Shoulders</option>
-      <option value="IHS">Inverse Head and Shoulders</option>
-    </select>
-
-    <button onclick="checkAnswer()">Submit Answer</button>
-
-    <div class="result" id="result"></div>
-  </div>
-
-  <div class="terms">
-    <h3>Terms & Conditions</h3>
-    <p>
-      This chart pattern game is created strictly for educational and
-      entertainment purposes only. It does not provide financial advice,
-      trading signals, or profit guarantees. Trading in financial markets
-      involves risk, and users should always do their own research.
-    </p>
-    <p>
-      By using this page, you agree that the content is “just for fun”
-      and that the creator is not responsible for any trading decisions.
-    </p>
-  </div>
-
+    <div class="terms">
+        Educational only. No financial advice. Just training your eyes 🧠📈
+    </div>
 </div>
 
 <script>
 const canvas = document.getElementById("chart");
 const ctx = canvas.getContext("2d");
-canvas.width = canvas.offsetWidth;
-canvas.height = 300;
 
-// Random pattern selection
+let score = 0;
+let streak = 0;
+let currentPattern = "";
+
 const patterns = ["M", "W", "HS", "IHS"];
-const currentPattern = patterns[Math.floor(Math.random() * patterns.length)];
 
-function drawLine(points) {
-  ctx.beginPath();
-  ctx.moveTo(points[0].x, points[0].y);
-  points.forEach(p => ctx.lineTo(p.x, p.y));
-  ctx.strokeStyle = "#22c55e";
-  ctx.lineWidth = 3;
-  ctx.stroke();
+// Resize canvas
+function resizeCanvas() {
+    canvas.width = canvas.clientWidth;
+    canvas.height = 300;
+}
+
+function randomize(points, difficulty) {
+    return points.map(p => {
+        let noise = difficulty === "hard" ? 30 : difficulty === "medium" ? 15 : 5;
+        return {
+            x: p.x,
+            y: p.y + (Math.random() * noise - noise / 2)
+        };
+    });
+}
+
+function drawCandles(points) {
+    points.forEach((p, i) => {
+        if (i === 0) return;
+        ctx.beginPath();
+        ctx.moveTo(points[i - 1].x, points[i - 1].y);
+        ctx.lineTo(p.x, p.y);
+        ctx.strokeStyle = "#22c55e";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+    });
+}
+
+function drawNeckline(y) {
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(canvas.width, y);
+    ctx.strokeStyle = "#facc15";
+    ctx.stroke();
+    ctx.setLineDash([]);
 }
 
 function drawPattern() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.strokeStyle = "#22c55e";
+    if (!currentPattern) return;
 
-  let w = canvas.width;
-  let h = canvas.height;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  let patternsMap = {
-    "M": [
-      {x: 0, y: h*0.6}, {x: w*0.2, y: h*0.3},
-      {x: w*0.4, y: h*0.6}, {x: w*0.6, y: h*0.3},
-      {x: w*0.8, y: h*0.6}
-    ],
-    "W": [
-      {x: 0, y: h*0.3}, {x: w*0.2, y: h*0.6},
-      {x: w*0.4, y: h*0.3}, {x: w*0.6, y: h*0.6},
-      {x: w*0.8, y: h*0.3}
-    ],
-    "HS": [
-      {x: 0, y: h*0.6}, {x: w*0.2, y: h*0.3},
-      {x: w*0.4, y: h*0.1}, {x: w*0.6, y: h*0.3},
-      {x: w*0.8, y: h*0.6}
-    ],
-    "IHS": [
-      {x: 0, y: h*0.3}, {x: w*0.2, y: h*0.6},
-      {x: w*0.4, y: h*0.8}, {x: w*0.6, y: h*0.6},
-      {x: w*0.8, y: h*0.3}
-    ]
-  };
+    let w = canvas.width;
+    let h = canvas.height;
+    let diff = document.getElementById("difficulty").value;
 
-  drawLine(patternsMap[currentPattern]);
+    let map = {
+        M: [
+            {x:w*0.1,y:h*0.6},{x:w*0.3,y:h*0.3},
+            {x:w*0.5,y:h*0.6},{x:w*0.7,y:h*0.3},
+            {x:w*0.9,y:h*0.6}
+        ],
+        W: [
+            {x:w*0.1,y:h*0.3},{x:w*0.3,y:h*0.6},
+            {x:w*0.5,y:h*0.3},{x:w*0.7,y:h*0.6},
+            {x:w*0.9,y:h*0.3}
+        ],
+        HS: [
+            { x: w * 0.05, y: h * 0.65 }, // start
+            { x: w * 0.20, y: h * 0.40 }, // left shoulder
+            { x: w * 0.30, y: h * 0.55 }, // pullback to neckline
+            { x: w * 0.45, y: h * 0.20 }, // head
+            { x: w * 0.55, y: h * 0.55 }, // pullback to neckline
+            { x: w * 0.70, y: h * 0.40 }, // right shoulder
+            { x: w * 0.90, y: h * 0.85 }  // 🔥 neckline BREAK (confirmation)
+        ],
+        IHS: [
+            { x: w * 0.05, y: h * 0.35 }, // start
+            { x: w * 0.20, y: h * 0.60 }, // left shoulder
+            { x: w * 0.30, y: h * 0.45 }, // bounce to neckline
+            { x: w * 0.45, y: h * 0.80 }, // head
+            { x: w * 0.55, y: h * 0.45 }, // bounce to neckline
+            { x: w * 0.70, y: h * 0.60 }, // right shoulder
+            { x: w * 0.90, y: h * 0.15 }  // 🔥 neckline BREAK (confirmation)
+        ]
+    };
+
+    let pts = randomize(map[currentPattern], diff);
+    drawCandles(pts);
+
+    if (currentPattern === "HS") drawNeckline(h * 0.55);
+    if (currentPattern === "IHS") drawNeckline(h * 0.45);
+}
+
+function newPattern() {
+    resizeCanvas(); // ✅ ensures correct size
+    currentPattern = patterns[Math.floor(Math.random() * patterns.length)];
+    drawPattern();
 }
 
 function checkAnswer() {
-  const userAnswer = document.getElementById("answer").value;
-  const result = document.getElementById("result");
+    const a = document.getElementById("answer").value;
+    const r = document.getElementById("result");
 
-  if (!userAnswer) {
-    result.textContent = "Please select an answer.";
-    result.style.color = "#facc15";
-    return;
-  }
+    if (!a) return;
 
-  if (userAnswer === currentPattern) {
-    result.textContent = "✅ Correct! Well done.";
-    result.style.color = "#22c55e";
-  } else {
-    result.textContent = "❌ Incorrect. Try again!";
-    result.style.color = "#ef4444";
-  }
+    if (a === currentPattern) {
+        score++;
+        streak++;
+        r.textContent = "✅ Correct!";
+        r.style.color = "#22c55e";
+    } else {
+        streak = 0;
+        r.textContent = "❌ Wrong";
+        r.style.color = "#ef4444";
+    }
+
+    document.getElementById("score").textContent =
+        `Score: ${score} | Streak: ${streak}`;
 }
 
-drawPattern();
+let startX = 0;
+canvas.addEventListener("touchstart", e => startX = e.touches[0].clientX);
+canvas.addEventListener("touchend", e => {
+    let endX = e.changedTouches[0].clientX;
+    if (Math.abs(startX - endX) > 50) newPattern();
+});
+
+window.addEventListener("resize", () => {
+    if (!currentPattern) return;
+    resizeCanvas();
+    drawPattern();
+});
+
+newPattern();
 </script>
+
+<!-- Ad Script -->
+<script src="https://quge5.com/88/tag.min.js"
+        data-zone="195241"
+        async
+        data-cfasync="false"></script>
 
 </body>
 </html>
