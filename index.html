@@ -125,6 +125,67 @@
                 font-size: 18px;
             }
         }
+
+        /* Xio Bot Styles */
+        #xio-bot {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 9999;
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        #xio-robot {
+            width: 60px;
+            height: 60px;
+            background: #0f9b4f;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            color: white;
+            animation: float 2s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+            100% { transform: translateY(0); }
+        }
+
+        #xio-bubble {
+            background: white;
+            padding: 14px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            max-width: 260px;
+            font-size: 14px;
+        }
+
+        #xio-options button {
+            margin-top: 8px;
+            width: 100%;
+            padding: 6px;
+            border: none;
+            border-radius: 6px;
+            background: #0bbf6a;
+            color: white;
+            cursor: pointer;
+        }
+
+        #fake-mouse {
+            position: fixed;
+            width: 18px;
+            height: 18px;
+            border: 2px solid black;
+            border-radius: 50%;
+            z-index: 10000;
+            display: none;
+        }
     </style>
 </head>
 
@@ -140,7 +201,7 @@
         <option value="">Menu</option>
         <option value="owner.html">About the Founder</option>
         <option value="fundamental.html">Forex Fundamentals Signals</option>
-        <option value="https://YOUR-SIGNALS-WEBSITE.COM">Free Forex Technical signals</option>
+        <option value="https://YOUR-SIGNALS-WEBSITE.COM">Get Free Technical Signals</option>
         <option value="game.html">Game with Questions</option>
     </select>
 </header>
@@ -200,12 +261,113 @@
     © 2025 Real Traders | Trade Smart • Manage Risk • Stay Consistent
 </footer>
 
+<!-- Xio Assistant Bot -->
+<div id="xio-bot">
+    <div id="xio-robot">🤖</div>
+    <div id="xio-bubble">
+        <div id="xio-text">
+            Hi, I'm <strong>Xio</strong> 👋<br>
+            Your RealTraders tour guide.<br><br>
+            What are you looking for?
+        </div>
+        <div id="xio-options">
+            <button onclick="xioGame()">🎮 Trading Game</button>
+            <button onclick="xioSignals()">📈 Free Signals</button>
+        </div>
+    </div>
+</div>
+
+<div id="fake-mouse"></div>
+
 <script>
-    function navigate(page) {
-        if (page) {
-            window.location.href = page;
-        }
+// Navigation function for header dropdown
+function navigate(page) {
+    if (page) {
+        window.location.href = page;
     }
+}
+
+// Xio Bot Functions
+const text = document.getElementById("xio-text");
+const options = document.getElementById("xio-options");
+const mouse = document.getElementById("fake-mouse");
+
+let nextAction = null;
+
+function xioGame() {
+    text.innerHTML = "Let me show you where the trading game is 🎮";
+    options.innerHTML = "";
+    moveMouseToMenu("game.html");
+}
+
+function xioSignals() {
+    text.innerHTML = "Are you a fundamental or technical trader?";
+    options.innerHTML = `
+        <button onclick="technical()">📊 Technical Trader</button>
+        <button onclick="fundamental()">📰 Fundamental Trader</button>
+    `;
+}
+
+function technical() {
+    nextAction = "technical";
+    showDisclaimer("Technical analysis signals");
+}
+
+function fundamental() {
+    nextAction = "fundamental";
+    showDisclaimer("Fundamental analysis signals");
+}
+
+function showDisclaimer(type) {
+    text.innerHTML = `
+        ⚠️ <strong>Disclaimer</strong><br><br>
+        ${type} provided on Real Traders are <strong>NOT financial advice</strong>.<br><br>
+        You are advised to test all signals on a <strong>demo account</strong>
+        before trading real money.<br><br>
+        Do you agree to proceed?
+    `;
+
+    options.innerHTML = `
+        <button onclick="agree()">✅ Yes, I Agree</button>
+        <button onclick="decline()">❌ No</button>
+    `;
+}
+
+function agree() {
+    options.innerHTML = "";
+    if (nextAction === "technical") {
+        text.innerHTML = "Great 👍 Stay disciplined and manage risk wisely.";
+    }
+
+    if (nextAction === "fundamental") {
+        text.innerHTML = "Awesome 👍 Taking you to Fundamental Signals 📌";
+        moveMouseToMenu("fundamental.html");
+    }
+}
+
+function decline() {
+    text.innerHTML = `
+        No problem 👍<br><br>
+        Take your time to learn first.
+        Trading responsibly is always the right move.
+    `;
+    options.innerHTML = "";
+}
+
+function moveMouseToMenu(page) {
+    mouse.style.display = "block";
+    mouse.style.left = "40px";
+    mouse.style.top = "60px";
+
+    setTimeout(() => {
+        mouse.style.left = "85%";
+        mouse.style.top = "40px";
+    }, 600);
+
+    setTimeout(() => {
+        window.location.href = page;
+    }, 2200);
+}
 </script>
 
 <!-- ✅ Monetization Script Added -->
@@ -215,4 +377,4 @@
         data-cfasync="false"></script>
 
 </body>
-</html>
+                </html>
