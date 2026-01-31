@@ -4,12 +4,7 @@
   <meta charset="UTF-8">
   <title>Real Traders – Multi Group Signals</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-adsense-account" content="ca-pub-7221396727211259">
-
-  <!-- Google AdSense -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7221396727211259"
-     crossorigin="anonymous"></script>
-
+  
   <style>
     body, html {
       margin: 0;
@@ -36,19 +31,37 @@
       color: #333;
     }
 
-    .signal {
-      background: #f9f9f9;
-      padding: 15px;
-      margin: 10px 0;
-      border-left: 4px solid #28a745;
-      box-shadow: 0 0 6px rgba(0,0,0,0.05);
-      border-radius: 4px;
+    /* News/Signal styling from provided script */
+    .news {
+      border-bottom: 1px solid #e0e0e0;
+      padding: 15px 0;
     }
 
-    .time {
+    .headline {
+      font-weight: bold;
+      font-size: 1.05em;
+      color: #222;
+      margin-bottom: 6px;
+    }
+
+    .preview {
+      color: #555;
+      font-size: 0.95em;
+      margin-bottom: 8px;
+    }
+
+    .meta {
+      font-size: 0.8em;
+      color: #888;
+      margin-top: 6px;
+    }
+
+    .read-more {
+      color: #007bff;
+      cursor: pointer;
       font-size: 0.85em;
-      color: gray;
-      margin-top: 8px;
+      margin-top: 6px;
+      display: inline-block;
     }
 
     footer {
@@ -73,15 +86,6 @@
     Welcome to <strong>Real Traders</strong> – your home of live trading signals from different verified trader groups. Each group shares their strategies for free. Mentorship may be offered individually and is not managed by Real Traders. Use all signals at your discretion.
   </p>
 
-  <!-- AdSense Ad Unit -->
-  <ins class="adsbygoogle"
-       style="display:block; text-align:center;"
-       data-ad-layout="in-article"
-       data-ad-format="fluid"
-       data-ad-client="ca-pub-7221396727211259"
-       data-ad-slot="1234567890"></ins>
-  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-
   <div id="signals">Loading signals...</div>
 </div>
 
@@ -95,6 +99,12 @@
   </nav>
   <p>&copy; 2025 Real Traders. All rights reserved.</p>
 </footer>
+
+<!-- PropellerAds -->
+<script src="https://quge5.com/88/tag.min.js"
+        data-zone="199016"
+        async
+        data-cfasync="false"></script>
 
 <script>
   const bots = [
@@ -120,64 +130,91 @@
     }
   ];
 
+  function getHeadline(text) {
+    return text.split('\n')[0].slice(0, 120);
+  }
+
+  function getPreview(text) {
+    return text.length > 180 ? text.slice(0, 180) + '...' : text;
+  }
+
   async function fetchAllSignals() {
     const now = new Date();
-    const cutoff = now.getTime() - (24 * 60 * 60 * 1000); // past 24 hours
+    const cutoff = now.getTime() - (24 * 60 * 60 * 1000);
     const container = document.getElementById('signals');
     container.innerHTML = '';
 
     let allSignals = [];
 
     for (const bot of bots) {
+      // Skip if token is placeholder
+      if (bot.token.startsWith('YOUR_BOT_TOKEN')) continue;
+      
       try {
         const res = await fetch(`https://api.telegram.org/bot${bot.token}/getUpdates`);
         const data = await res.json();
 
-        if (data.result && data.result.length > 0) {
-          const filtered = data.result
-            .filter(update => {
-              const msg = update.message;
-              if (!msg || !msg.text) return false;
-              const msgTime = msg.date * 1000;
-              return msg.chat.id == bot.chatId && msgTime >= cutoff;
-            })
-            .map(update => {
-              const msg = update.message;
-              return {
-                text: msg.text,
-                time: new Date(msg.date * 1000),
-                group: bot.chatId
-              };
-            });
+        if (data.result) {
+          data.result.forEach(update => {
+            const msg = update.message;
+            if (!msg || !msg.text) return;
 
-          allSignals = allSignals.concat(filtered);
+            const time = msg.date * 1000;
+            if (msg.chat.id == bot.chatId && time >= cutoff) {
+              allSignals.push({
+                text: msg.text,
+                time: new Date(time),
+                group: bot.chatId
+              });
+            }
+          });
         }
       } catch (err) {
         console.error(`Error fetching from bot ${bot.token}`, err);
       }
     }
 
-    // Sort signals newest first
     allSignals.sort((a, b) => b.time - a.time);
 
     if (allSignals.length === 0) {
-      container.innerHTML = '<p>No signals in the last 24 hours.</p>';
+      container.innerHTML = '<p>No signals in the last 24 hours. Check back later!</p>';
       return;
     }
 
     allSignals.forEach(signal => {
       const div = document.createElement('div');
-      div.className = 'signal';
+      div.className = 'news';
+
+      const fullText = signal.text.replace(/\n/g, '<br>');
+      const headline = getHeadline(signal.text);
+      const preview = getPreview(signal.text);
+
       div.innerHTML = `
-        <div>${signal.text.replace(/\n/g, '<br>')}</div>
-        <div class="time">🕒 ${signal.time.toLocaleString()} | Group: ${signal.group}</div>
+        <div class="headline">${headline || 'Signal'}</div>
+        <div class="preview">${preview}</div>
+        <div class="meta">🕒 ${signal.time.toLocaleString()} | Group: ${signal.group}</div>
+        <div class="read-more">Read more</div>
+        <div class="full" style="display:none; margin-top:10px; color:#444;">
+          ${fullText}
+        </div>
       `;
+
+      const readMoreBtn = div.querySelector('.read-more');
+      readMoreBtn.onclick = function () {
+        const full = div.querySelector('.full');
+        const isHidden = full.style.display === 'none';
+        full.style.display = isHidden ? 'block' : 'none';
+        this.textContent = isHidden ? 'Show less' : 'Read more';
+      };
+
       container.appendChild(div);
     });
   }
 
+  // Initial fetch
   fetchAllSignals();
-  setInterval(fetchAllSignals, 30000); // Refresh every 30 seconds
+  // Refresh every 30 seconds
+  setInterval(fetchAllSignals, 30000);
 </script>
 
 </body>
