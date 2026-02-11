@@ -66,6 +66,16 @@
             font-weight: bold;
         }
 
+        .motto {
+            margin: 2px 0 0 0;
+            font-size: 11px;
+            color: #ff0000; /* Red */
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            line-height: 1.4;
+        }
+
         select {
             padding: 8px 12px;
             font-size: 14px;
@@ -194,7 +204,14 @@
 <header>
     <div class="logo">
         <img src="logo.png" alt="Real Traders Logo">
-        <h1>Real Traders</h1>
+        <div>
+            <h1>Real Traders</h1>
+            <div class="motto">
+                UNUS ORBIS • UNUS ORDO🔶️ • PERSEQUIMUR<br>
+                SIT ENS SUPREMUM 🔺️🔻 LUX<br>
+                E PLURIBUS UNUM🌏
+            </div>
+        </div>
     </div>
 
     <select onchange="navigate(this.value)">
@@ -378,4 +395,4 @@ function moveMouseToMenu(page) {
         data-cfasync="false"></script>
 
 </body>
-                </html>
+</html>
