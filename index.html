@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real Traders</title>
+
+<style>
+body{
+    margin:0;
+    background:#FFD600;
+    font-family:Arial, Helvetica, sans-serif;
+    text-align:center;
+    overflow:hidden;
+}
+
+h1{
+    margin-top:40px;
+    font-size:50px;
+    color:#c40000;
+    letter-spacing:2px;
+}
+
+img{
+    width:300px;
+    margin-top:30px;
+}
+
+#message{
+    position:relative;
+    margin-top:40px;
+    font-size:32px;
+    font-weight:bold;
+    color:#000;
+    opacity:0;
+}
+
+.slide-in{
+    animation: slideIn 1s forwards;
+}
+
+@keyframes slideIn{
+    from{transform:translateX(-100%); opacity:0;}
+    to{transform:translateX(0); opacity:1;}
+}
+
+.splash{
+    animation: splashEffect 0.8s ease-out forwards;
+}
+
+@keyframes splashEffect{
+    0%{transform:scale(0.2); opacity:0;}
+    60%{transform:scale(1.2);}
+    100%{transform:scale(1); opacity:1;}
+}
+</style>
+</head>
+<body>
+
+<h1>Real Traders</h1>
+
+<img src="A_digital_illustration_shows_a_young_boy_standing_.png" alt="Real Traders Image">
+
+<div id="message"></div>
+
+<script>
+
+const messages = [
+    "Its possible",
+    "When Real Traders",
+    "Becomes your partner",
+    "Lets trade Together"
+];
+
+let index = 0;
+const messageDiv = document.getElementById("message");
+
+function showNextMessage(){
+    if(index < messages.length){
+        messageDiv.innerHTML = messages[index];
+        messageDiv.style.opacity = "1";
+        messageDiv.classList.remove("slide-in");
+        void messageDiv.offsetWidth; 
+        messageDiv.classList.add("slide-in");
+
+        setTimeout(()=>{
+            messageDiv.style.opacity = "0";
+            index++;
+            setTimeout(showNextMessage, 1000);
+        },5000);
+    } else {
+        typeFinalMessage();
+    }
+}
+
+function typeFinalMessage(){
+    let finalText = "Are you ready lets go";
+    let i = 0;
+    messageDiv.style.opacity = "1";
+    messageDiv.innerHTML = "";
+
+    let typing = setInterval(()=>{
+        messageDiv.innerHTML += finalText.charAt(i);
+        i++;
+        if(i >= finalText.length){
+            clearInterval(typing);
+
+            setTimeout(()=>{
+                showSplashMessage();
+            },5000);
+        }
+    },100);
+}
+
+function showSplashMessage(){
+    messageDiv.innerHTML = "Ohh I forgot listen every lose is a lesson,<br>Every win is a Victory<br><br>Now lets go champ 🫡🫡🫡";
+    messageDiv.classList.remove("slide-in");
+    messageDiv.classList.add("splash");
+
+    setTimeout(()=>{
+        window.location.href = "real.html";
+    },5000);
+}
+
+setTimeout(showNextMessage,1000);
+
+</script>
+
+</body>
+</html>
