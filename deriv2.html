@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real Trade – Auto Forex Broker</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1e1e2f; color: #fff; margin: 0; padding: 20px; }
+        .dashboard { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #ff4444; font-weight: 300; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .top-panel { display: flex; justify-content: space-between; align-items: center; background: #2a2a3a; padding: 15px 20px; border-radius: 8px; margin: 20px 0; }
+        .balance { font-size: 24px; font-weight: bold; color: #4caf50; }
+        .status { color: #ffaa00; }
+        .panel { background: #2a2a3a; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px; background: #33334a; color: #ccc; font-weight: 400; }
+        td { padding: 12px; border-bottom: 1px solid #3a3a4a; }
+        .positive { color: #4caf50; }
+        .negative { color: #ff4444; }
+        .log-box { background: #1a1a2a; color: #0f0; padding: 15px; border-radius: 5px; font-family: monospace; height: 150px; overflow-y: auto; font-size: 12px; border: 1px solid #333; }
+        .symbol-badge { background: #ff4444; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px; }
+        .contract-type { background: #333; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .refresh-note { color: #888; font-size: 12px; margin-top: 10px; text-align: right; }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h1>📈 Deriv Auto Broker</h1>
+
+        <!-- Top panel: status & balance -->
+        <div class="top-panel">
+            <span class="status" id="status">Connecting...</span>
+            <span class="balance" id="balance">Balance: --</span>
+        </div>
+
+        <!-- Live Forex Prices -->
+        <div class="panel">
+            <h2>📊 Live Forex Prices</h2>
+            <table>
+                <thead>
+                    <tr><th>Symbol</th><th>Last Price</th><th>SMA (5)</th><th>Signal</th><th>Status</th></tr>
+                </thead>
+                <tbody id="priceTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Open Positions -->
+        <div class="panel">
+            <h2>📋 Open Positions</h2>
+            <table>
+                <thead>
+                    <tr><th>Contract ID</th><th>Symbol</th><th>Type</th><th>Buy Price</th><th>Current P/L</th><th>Status</th></tr>
+                </thead>
+                <tbody id="positionsBody"></tbody>
+            </table>
+            <div class="refresh-note">Auto‑updates every tick</div>
+        </div>
+
+        <!-- Event Log -->
+        <div class="panel">
+            <h2>📋 Log</h2>
+            <div class="log-box" id="log"></div>
+        </div>
+    </div>
+
+    <script>
+        // ---------- CONFIG ----------
+        const token = 'jXIjQRFNDY24HUt';   // <-- Your hardcoded API token
+        // (No localStorage or login redirect – token is set directly)
+
+        const FOREX_SYMBOLS = ['frxEURUSD', 'frxGBPUSD', 'frxUSDJPY', 'frxAUDUSD', 'frxUSDCAD'];
+        const SMA_PERIOD = 5;
+        const TRADE_AMOUNT = 10;          // USD
+        const TRADE_DURATION = 1;          // minutes
+        const COOLDOWN_MS = 60000;          // 1 min cooldown per symbol
+
+        // ---------- STATE ----------
+        let ws;
+        let authorized = false;
+        let balance = 0;
+        const symbolData = {};              // key: symbol -> { ticks, lastTradeTime, pendingProposal, activeContract, lastPrice, sma }
+        const activeContracts = new Map();   // contractId -> { symbol, contractType, buyPrice, currentProfit, isSold }
+
+        // UI elements
+        const statusEl = document.getElementById('status');
+        const balanceEl = document.getElementById('balance');
+        const logEl = document.getElementById('log');
+        const priceTableBody = document.getElementById('priceTableBody');
+        const positionsBody = document.getElementById('positionsBody');
+
+        // ---------- INIT TABLE ROWS ----------
+        FOREX_SYMBOLS.forEach(sym => {
+            symbolData[sym] = {
+                ticks: [],
+                lastTradeTime: 0,
+                pendingProposal: null,
+                activeContract: null,
+                lastPrice: null,
+                sma: null
+            };
+            const row = priceTableBody.insertRow();
+            row.id = `row-${sym}`;
+            row.innerHTML = `
+                <td>${sym}</td>
+                <td class="price-${sym}">--</td>
+                <td class="sma-${sym}">--</td>
+                <td class="signal-${sym}">--</td>
+                <td class="status-${sym}">--</td>
+            `;
+        });
+
+        // ---------- LOGGING ----------
+        function log(message) {
+            logEl.innerText += '> ' + message + '\n';
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        // ---------- UI UPDATES ----------
+        function updateBalance(newBalance) {
+            balance = newBalance;
+            balanceEl.innerText = `Balance: $${balance.toFixed(2)}`;
+        }
+
+        function updateStatus(text, isConnected) {
+            statusEl.innerText = text;
+        }
+
+        // Update price table row for a symbol
+        function updatePriceRow(sym) {
+            const data = symbolData[sym];
+            const row = document.getElementById(`row-${sym}`);
+            if (!row) return;
+            row.querySelector(`.price-${sym}`).innerText = data.lastPrice ? data.lastPrice.toFixed(5) : '--';
+            row.querySelector(`.sma-${sym}`).innerText = data.sma ? data.sma.toFixed(5) : '--';
+            let statusText = '';
+            if (data.activeContract) statusText = 'In trade';
+            else if (data.pendingProposal) statusText = 'Proposal sent';
+            else if (Date.now() - data.lastTradeTime < COOLDOWN_MS) {
+                const remaining = Math.ceil((COOLDOWN_MS - (Date.now() - data.lastTradeTime)) / 1000);
+                statusText = `Cooldown ${remaining}s`;
+            } else statusText = 'Ready';
+            row.querySelector(`.status-${sym}`).innerText = statusText;
+        }
+
+        // Update positions table
+        function updatePositionsTable() {
+            if (!positionsBody) return;
+            positionsBody.innerHTML = '';
+            if (activeContracts.size === 0) {
+                positionsBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#888;">No open positions</td></tr>';
+                return;
+            }
+            activeContracts.forEach((data, contractId) => {
+                if (data.isSold) return; // skip closed ones
+                const row = positionsBody.insertRow();
+                row.innerHTML = `
+                    <td>${contractId}</td>
+                    <td>${data.symbol}</td>
+                    <td><span class="contract-type">${data.contractType}</span></td>
+                    <td>$${data.buyPrice.toFixed(2)}</td>
+                    <td class="${data.currentProfit >= 0 ? 'positive' : 'negative'}">${data.currentProfit >= 0 ? '+' : ''}${data.currentProfit.toFixed(2)}</td>
+                    <td>Open</td>
+                `;
+            });
+        }
+
+        // ---------- WEBSOCKET ----------
+        function connect() {
+            ws = new WebSocket('wss://ws.deriv.com/websockets/v3?app_id=1089');
+            ws.onopen = () => {
+                updateStatus('Connected, authorizing...', true);
+                log('WebSocket opened, sending authorize');
+                ws.send(JSON.stringify({ authorize: token }));
+            };
+            ws.onmessage = (msg) => {
+                try {
+                    const data = JSON.parse(msg.data);
+                    handleMessage(data);
+                } catch (e) {
+                    log('Parse error: ' + e);
+                }
+            };
+            ws.onerror = () => {
+                log('WebSocket error');
+                updateStatus('Connection error', false);
+            };
+            ws.onclose = () => {
+                updateStatus('Disconnected', false);
+                log('WebSocket closed');
+                authorized = false;
+            };
+        }
+
+        // ---------- MESSAGE HANDLER ----------
+        function handleMessage(data) {
+            if (data.error) {
+                log(`API Error: ${data.error.message}`);
+                if (data.error.code === 'InvalidToken') {
+                    alert('Invalid token. Please check your hardcoded token.');
+                }
+                return;
+            }
+
+            switch (data.msg_type) {
+                case 'authorize':
+                    authorized = true;
+                    updateBalance(data.authorize.balance);
+                    updateStatus('Auto‑trading active', true);
+                    log('Authorized – auto trading started');
+                    // Subscribe to forex ticks
+                    FOREX_SYMBOLS.forEach(sym => {
+                        ws.send(JSON.stringify({ ticks: sym, subscribe: 1 }));
+                    });
+                    break;
+
+                case 'balance':
+                    updateBalance(data.balance.balance);
+                    break;
+
+                case 'tick':
+                    handleTick(data.tick);
+                    break;
+
+                case 'proposal':
+                    handleProposal(data);
+                    break;
+
+                case 'buy':
+                    handleBuy(data);
+                    break;
+
+                case 'proposal_open_contract':
+                    handlePoc(data.proposal_open_contract);
+                    break;
+
+                default:
+                    // ignore
+                    break;
+            }
+        }
+
+        // ---------- TICK PROCESSING + AUTO SIGNAL ----------
+        function handleTick(tick) {
+            const sym = tick.symbol;
+            if (!symbolData[sym]) return;
+
+            const data = symbolData[sym];
+            const price = parseFloat(tick.quote);
+            data.lastPrice = price;
+            data.ticks.push(price);
+            if (data.ticks.length > SMA_PERIOD) data.ticks.shift();
+
+            if (data.ticks.length >= SMA_PERIOD) {
+                data.sma = data.ticks.reduce((a, b) => a + b, 0) / SMA_PERIOD;
+            }
+
+            updatePriceRow(sym);
+
+            // Auto-trading logic (always on)
+            if (!authorized) return;
+            if (data.ticks.length < SMA_PERIOD) return;
+            if (data.pendingProposal || data.activeContract) return;
+            if (Date.now() - data.lastTradeTime < COOLDOWN_MS) return;
+
+            const prevPrice = data.ticks[data.ticks.length - 2];
+            const direction = (price > data.sma && prevPrice <= data.sma) ? 'CALL' :
+                              (price < data.sma && prevPrice >= data.sma) ? 'PUT' : null;
+
+            if (direction) {
+                log(`📈 Signal on ${sym}: ${direction} at ${price.toFixed(5)} (SMA=${data.sma.toFixed(5)})`);
+                // Flash signal in table
+                const signalCell = document.querySelector(`.signal-${sym}`);
+                if (signalCell) {
+                    signalCell.innerHTML = direction === 'CALL' ? '🟢 RISE' : '🔻 FALL';
+                    setTimeout(() => { signalCell.innerHTML = '--'; }, 5000);
+                }
+                placeTrade(sym, direction);
+            }
+        }
+
+        // ---------- PLACE TRADE (CALL/PUT) ----------
+        function placeTrade(symbol, contractType) {
+            if (!authorized) return;
+            if (symbolData[symbol].pendingProposal || symbolData[symbol].activeContract) return;
+
+            const proposal = {
+                proposal: 1,
+                amount: TRADE_AMOUNT,
+                basis: 'stake',
+                contract_type: contractType,
+                currency: 'USD',
+                duration: TRADE_DURATION,
+                duration_unit: 'm',
+                symbol: symbol
+            };
+            ws.send(JSON.stringify(proposal));
+            log(`Sent proposal for ${symbol} ${contractType}`);
+            symbolData[symbol].pendingProposal = 'sent'; // mark
+            updatePriceRow(symbol);
+        }
+
+        // ---------- PROPOSAL RESPONSE ----------
+        function handleProposal(data) {
+            const sym = data.echo_req.symbol;
+            if (!sym || !symbolData[sym]) return;
+            symbolData[sym].pendingProposal = data.proposal.id;
+            log(`Proposal ready for ${sym}: ID ${data.proposal.id}, price ${data.proposal.ask_price}`);
+            // Automatically buy it
+            ws.send(JSON.stringify({
+                buy: data.proposal.id,
+                price: data.proposal.ask_price
+            }));
+            log(`Auto‑buy sent for ${sym}`);
+        }
+
+        // ---------- BUY RESPONSE ----------
+        function handleBuy(data) {
+            log(`✅ Buy successful! Contract ID: ${data.buy.contract_id}`);
+            if (data.buy.balance_after) {
+                updateBalance(data.buy.balance_after);
+            }
+            // Find which symbol this belongs to
+            for (let sym in symbolData) {
+                if (symbolData[sym].pendingProposal) {
+                    symbolData[sym].activeContract = data.buy.contract_id;
+                    symbolData[sym].pendingProposal = null;
+                    symbolData[sym].lastTradeTime = Date.now();
+
+                    // Store contract details
+                    activeContracts.set(data.buy.contract_id, {
+                        symbol: sym,
+                        contractType: data.buy.contract_type, // should be available in buy response? Might be in echo_req
+                        buyPrice: data.buy.buy_price,
+                        currentProfit: 0,
+                        isSold: false
+                    });
+
+                    // Subscribe to contract updates
+                    ws.send(JSON.stringify({
+                        proposal_open_contract: 1,
+                        contract_id: data.buy.contract_id,
+                        subscribe: 1
+                    }));
+
+                    updatePriceRow(sym);
+                    updatePositionsTable();
+                    break;
+                }
+            }
+        }
+
+        // ---------- PROPOSAL OPEN CONTRACT (P/L updates) ----------
+        function handlePoc(poc) {
+            const contractId = poc.contract_id;
+            if (!activeContracts.has(contractId)) return;
+
+            const contract = activeContracts.get(contractId);
+            contract.currentProfit = poc.profit || 0;
+
+            if (poc.is_sold) {
+                contract.isSold = true;
+                log(`🔚 Contract ${contractId} closed. Profit: ${poc.profit}`);
+                // Remove from symbol activeContract
+                for (let sym in symbolData) {
+                    if (symbolData[sym].activeContract === contractId) {
+                        symbolData[sym].activeContract = null;
+                        updatePriceRow(sym);
+                        break;
+                    }
+                }
+                // Remove from activeContracts or keep as history? For simplicity we remove
+                activeContracts.delete(contractId);
+            }
+
+            updatePositionsTable();
+        }
+
+        // ---------- START ----------
+        window.onload = connect;
+    </script>
+</body>
+  </html>
