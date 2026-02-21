@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greetings Splash</title>
+<style>
+  body {
+    margin: 0;
+    background: white;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  /* Splash screen */
+  .splash {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    z-index: 2;
+  }
+
+  .splash span {
+    display: inline-block;
+    margin: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    animation: zoom 2s ease-in-out infinite alternate;
+    color: #004d00; /* dark green text */
+  }
+
+  @keyframes zoom {
+    0% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.8); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.6; }
+  }
+
+  /* Confirmation message */
+  .confirmation {
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    z-index: 3;
+    font-size: 1.2em;
+    color: black;
+    text-shadow: 1px 1px 2px white;
+  }
+
+  .buttons button {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  #yes { background-color: #28a745; color: white; }
+  #no { background-color: #dc3545; color: white; }
+  button:hover { opacity: 0.8; }
+</style>
+</head>
+<body>
+
+<!-- Splash Screen -->
+<div class="splash" id="splash"></div>
+
+<!-- Confirmation Message -->
+<div class="confirmation">
+  <p>You are now about to leave RealTraders Free Signals site to a broker upcoming site which is not complete. You’re free to check it out. Do you wish to continue?</p>
+  <div class="buttons">
+    <button id="yes">Yes</button>
+    <button id="no">No</button>
+  </div>
+</div>
+
+<script>
+const greetings = [
+"Hello","Hola","Bonjour","Hallo","Ciao","Olá","Привет","こんにちは","你好","안녕하세요","مرحبا","नमस्ते",
+"নমস্কার","ਸਤ ਸ੍ਰੀ ਅਕਾਲ","السلام علیکم","Halo","Hai","สวัสดี","Xin chào","Merhaba","Hallo","Hej","Hej","Hei","Hei",
+"Γεια σας","Cześć","Ahoj","Szia","Salut","Привіт","Здравейте","Здраво","Bok","Ahoj","Živjo","Labas","Sveiki","Tere",
+"Halló","Bongu","Përshëndetje","Zdravo","Здраво","გამარჯობა","Բարև","Salam","Сәлем","Salom","Salam","Салам","Салом",
+"سلام","سلام","Silav","Salaan","Habari","Sawubona","Molo","Hallo","Ẹ kú","Nnọọ","Sannu","ሰላም","Akkam","ሰላም",
+"Salama","ආයුබෝවන්","வணக்கம்","నమస్కారం","ನಮಸ್ಕಾರ","നമസ്കാരം","नमस्कार","નમસ્તે","ଓଡ଼ିଆ","নমস্কাৰ","प्रणाम","नमस्ते",
+"ဆ်ာပာပါ","ສະບາຍດີ","សួស្តី","Сайн уу","བཀྲ་ཤིས་བདེ་ལེགས","ياخشىمۇسىز","Kamusta","Kamusta","Kumusta",
+"Naimbag nga aldaw","Aloha","Kia ora","Talofa","Mālō e lelei","Bula","Håfa adai","Ia ora na","Mauri","Yokwe","Alii","Talofa",
+"Ekamowir omo","Hai","Oi","Sawubona","Avuxeni","Ndaa","Lotjhani","Dumela","Dumela","Lumela","Moni","Mhoro","Bite","Muraho",
+"Mbote","Salaam","Salut","Saañu","Ŋdɔ","Akwaaba","Ojekoo","Dabaale","Ne y windiga","Fofo","Fofo","Salama","Mɛssi","Azul",
+"Ahlan","Marhaba","Salam","שלום","שלום־עליכם","Buenos días","Sastimosa","Բարև ձեզ","Бзиа збаша","Уимахуэ","Салам","Салам",
+"Салам","Ворчӏами","Салам","Салам","Салам","Салам","Салам","Салам","Салам","Салам","Салам","Салам","Səlom","Салам","שָׁלוֹם",
+"Shlama","Shlama","Shlama","Shalom","Shlama","Ħello","Salude","Bonghjornu","Mandi","Bun dé","Bun di","Bondjoû","Demat","Dydh da",
+"Failt","Halò","Dia dhuit","Helo","Hola","Hola","Bonjorn","Hola","Kaixo","Ola","Oi","Halló","Aluu","ᐊᐃ","Aang","Waqaa","Yá'át'ééh",
+"ᎣᏏᏲ","Hau"
+];
+
+const splash = document.getElementById('splash');
+let batch = 0;
+const batchSize = 15;
+
+function showBatch() {
+  splash.innerHTML = ''; // clear previous batch
+  const start = batch * batchSize;
+  const end = Math.min(start + batchSize, greetings.length);
+  for (let i = start; i < end; i++) {
+    const span = document.createElement('span');
+    span.textContent = greetings[i];
+    splash.appendChild(span);
+  }
+  batch++;
+  if (batch * batchSize < greetings.length) {
+    setTimeout(showBatch, 4000); // next batch every 4s
+  }
+}
+
+// Start showing batches
+showBatch();
+
+// Buttons
+document.getElementById("yes").addEventListener("click", () => window.location.href = "deriv2.html");
+document.getElementById("no").addEventListener("click", () => window.history.back());
+</script>
+
+</body>
+  </html>
