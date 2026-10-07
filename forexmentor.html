@@ -1,0 +1,3285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>XIO Forex Mentorship</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+:root{
+    --bg:#07111f;
+    --panel:#0d1b2a;
+    --panel2:#10243a;
+    --blue:#1687ff;
+    --cyan:#00c6ff;
+    --green:#16c784;
+    --red:#ea3943;
+    --yellow:#f5c451;
+    --text:#f4f7fb;
+    --muted:#91a4b8;
+    --line:rgba(255,255,255,.09);
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:
+        radial-gradient(circle at top,#12345b 0,#07111f 42%,#030912 100%);
+    color:var(--text);
+    min-height:100vh;
+}
+
+.app{
+    width:100%;
+    max-width:850px;
+    min-height:100vh;
+    margin:auto;
+    background:rgba(7,17,31,.92);
+    overflow:hidden;
+}
+
+/* HEADER */
+
+.header{
+    height:70px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 18px;
+    border-bottom:1px solid var(--line);
+    background:rgba(5,15,27,.96);
+    position:sticky;
+    top:0;
+    z-index:20;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:linear-gradient(135deg,var(--cyan),var(--blue));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    font-size:18px;
+    box-shadow:0 0 20px rgba(0,198,255,.25);
+}
+
+.brand-text strong{
+    display:block;
+    font-size:15px;
+}
+
+.brand-text span{
+    display:block;
+    font-size:11px;
+    color:var(--muted);
+    margin-top:3px;
+}
+
+.progress-mini{
+    text-align:right;
+}
+
+.progress-mini b{
+    font-size:14px;
+}
+
+.progress-mini small{
+    color:var(--muted);
+    display:block;
+    margin-top:3px;
+}
+
+/* SCREENS */
+
+.screen{
+    display:none;
+    padding:20px;
+}
+
+.screen.active{
+    display:block;
+}
+
+/* WELCOME */
+
+.hero{
+    min-height:calc(100vh - 70px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:25px;
+}
+
+.hero-card{
+    width:100%;
+    max-width:620px;
+}
+
+.hero-logo{
+    width:100px;
+    height:100px;
+    margin:0 auto 25px;
+    border-radius:28px;
+    background:linear-gradient(135deg,#00c6ff,#006cff);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:42px;
+    font-weight:900;
+    box-shadow:
+        0 20px 60px rgba(0,140,255,.28),
+        inset 0 1px 0 rgba(255,255,255,.35);
+}
+
+.hero h1{
+    font-size:32px;
+    line-height:1.1;
+    margin-bottom:12px;
+}
+
+.hero h1 span{
+    color:var(--cyan);
+}
+
+.hero p{
+    color:#b7c5d5;
+    line-height:1.7;
+    font-size:15px;
+    max-width:560px;
+    margin:auto;
+}
+
+.start-btn{
+    width:100%;
+    max-width:430px;
+    margin:30px auto 15px;
+    border:0;
+    border-radius:14px;
+    padding:18px 22px;
+    color:white;
+    background:linear-gradient(135deg,#1687ff,#00aeea);
+    font-size:16px;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 12px 35px rgba(0,130,255,.25);
+}
+
+.start-btn:active{
+    transform:scale(.98);
+}
+
+.note{
+    color:#73879c;
+    font-size:11px;
+    line-height:1.5;
+}
+
+/* LESSON */
+
+.lesson-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+}
+
+.lesson-count{
+    color:var(--muted);
+    font-size:12px;
+}
+
+.lesson-number{
+    color:var(--cyan);
+    font-weight:bold;
+}
+
+.lesson-card{
+    background:linear-gradient(180deg,#10243a,#0b1929);
+    border:1px solid var(--line);
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 15px 50px rgba(0,0,0,.22);
+}
+
+.lesson-heading{
+    padding:20px;
+    border-bottom:1px solid var(--line);
+}
+
+.lesson-heading small{
+    color:var(--cyan);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+.lesson-heading h2{
+    font-size:25px;
+    margin-top:7px;
+    text-transform:capitalize;
+}
+
+.question{
+    margin-top:12px;
+    color:#c4d1df;
+    font-size:14px;
+}
+
+.answer{
+    padding:20px;
+    color:#dbe5ef;
+    line-height:1.65;
+    font-size:14px;
+    white-space:normal;
+    overflow-wrap:anywhere;
+}
+
+.answer strong{
+    color:white;
+}
+
+.answer u{
+    color:var(--cyan);
+}
+
+.answer img{
+    max-width:100%;
+}
+
+.lesson-image{
+    padding:0 20px 20px;
+}
+
+.lesson-image img{
+    display:block;
+    width:100%;
+    max-height:430px;
+    object-fit:contain;
+    border-radius:12px;
+    background:#07111f;
+    border:1px solid var(--line);
+}
+
+.image-caption{
+    font-size:10px;
+    color:var(--muted);
+    margin-top:7px;
+}
+
+.platform-images{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:15px;
+}
+
+.platform-images img{
+    width:100%;
+    border-radius:10px;
+    border:1px solid var(--line);
+}
+
+/* BUTTONS */
+
+.actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:16px;
+}
+
+.btn{
+    min-height:52px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#11263b;
+    color:white;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.btn.primary{
+    background:linear-gradient(135deg,#1687ff,#00aeea);
+    border:0;
+}
+
+.btn.demo{
+    background:linear-gradient(135deg,#14b878,#079c68);
+    border:0;
+}
+
+.btn:active{
+    transform:scale(.98);
+}
+
+/* GAME */
+
+.game-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:12px;
+}
+
+.game-title h2{
+    font-size:21px;
+}
+
+.badge{
+    padding:7px 10px;
+    border-radius:8px;
+    background:#142c44;
+    color:var(--cyan);
+    font-size:10px;
+    font-weight:bold;
+}
+
+.game-instruction{
+    background:#10243a;
+    border:1px solid var(--line);
+    padding:13px;
+    border-radius:12px;
+    margin-bottom:12px;
+    color:#c7d5e3;
+    line-height:1.5;
+    font-size:13px;
+}
+
+.chart-wrap{
+    position:relative;
+    width:100%;
+    background:#050d17;
+    border:1px solid #20344b;
+    border-radius:14px;
+    overflow:hidden;
+}
+
+#chart{
+    display:block;
+    width:100%;
+    height:410px;
+    touch-action:none;
+    cursor:crosshair;
+}
+
+.chart-label{
+    position:absolute;
+    top:10px;
+    left:10px;
+    padding:7px 9px;
+    background:rgba(3,9,18,.82);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:7px;
+    font-size:10px;
+    color:#b7c7d8;
+    pointer-events:none;
+}
+
+.chart-status{
+    position:absolute;
+    bottom:10px;
+    left:50%;
+    transform:translateX(-50%);
+    background:rgba(5,13,23,.9);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:20px;
+    padding:7px 13px;
+    font-size:10px;
+    white-space:nowrap;
+    pointer-events:none;
+}
+
+.direction-buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:12px;
+}
+
+.direction{
+    border:0;
+    border-radius:12px;
+    padding:15px;
+    font-weight:900;
+    color:white;
+    cursor:pointer;
+}
+
+.buy{
+    background:#087f5b;
+}
+
+.sell{
+    background:#bd3039;
+}
+
+.direction.selected{
+    outline:3px solid white;
+    outline-offset:2px;
+}
+
+.game-bottom{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:10px;
+}
+
+.result{
+    display:none;
+    margin-top:13px;
+    padding:17px;
+    border-radius:14px;
+    background:#10243a;
+    border:1px solid var(--line);
+}
+
+.result.show{
+    display:block;
+}
+
+.result-score{
+    font-size:32px;
+    font-weight:900;
+    color:var(--cyan);
+}
+
+.result-title{
+    font-size:18px;
+    font-weight:bold;
+    margin:5px 0;
+}
+
+.result-text{
+    color:#b7c8d9;
+    font-size:13px;
+    line-height:1.6;
+}
+
+/* LOADING */
+
+.loading{
+    min-height:300px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:15px;
+    text-align:center;
+}
+
+.spinner{
+    width:42px;
+    height:42px;
+    border:4px solid #1b3046;
+    border-top-color:var(--cyan);
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg)}
+}
+
+/* FOOTER */
+
+.disclaimer{
+    margin-top:18px;
+    padding:13px;
+    border-radius:10px;
+    background:rgba(245,196,81,.06);
+    border:1px solid rgba(245,196,81,.12);
+    color:#899bad;
+    font-size:10px;
+    line-height:1.5;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:500px){
+
+    .header{
+        height:62px;
+        padding:0 12px;
+    }
+
+    .logo{
+        width:36px;
+        height:36px;
+        font-size:15px;
+    }
+
+    .brand-text strong{
+        font-size:13px;
+    }
+
+    .screen{
+        padding:14px;
+    }
+
+    .hero{
+        min-height:calc(100vh - 62px);
+        padding:18px;
+    }
+
+    .hero h1{
+        font-size:28px;
+    }
+
+    .hero-logo{
+        width:85px;
+        height:85px;
+        font-size:35px;
+    }
+
+    .lesson-heading h2{
+        font-size:21px;
+    }
+
+    .answer{
+        font-size:13px;
+    }
+
+    #chart{
+        height:360px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- HEADER -->
+    <header class="header">
+
+        <div class="brand">
+
+            <div class="logo">X</div>
+
+            <div class="brand-text">
+                <strong>XIO FOREX MENTOR</strong>
+                <span>Automatic mentorship class</span>
+            </div>
+
+        </div>
+
+        <div class="progress-mini">
+            <b id="headerProgress">0 / 0</b>
+            <small id="headerScore">Score: 0</small>
+        </div>
+
+    </header>
+
+
+    <!-- WELCOME SCREEN -->
+    <section id="welcomeScreen" class="screen active hero">
+
+        <div class="hero-card">
+
+            <div class="hero-logo">
+                XIO
+            </div>
+
+            <h1>
+                Welcome to <span>Forex Mentorship</span>
+            </h1>
+
+            <p>
+                Welcome to your automatic Forex mentorship class.
+                Learn market formations, candlestick patterns,
+                technical analysis, strategies, risk management,
+                indicators and more.
+            </p>
+
+            <button class="start-btn" onclick="startMentorship()">
+                START MENTORSHIP CLASS
+            </button>
+
+            <div class="note">
+                Lessons and images are loaded directly from
+                <strong>xio2.html</strong>.
+            </div>
+
+            <div class="disclaimer">
+                Training and educational simulation only.
+                The chart demonstrations use generated data and are
+                not live market prices or financial advice.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- LOADING -->
+    <section id="loadingScreen" class="screen">
+
+        <div class="loading">
+
+            <div class="spinner"></div>
+
+            <strong id="loadingText">
+                Loading XIO mentorship...
+            </strong>
+
+            <small style="color:#8093a8">
+                Reading lessons from xio2.html
+            </small>
+
+        </div>
+
+    </section>
+
+
+    <!-- LESSON SCREEN -->
+    <section id="lessonScreen" class="screen">
+
+        <div class="lesson-top">
+
+            <div class="lesson-count">
+                LESSON
+                <span class="lesson-number" id="lessonNumber">
+                    1
+                </span>
+            </div>
+
+            <div class="lesson-count">
+                <span id="lessonPercent">0%</span>
+            </div>
+
+        </div>
+
+
+        <div class="lesson-card">
+
+            <div class="lesson-heading">
+
+                <small>XIO MENTORSHIP</small>
+
+                <h2 id="lessonTitle">
+                    Loading...
+                </h2>
+
+                <div class="question" id="lessonQuestion">
+                    Loading lesson...
+                </div>
+
+            </div>
+
+
+            <div class="answer" id="lessonAnswer">
+            </div>
+
+
+            <div
+                class="lesson-image"
+                id="lessonImageContainer"
+                style="display:none;"
+            >
+
+                <img id="lessonImage" src="" alt="Forex lesson">
+
+                <div class="image-caption">
+                    Educational image from xio2.html
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div id="demoArea"></div>
+
+
+        <div class="actions">
+
+            <button
+                class="btn"
+                onclick="previousLesson()"
+            >
+                ← PREVIOUS
+            </button>
+
+            <button
+                class="btn primary"
+                onclick="nextLesson()"
+            >
+                NEXT LESSON →
+            </button>
+
+        </div>
+
+
+        <div class="disclaimer">
+            The mentor automatically uses the educational entries
+            contained in xio2.html. Pattern demonstrations are
+            simulations for learning.
+        </div>
+
+    </section>
+
+
+    <!-- GAME SCREEN -->
+    <section id="gameScreen" class="screen">
+
+        <div class="game-title">
+
+            <h2 id="gamePatternTitle">
+                Pattern Demo
+            </h2>
+
+            <div class="badge" id="gameDirectionBadge">
+                PRACTICE
+            </div>
+
+        </div>
+
+
+        <div class="game-instruction" id="gameInstruction">
+            Watch the chart and select your entry.
+        </div>
+
+
+        <div class="chart-wrap">
+
+            <canvas id="chart"></canvas>
+
+            <div class="chart-label" id="chartLabel">
+                XIO TRAINING CHART
+            </div>
+
+            <div class="chart-status" id="chartStatus">
+                Preparing chart...
+            </div>
+
+        </div>
+
+
+        <div class="direction-buttons">
+
+            <button
+                class="direction buy"
+                id="buyBtn"
+                onclick="chooseDirection('buy')"
+            >
+                ▲ BUY / LONG
+            </button>
+
+            <button
+                class="direction sell"
+                id="sellBtn"
+                onclick="chooseDirection('sell')"
+            >
+                ▼ SELL / SHORT
+            </button>
+
+        </div>
+
+
+        <div class="game-bottom">
+
+            <button
+                class="btn"
+                onclick="restartGame()"
+            >
+                RESTART
+            </button>
+
+            <button
+                class="btn"
+                onclick="returnToLesson()"
+            >
+                BACK TO CLASS
+            </button>
+
+        </div>
+
+
+        <div class="result" id="gameResult">
+
+            <div class="result-score" id="resultScore">
+                0
+            </div>
+
+            <div class="result-title" id="resultTitle">
+                Result
+            </div>
+
+            <div class="result-text" id="resultText">
+            </div>
+
+            <button
+                class="start-btn"
+                style="margin:15px 0 0;"
+                onclick="nextDemo()"
+            >
+                NEXT DEMO
+            </button>
+
+        </div>
+
+
+        <div class="disclaimer">
+            This is a chart-entry training game. It does not predict
+            future market prices and does not represent live trading.
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   XIO FOREX MENTOR
+   ========================================================= */
+
+const SOURCE_FILE = "xio2.html";
+
+let responses = {};
+let lessons = [];
+
+let currentLesson = 0;
+let score = 0;
+let demosCompleted = 0;
+
+let currentGame = null;
+let selectedDirection = null;
+let selectedPoint = null;
+let animationTimer = null;
+
+
+/* =========================================================
+   SCREEN CONTROL
+   ========================================================= */
+
+function showScreen(id){
+
+    document.querySelectorAll(".screen").forEach(screen=>{
+        screen.classList.remove("active");
+    });
+
+    document.getElementById(id).classList.add("active");
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+async function startMentorship(){
+
+    showScreen("loadingScreen");
+
+    document.getElementById("loadingText").textContent =
+        "Loading XIO mentorship...";
+
+    try{
+
+        await loadXIO();
+
+        buildLessons();
+
+        if(!lessons.length){
+            throw new Error(
+                "No responses were found in xio2.html"
+            );
+        }
+
+        currentLesson = 0;
+
+        showScreen("lessonScreen");
+
+        renderLesson();
+
+    }catch(error){
+
+        console.error(error);
+
+        document.getElementById("loadingText").innerHTML =
+            "Unable to load <strong>xio2.html</strong>.<br><br>" +
+            "Make sure forex-mentor.html and xio2.html are on the same " +
+            "website/server.";
+
+    }
+}
+
+
+/* =========================================================
+   FETCH XIO2.HTML
+   ========================================================= */
+
+async function loadXIO(){
+
+    const response = await fetch(
+        SOURCE_FILE + "?v=" + Date.now(),
+        {
+            method:"GET",
+            cache:"no-store"
+        }
+    );
+
+    if(!response.ok){
+        throw new Error(
+            "Could not load " + SOURCE_FILE +
+            " (" + response.status + ")"
+        );
+    }
+
+    const html = await response.text();
+
+    responses = extractResponsesObject(html);
+
+    console.log(
+        "XIO lessons loaded:",
+        Object.keys(responses).length
+    );
+}
+
+
+/* =========================================================
+   EXTRACT:
+   const responses = { ... };
+   
+   This parser understands the structure in the supplied
+   xio2.html, including:
+   - comments
+   - strings
+   - template literals
+   - nested objects
+   - arrays
+   ========================================================= */
+
+function extractResponsesObject(html){
+
+    const marker = "const responses";
+
+    const markerIndex = html.indexOf(marker);
+
+    if(markerIndex === -1){
+
+        throw new Error(
+            "The 'const responses' object was not found in xio2.html."
+        );
+
+    }
+
+    const equalsIndex = html.indexOf("=",markerIndex);
+
+    if(equalsIndex === -1){
+        throw new Error("Could not find responses assignment.");
+    }
+
+    let start = -1;
+
+    for(let i=equalsIndex+1;i<html.length;i++){
+
+        if(html[i]==="{"){
+            start=i;
+            break;
+        }
+
+    }
+
+    if(start===-1){
+        throw new Error("Could not find beginning of responses object.");
+    }
+
+
+    let depth=0;
+
+    let quote=null;
+
+    let escaped=false;
+
+    let lineComment=false;
+
+    let blockComment=false;
+
+    let template=false;
+
+    let end=-1;
+
+
+    for(
+        let i=start;
+        i<html.length;
+        i++
+    ){
+
+        const ch=html[i];
+
+        const next=html[i+1];
+
+
+        /* line comment */
+
+        if(lineComment){
+
+            if(ch==="\n"){
+                lineComment=false;
+            }
+
+            continue;
+        }
+
+
+        /* block comment */
+
+        if(blockComment){
+
+            if(ch==="*" && next==="/"){
+
+                blockComment=false;
+                i++;
+
+            }
+
+            continue;
+        }
+
+
+        /* quoted strings */
+
+        if(quote){
+
+            if(escaped){
+
+                escaped=false;
+                continue;
+
+            }
+
+            if(ch==="\\"){
+
+                escaped=true;
+                continue;
+
+            }
+
+            if(ch===quote){
+
+                quote=null;
+
+            }
+
+            continue;
+        }
+
+
+        /* template */
+
+        if(template){
+
+            if(escaped){
+
+                escaped=false;
+                continue;
+
+            }
+
+            if(ch==="\\"){
+
+                escaped=true;
+                continue;
+
+            }
+
+            if(ch==="`"){
+
+                template=false;
+                continue;
+
+            }
+
+            continue;
+        }
+
+
+        /* comments */
+
+        if(ch==="/" && next==="/"){
+
+            lineComment=true;
+            i++;
+            continue;
+
+        }
+
+        if(ch==="/" && next==="*"){
+
+            blockComment=true;
+            i++;
+            continue;
+
+        }
+
+
+        /* strings */
+
+        if(ch==='"' || ch==="'"){
+
+            quote=ch;
+            continue;
+
+        }
+
+        if(ch==="`"){
+
+            template=true;
+            continue;
+
+        }
+
+
+        /* object */
+
+        if(ch==="{"){
+
+            depth++;
+
+        }else if(ch==="}"){
+
+            depth--;
+
+            if(depth===0){
+
+                end=i;
+                break;
+
+            }
+
+        }
+
+    }
+
+
+    if(end===-1){
+
+        throw new Error(
+            "The responses object could not be closed."
+        );
+
+    }
+
+
+    const objectSource =
+        html.slice(start,end+1);
+
+
+    /*
+       Function is used only on the user's own xio2.html source.
+       It allows the existing object to contain:
+       - template strings
+       - comments
+       - nested structures
+       - duplicate keys
+    */
+
+    try{
+
+        const factory = new Function(
+            '"use strict"; return (' +
+            objectSource +
+            ');'
+        );
+
+        const parsed = factory();
+
+        if(
+            !parsed ||
+            typeof parsed !== "object"
+        ){
+
+            throw new Error(
+                "responses is not an object."
+            );
+
+        }
+
+        return parsed;
+
+    }catch(error){
+
+        console.error(
+            "Responses parser error:",
+            error
+        );
+
+        throw new Error(
+            "Could not parse the responses object in xio2.html. " +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   BUILD LESSONS
+   ========================================================= */
+
+function buildLessons(){
+
+    lessons = Object.keys(responses)
+        .map(key=>({
+
+            key:key,
+
+            data:
+                responses[key] || {}
+
+        }));
+
+
+    /*
+       Keep everything from xio2.html.
+
+       We only remove nothing here.
+       Every response becomes a lesson.
+    */
+
+    updateHeader();
+
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+function updateHeader(){
+
+    document.getElementById(
+        "headerProgress"
+    ).textContent =
+        lessons.length
+        ? `${currentLesson+1} / ${lessons.length}`
+        : "0 / 0";
+
+    document.getElementById(
+        "headerScore"
+    ).textContent =
+        "Score: " + score;
+
+}
+
+
+/* =========================================================
+   LESSON RENDERING
+   ========================================================= */
+
+function renderLesson(){
+
+    if(!lessons.length) return;
+
+
+    const lesson =
+        lessons[currentLesson];
+
+    const key =
+        lesson.key;
+
+    const data =
+        lesson.data || {};
+
+
+    updateHeader();
+
+
+    document.getElementById(
+        "lessonNumber"
+    ).textContent =
+        currentLesson+1;
+
+
+    document.getElementById(
+        "lessonPercent"
+    ).textContent =
+        Math.round(
+            ((currentLesson+1) /
+            lessons.length) * 100
+        ) + "%";
+
+
+    document.getElementById(
+        "lessonTitle"
+    ).textContent =
+        prettifyTitle(key);
+
+
+    document.getElementById(
+        "lessonQuestion"
+    ).textContent =
+        makeQuestion(key);
+
+
+    const answer =
+        document.getElementById(
+            "lessonAnswer"
+        );
+
+
+    /*
+       Your xio2.html contains trusted HTML in some
+       descriptions, for example <strong> and <u>.
+       Therefore we render the source description
+       as HTML.
+    */
+
+    answer.innerHTML =
+        formatDescription(
+            data.description || ""
+        );
+
+
+    renderImages(data,key);
+
+
+    renderDemoButton(
+        key,
+        data
+    );
+
+}
+
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+function prettifyTitle(key){
+
+    return String(key)
+        .replace(/\/+/g," / ")
+        .replace(/\s+/g," ")
+        .trim();
+
+}
+
+
+/* =========================================================
+   AUTOMATIC QUESTION
+   ========================================================= */
+
+function makeQuestion(key){
+
+    const clean =
+        prettifyTitle(key);
+
+    if(
+        /^what\b/i.test(clean) ||
+        /^how\b/i.test(clean) ||
+        /^who\b/i.test(clean) ||
+        /^which\b/i.test(clean) ||
+        /\?$/.test(clean)
+    ){
+
+        return clean.replace(/\?+$/,"") + "?";
+
+    }
+
+    return "What should you know about " +
+        clean +
+        "?";
+
+}
+
+
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+
+function formatDescription(text){
+
+    if(!text) {
+
+        return `
+            <div style="
+                color:#8295a9;
+                padding:10px 0;
+            ">
+                This lesson does not have a written description.
+            </div>
+        `;
+
+    }
+
+
+    /*
+       Convert some Markdown-style formatting that appears
+       in xio2.html.
+    */
+
+    let result =
+        String(text);
+
+
+    result =
+        result.replace(
+            /\*\*(.*?)\*\*/gs,
+            "<strong>$1</strong>"
+        );
+
+
+    /*
+       Newlines.
+    */
+
+    result =
+        result.replace(
+            /\n/g,
+            "<br>"
+        );
+
+
+    /*
+       Do not execute scripts from descriptions.
+    */
+
+    result =
+        result.replace(
+            /<script[\s\S]*?<\/script>/gi,
+            ""
+        );
+
+
+    return result;
+
+}
+
+
+/* =========================================================
+   IMAGES
+   ========================================================= */
+
+function renderImages(data,key){
+
+    const container =
+        document.getElementById(
+            "lessonImageContainer"
+        );
+
+    const image =
+        document.getElementById(
+            "lessonImage"
+        );
+
+
+    container.style.display="none";
+
+    image.src="";
+
+
+    /*
+       Single image.
+    */
+
+    if(data.image){
+
+        image.src =
+            resolveImagePath(
+                data.image
+            );
+
+        image.alt =
+            key;
+
+        container.style.display="block";
+
+        image.onerror=function(){
+
+            container.style.display="none";
+
+        };
+
+        return;
+
+    }
+
+
+    /*
+       Multiple images.
+    */
+
+    if(data.images){
+
+        const imageValues =
+            Object.values(data.images)
+            .filter(Boolean);
+
+
+        if(imageValues.length){
+
+            container.innerHTML="";
+
+            const grid =
+                document.createElement("div");
+
+            grid.className="platform-images";
+
+
+            imageValues.forEach(src=>{
+
+                const img =
+                    document.createElement("img");
+
+                img.src =
+                    resolveImagePath(src);
+
+                img.alt=key;
+
+                img.onerror=function(){
+                    this.style.display="none";
+                };
+
+                grid.appendChild(img);
+
+            });
+
+
+            container.appendChild(grid);
+
+            container.style.display="block";
+
+            return;
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   IMAGE PATH
+   ========================================================= */
+
+function resolveImagePath(src){
+
+    /*
+       Remote Unsplash images remain remote.
+
+       Local images are resolved relative to xio2.html.
+    */
+
+    if(
+        /^https?:\/\//i.test(src) ||
+        /^data:/i.test(src) ||
+        /^blob:/i.test(src)
+    ){
+
+        return src;
+
+    }
+
+    return src;
+
+}
+
+
+/* =========================================================
+   DEMO BUTTON
+   ========================================================= */
+
+function renderDemoButton(key,data){
+
+    const area =
+        document.getElementById(
+            "demoArea"
+        );
+
+    area.innerHTML="";
+
+
+    const pattern =
+        detectDemoPattern(
+            key,
+            data
+        );
+
+
+    if(!pattern){
+
+        return;
+
+    }
+
+
+    const button =
+        document.createElement("button");
+
+    button.className =
+        "btn demo";
+
+    button.style.width="100%";
+
+    button.style.marginTop="12px";
+
+    button.textContent =
+        "TRY DEMO — " +
+        pattern.name.toUpperCase();
+
+
+    button.onclick=function(){
+
+        openGame(pattern);
+
+    };
+
+
+    area.appendChild(button);
+
+}
+
+
+/* =========================================================
+   DETECT SUPPORTED GAME
+   ========================================================= */
+
+function detectDemoPattern(key,data){
+
+    const text =
+        (
+            String(key) +
+            " " +
+            String(
+                data.description || ""
+            )
+        ).toLowerCase();
+
+
+    if(
+        text.includes("head and shoulders") &&
+        !text.includes("inverse")
+    ){
+
+        return {
+            type:"hs",
+            name:"Head & Shoulders",
+            direction:"sell"
+        };
+
+    }
+
+
+    if(
+        text.includes("inverse head and shoulders")
+    ){
+
+        return {
+            type:"ihs",
+            name:"Inverse Head & Shoulders",
+            direction:"buy"
+        };
+
+    }
+
+
+    if(
+        text.includes("m formation") ||
+        text.includes("double top")
+    ){
+
+        return {
+            type:"m",
+            name:"M Formation",
+            direction:"sell"
+        };
+
+    }
+
+
+    if(
+        text.includes("w formation") ||
+        text.includes("double bottom")
+    ){
+
+        return {
+            type:"w",
+            name:"W Formation",
+            direction:"buy"
+        };
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =========================================================
+   NEXT / PREVIOUS
+   ========================================================= */
+
+function nextLesson(){
+
+    if(!lessons.length) return;
+
+
+    if(
+        currentLesson <
+        lessons.length-1
+    ){
+
+        currentLesson++;
+
+    }else{
+
+        currentLesson=0;
+
+    }
+
+
+    showScreen("lessonScreen");
+
+    renderLesson();
+
+}
+
+
+function previousLesson(){
+
+    if(!lessons.length) return;
+
+
+    if(currentLesson>0){
+
+        currentLesson--;
+
+    }else{
+
+        currentLesson =
+            lessons.length-1;
+
+    }
+
+
+    showScreen("lessonScreen");
+
+    renderLesson();
+
+}
+
+
+/* =========================================================
+   GAME ENGINE
+   ========================================================= */
+
+function openGame(pattern){
+
+    currentGame =
+        createGame(pattern);
+
+
+    selectedDirection=null;
+
+    selectedPoint=null;
+
+
+    document.getElementById(
+        "gameResult"
+    ).classList.remove("show");
+
+
+    document.getElementById(
+        "buyBtn"
+    ).classList.remove("selected");
+
+
+    document.getElementById(
+        "sellBtn"
+    ).classList.remove("selected");
+
+
+    document.getElementById(
+        "gamePatternTitle"
+    ).textContent =
+        pattern.name;
+
+
+    document.getElementById(
+        "gameDirectionBadge"
+    ).textContent =
+        pattern.direction === "buy"
+        ? "BULLISH DEMO"
+        : "BEARISH DEMO";
+
+
+    document.getElementById(
+        "gameInstruction"
+    ).textContent =
+        pattern.direction === "buy"
+        ? "Watch the formation develop. Select BUY / LONG, then tap the chart where you believe the bullish breakout entry should occur."
+        : "Watch the formation develop. Select SELL / SHORT, then tap the chart where you believe the bearish breakout entry should occur.";
+
+
+    showScreen("gameScreen");
+
+
+    startChartAnimation();
+
+}
+
+
+/* =========================================================
+   CREATE PATTERN
+   ========================================================= */
+
+function createGame(pattern){
+
+    const base = 100;
+
+    let points=[];
+
+    let entryIndex=0;
+
+    let direction =
+        pattern.direction;
+
+
+    if(pattern.type==="m"){
+
+        /*
+           M / Double Top
+
+           rise
+           peak
+           neckline
+           second peak
+           neckline break
+        */
+
+        points=[
+            100,102,104,106,109,
+            112,115,113,110,106,
+            103,106,110,114,113,
+            109,105,101,98,95,
+            92,89,87,84,81
+        ];
+
+        entryIndex=19;
+
+    }
+
+
+    if(pattern.type==="w"){
+
+        /*
+           W / Double Bottom
+
+           fall
+           first low
+           neckline
+           second low
+           bullish breakout
+        */
+
+        points=[
+            100,98,96,94,91,
+            88,90,94,98,101,
+            98,94,90,87,89,
+            94,99,103,106,109,
+            112,115,118,121
+        ];
+
+        entryIndex=18;
+
+    }
+
+
+    if(pattern.type==="hs"){
+
+        /*
+           Head & Shoulders
+        */
+
+        points=[
+            100,103,106,109,112,
+            109,106,108,113,118,
+            123,119,114,108,110,
+            113,111,107,103,99,
+            95,91,87,83
+        ];
+
+        entryIndex=19;
+
+    }
+
+
+    if(pattern.type==="ihs"){
+
+        /*
+           Inverse Head & Shoulders
+        */
+
+        points=[
+            100,97,94,91,88,
+            92,96,93,87,81,
+            76,80,86,92,89,
+            85,91,96,101,105,
+            109,113,117,121
+        ];
+
+        entryIndex=19;
+
+    }
+
+
+    const candles =
+        createCandles(
+            points
+        );
+
+
+    return {
+
+        pattern,
+
+        candles,
+
+        points,
+
+        entryIndex,
+
+        direction,
+
+        visible:4,
+
+        clicked:false,
+
+        result:false
+
+    };
+
+}
+
+
+/* =========================================================
+   CANDLE GENERATOR
+   ========================================================= */
+
+function createCandles(points){
+
+    const candles=[];
+
+    let previous =
+        points[0];
+
+
+    points.forEach(
+        (close,index)=>{
+
+            const noise =
+                ((index * 17) % 7 - 3) *
+                .18;
+
+
+            const open =
+                previous + noise;
+
+
+            const high =
+                Math.max(
+                    open,
+                    close
+                ) +
+                .7 +
+                ((index%3)*.1);
+
+
+            const low =
+                Math.min(
+                    open,
+                    close
+                ) -
+                .7 -
+                ((index%2)*.12);
+
+
+            candles.push({
+
+                open,
+
+                high,
+
+                low,
+
+                close
+
+            });
+
+
+            previous=close;
+
+        }
+    );
+
+
+    return candles;
+
+}
+
+
+/* =========================================================
+   CHART CANVAS
+   ========================================================= */
+
+const canvas =
+    document.getElementById(
+        "chart"
+    );
+
+const ctx =
+    canvas.getContext("2d");
+
+
+function resizeCanvas(){
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+
+    const ratio =
+        window.devicePixelRatio || 1;
+
+
+    canvas.width =
+        rect.width * ratio;
+
+
+    canvas.height =
+        rect.height * ratio;
+
+
+    ctx.setTransform(
+        ratio,
+        0,
+        0,
+        ratio,
+        0,
+        0
+    );
+
+
+    if(currentGame){
+
+        drawChart();
+
+    }
+
+}
+
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+/* =========================================================
+   START ANIMATION
+   ========================================================= */
+
+function startChartAnimation(){
+
+    clearInterval(
+        animationTimer
+    );
+
+
+    currentGame.visible=4;
+
+    currentGame.clicked=false;
+
+    currentGame.result=false;
+
+
+    resizeCanvas();
+
+
+    document.getElementById(
+        "chartStatus"
+    ).textContent =
+        "Chart is developing...";
+
+
+    animationTimer =
+        setInterval(()=>{
+
+            if(
+                currentGame.visible <
+                currentGame.candles.length
+            ){
+
+                currentGame.visible++;
+
+                drawChart();
+
+
+                if(
+                    currentGame.visible >=
+                    currentGame.entryIndex
+                ){
+
+                    document.getElementById(
+                        "chartStatus"
+                    ).textContent =
+                        "FORMATION DEVELOPING — SELECT YOUR ENTRY";
+
+                }
+
+            }else{
+
+                clearInterval(
+                    animationTimer
+                );
+
+                document.getElementById(
+                    "chartStatus"
+                ).textContent =
+                    "Chart complete — select your entry.";
+
+            }
+
+        },180);
+
+
+    drawChart();
+
+}
+
+
+/* =========================================================
+   DRAW CHART
+   ========================================================= */
+
+function drawChart(){
+
+    if(!currentGame) return;
+
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+
+    const width =
+        rect.width;
+
+
+    const height =
+        rect.height;
+
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    /*
+       Background
+    */
+
+    ctx.fillStyle="#050d17";
+
+    ctx.fillRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    const candles =
+        currentGame.candles;
+
+
+    const visible =
+        Math.min(
+            currentGame.visible,
+            candles.length
+        );
+
+
+    const shown =
+        candles.slice(
+            0,
+            visible
+        );
+
+
+    let min =
+        Math.min(
+            ...shown.map(c=>c.low)
+        );
+
+
+    let max =
+        Math.max(
+            ...shown.map(c=>c.high)
+        );
+
+
+    const padding=30;
+
+    const range =
+        max-min || 1;
+
+
+    min -= range*.08;
+
+    max += range*.08;
+
+
+    const chartW =
+        width-padding*2;
+
+    const chartH =
+        height-padding*2;
+
+
+    function x(index){
+
+        return padding +
+            index *
+            (chartW /
+            Math.max(
+                candles.length-1,
+                1
+            ));
+
+    }
+
+
+    function y(price){
+
+        return padding +
+            (max-price) /
+            (max-min) *
+            chartH;
+
+    }
+
+
+    /*
+       Grid
+    */
+
+    ctx.strokeStyle=
+        "rgba(255,255,255,.055)";
+
+    ctx.lineWidth=1;
+
+
+    for(
+        let i=0;
+        i<7;
+        i++
+    ){
+
+        const gy =
+            padding +
+            (chartH/6)*i;
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            padding,
+            gy
+        );
+
+        ctx.lineTo(
+            width-padding,
+            gy
+        );
+
+        ctx.stroke();
+
+    }
+
+
+    for(
+        let i=0;
+        i<9;
+        i++
+    ){
+
+        const gx =
+            padding +
+            (chartW/8)*i;
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            gx,
+            padding
+        );
+
+        ctx.lineTo(
+            gx,
+            height-padding
+        );
+
+        ctx.stroke();
+
+    }
+
+
+    /*
+       Neckline
+    */
+
+    drawNeckline(
+        currentGame,
+        x,
+        y,
+        width
+    );
+
+
+    /*
+       Candles
+    */
+
+    const candleWidth =
+        Math.max(
+            4,
+            Math.min(
+                14,
+                chartW /
+                candles.length *
+                .62
+            )
+        );
+
+
+    shown.forEach(
+        (c,index)=>{
+
+            const cx =
+                x(index);
+
+
+            const openY =
+                y(c.open);
+
+            const closeY =
+                y(c.close);
+
+            const highY =
+                y(c.high);
+
+            const lowY =
+                y(c.low);
+
+
+            const bullish =
+                c.close >= c.open;
+
+
+            ctx.strokeStyle =
+                bullish
+                ? "#16c784"
+                : "#ea3943";
+
+
+            ctx.fillStyle =
+                bullish
+                ? "#16c784"
+                : "#ea3943";
+
+
+            /*
+               Wick
+            */
+
+            ctx.lineWidth=1.3;
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                cx,
+                highY
+            );
+
+            ctx.lineTo(
+                cx,
+                lowY
+            );
+
+            ctx.stroke();
+
+
+            /*
+               Body
+            */
+
+            const bodyTop =
+                Math.min(
+                    openY,
+                    closeY
+                );
+
+
+            const bodyHeight =
+                Math.max(
+                    2,
+                    Math.abs(
+                        closeY-openY
+                    )
+                );
+
+
+            ctx.fillRect(
+                cx-candleWidth/2,
+                bodyTop,
+                candleWidth,
+                bodyHeight
+            );
+
+        }
+    );
+
+
+    /*
+       Entry zone
+    */
+
+    if(
+        currentGame.visible >=
+        currentGame.entryIndex
+    ){
+
+        const entryCandle =
+            candles[
+                currentGame.entryIndex
+            ];
+
+
+        const entryX =
+            x(
+                currentGame.entryIndex
+            );
+
+
+        const entryY =
+            y(
+                entryCandle.close
+            );
+
+
+        ctx.setLineDash(
+            [5,5]
+        );
+
+
+        ctx.strokeStyle=
+            "rgba(0,198,255,.5)";
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            entryX,
+            padding
+        );
+
+        ctx.lineTo(
+            entryX,
+            height-padding
+        );
+
+        ctx.stroke();
+
+
+        ctx.setLineDash([]);
+
+
+        /*
+           Small entry marker.
+           This is deliberately not shown as
+           "correct" before the user answers.
+        */
+
+        ctx.fillStyle=
+            "rgba(0,198,255,.8)";
+
+
+        ctx.beginPath();
+
+        ctx.arc(
+            entryX,
+            entryY,
+            4,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+    }
+
+
+    /*
+       User selection
+    */
+
+    if(
+        selectedPoint &&
+        currentGame.clicked
+    ){
+
+        ctx.strokeStyle="#f5c451";
+
+        ctx.lineWidth=2;
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            selectedPoint.x-9,
+            selectedPoint.y
+        );
+
+        ctx.lineTo(
+            selectedPoint.x+9,
+            selectedPoint.y
+        );
+
+        ctx.moveTo(
+            selectedPoint.x,
+            selectedPoint.y-9
+        );
+
+        ctx.lineTo(
+            selectedPoint.x,
+            selectedPoint.y+9
+        );
+
+        ctx.stroke();
+
+
+        ctx.fillStyle="#f5c451";
+
+        ctx.font="bold 10px Arial";
+
+        ctx.fillText(
+            "YOUR ENTRY",
+            selectedPoint.x+8,
+            selectedPoint.y-8
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   NECKLINE
+   ========================================================= */
+
+function drawNeckline(game,x,y,width){
+
+    if(
+        game.visible <
+        10
+    ) return;
+
+
+    const candles =
+        game.candles;
+
+
+    let neckline;
+
+
+    if(
+        game.pattern.type==="m" ||
+        game.pattern.type==="hs"
+    ){
+
+        neckline =
+            104;
+
+    }else{
+
+        neckline =
+            98;
+
+    }
+
+
+    ctx.strokeStyle=
+        "rgba(245,196,81,.75)";
+
+    ctx.lineWidth=1.4;
+
+    ctx.setLineDash(
+        [7,5]
+    );
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        30,
+        y(neckline)
+    );
+
+    ctx.lineTo(
+        width-30,
+        y(neckline)
+    );
+
+    ctx.stroke();
+
+
+    ctx.setLineDash([]);
+
+
+    ctx.fillStyle=
+        "#f5c451";
+
+    ctx.font=
+        "10px Arial";
+
+
+    ctx.fillText(
+        "NECKLINE",
+        width-85,
+        y(neckline)-5
+    );
+
+}
+
+
+/* =========================================================
+   DIRECTION
+   ========================================================= */
+
+function chooseDirection(direction){
+
+    if(
+        !currentGame ||
+        currentGame.clicked
+    ) return;
+
+
+    selectedDirection =
+        direction;
+
+
+    document.getElementById(
+        "buyBtn"
+    ).classList.toggle(
+        "selected",
+        direction==="buy"
+    );
+
+
+    document.getElementById(
+        "sellBtn"
+    ).classList.toggle(
+        "selected",
+        direction==="sell"
+    );
+
+
+    document.getElementById(
+        "chartStatus"
+    ).textContent =
+        direction==="buy"
+        ? "BUY selected — now tap your entry."
+        : "SELL selected — now tap your entry.";
+
+}
+
+
+/* =========================================================
+   CHART CLICK / TOUCH
+   ========================================================= */
+
+canvas.addEventListener(
+    "pointerdown",
+    function(event){
+
+        if(
+            !currentGame ||
+            currentGame.clicked
+        ){
+
+            return;
+
+        }
+
+
+        if(
+            currentGame.visible <
+            currentGame.entryIndex
+        ){
+
+            document.getElementById(
+                "chartStatus"
+            ).textContent =
+                "Wait for the formation to develop.";
+
+            return;
+
+        }
+
+
+        if(!selectedDirection){
+
+            document.getElementById(
+                "chartStatus"
+            ).textContent =
+                "Choose BUY or SELL first.";
+
+            return;
+
+        }
+
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+
+        const px =
+            event.clientX -
+            rect.left;
+
+
+        const py =
+            event.clientY -
+            rect.top;
+
+
+        selectedPoint={
+            x:px,
+            y:py
+        };
+
+
+        currentGame.clicked=true;
+
+
+        drawChart();
+
+
+        evaluateEntry(
+            px,
+            py
+        );
+
+    }
+);
+
+
+/* =========================================================
+   EVALUATE ENTRY
+   ========================================================= */
+
+function evaluateEntry(px,py){
+
+    const candles =
+        currentGame.candles;
+
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+
+    const width =
+        rect.width;
+
+
+    const height =
+        rect.height;
+
+
+    const padding=30;
+
+
+    const chartW =
+        width-padding*2;
+
+
+    let min =
+        Math.min(
+            ...candles.map(c=>c.low)
+        );
+
+
+    let max =
+        Math.max(
+            ...candles.map(c=>c.high)
+        );
+
+
+    const range =
+        max-min || 1;
+
+
+    min -= range*.08;
+
+    max += range*.08;
+
+
+    function priceFromY(y){
+
+        const chartH =
+            height-padding*2;
+
+        return max -
+            (
+                (y-padding) /
+                chartH
+            ) *
+            (max-min);
+
+    }
+
+
+    function indexFromX(x){
+
+        return Math.round(
+            (
+                x-padding
+            ) /
+            (
+                chartW /
+                Math.max(
+                    candles.length-1,
+                    1
+                )
+            )
+        );
+
+    }
+
+
+    const userIndex =
+        Math.max(
+            0,
+            Math.min(
+                candles.length-1,
+                indexFromX(px)
+            )
+        );
+
+
+    const userPrice =
+        priceFromY(py);
+
+
+    const correctIndex =
+        currentGame.entryIndex;
+
+
+    const correctCandle =
+        candles[
+            correctIndex
+        ];
+
+
+    const correctPrice =
+        correctCandle.close;
+
+
+    const indexDistance =
+        Math.abs(
+            userIndex -
+            correctIndex
+        );
+
+
+    const priceDistance =
+        Math.abs(
+            userPrice -
+            correctPrice
+        );
+
+
+    const allowedPrice =
+        (
+            Math.max(
+                ...candles.map(c=>c.high)
+            ) -
+            Math.min(
+                ...candles.map(c=>c.low)
+            )
+        ) * .075;
+
+
+    const directionCorrect =
+        selectedDirection ===
+        currentGame.direction;
+
+
+    let points=0;
+
+
+    if(directionCorrect){
+
+        if(
+            indexDistance<=1 &&
+            priceDistance<=allowedPrice
+        ){
+
+            points=100;
+
+        }else if(
+            indexDistance<=3 &&
+            priceDistance<=allowedPrice*1.5
+        ){
+
+            points=75;
+
+        }else if(
+            indexDistance<=5
+        ){
+
+            points=50;
+
+        }else{
+
+            points=25;
+
+        }
+
+    }else{
+
+        points=0;
+
+    }
+
+
+    score += points;
+
+    demosCompleted++;
+
+
+    updateHeader();
+
+
+    showResult(
+        points,
+        directionCorrect,
+        indexDistance
+    );
+
+}
+
+
+/* =========================================================
+   RESULT
+   ========================================================= */
+
+function showResult(
+    points,
+    directionCorrect,
+    indexDistance
+){
+
+    const result =
+        document.getElementById(
+            "gameResult"
+        );
+
+
+    const scoreEl =
+        document.getElementById(
+            "resultScore"
+        );
+
+
+    const title =
+        document.getElementById(
+            "resultTitle"
+        );
+
+
+    const text =
+        document.getElementById(
+            "resultText"
+        );
+
+
+    scoreEl.textContent =
+        points + " POINTS";
+
+
+    if(points===100){
+
+        title.textContent =
+            "Excellent entry! 🎯";
+
+        text.textContent =
+            "Your direction was correct and your entry was very close to the training entry zone. The formation had developed enough to give confirmation.";
+
+    }else if(points>=75){
+
+        title.textContent =
+            "Good entry!";
+
+        text.textContent =
+            "Your direction was correct and your entry was reasonably close to the simulated breakout zone.";
+
+    }else if(points>=50){
+
+        title.textContent =
+            "Partially correct.";
+
+        text.textContent =
+            "You identified the correct direction, but your entry was further from the training entry zone. In real trading, confirmation and risk management matter.";
+
+    }else if(directionCorrect){
+
+        title.textContent =
+            "Direction correct, entry needs work.";
+
+        text.textContent =
+            "You selected the correct side of the market, but the entry was too early or too late in the simulated pattern.";
+
+    }else{
+
+        title.textContent =
+            "Wrong direction.";
+
+        text.textContent =
+            currentGame.direction==="buy"
+            ? "This training pattern is designed as a bullish setup. The practice entry is on the BUY/LONG side."
+            : "This training pattern is designed as a bearish setup. The practice entry is on the SELL/SHORT side.";
+
+    }
+
+
+    result.classList.add("show");
+
+
+    document.getElementById(
+        "chartStatus"
+    ).textContent =
+        "Entry evaluated — see your result below.";
+
+}
+
+
+/* =========================================================
+   RESTART GAME
+   ========================================================= */
+
+function restartGame(){
+
+    if(!currentGame) return;
+
+
+    selectedDirection=null;
+
+    selectedPoint=null;
+
+
+    document.getElementById(
+        "gameResult"
+    ).classList.remove("show");
+
+
+    document.getElementById(
+        "buyBtn"
+    ).classList.remove("selected");
+
+
+    document.getElementById(
+        "sellBtn"
+    ).classList.remove("selected");
+
+
+    startChartAnimation();
+
+}
+
+
+/* =========================================================
+   NEXT DEMO
+   ========================================================= */
+
+function nextDemo(){
+
+    /*
+       Find the next lesson with a supported demo.
+    */
+
+    let found=-1;
+
+
+    for(
+        let i=currentLesson+1;
+        i<lessons.length;
+        i++
+    ){
+
+        if(
+            detectDemoPattern(
+                lessons[i].key,
+                lessons[i].data
+            )
+        ){
+
+            found=i;
+            break;
+
+        }
+
+    }
+
+
+    if(found!==-1){
+
+        currentLesson=found;
+
+        renderLesson();
+
+        showScreen(
+            "lessonScreen"
+        );
+
+        return;
+
+    }
+
+
+    /*
+       If there isn't another demo later,
+       start again from the beginning of the
+       demo patterns.
+    */
+
+    for(
+        let i=0;
+        i<currentLesson;
+        i++
+    ){
+
+        if(
+            detectDemoPattern(
+                lessons[i].key,
+                lessons[i].data
+            )
+        ){
+
+            currentLesson=i;
+
+            renderLesson();
+
+            showScreen(
+                "lessonScreen"
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    returnToLesson();
+
+}
+
+
+/* =========================================================
+   BACK TO CLASS
+   ========================================================= */
+
+function returnToLesson(){
+
+    clearInterval(
+        animationTimer
+    );
+
+    showScreen(
+        "lessonScreen"
+    );
+
+    renderLesson();
+
+}
+
+
+/* =========================================================
+   KEYBOARD
+   ========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.key==="ArrowRight" &&
+            document.getElementById(
+                "lessonScreen"
+            ).classList.contains("active")
+        ){
+
+            nextLesson();
+
+        }
+
+
+        if(
+            event.key==="ArrowLeft" &&
+            document.getElementById(
+                "lessonScreen"
+            ).classList.contains("active")
+        ){
+
+            previousLesson();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   INITIAL
+   ========================================================= */
+
+updateHeader();
+
+</script>
+
+</body>
+</html>
