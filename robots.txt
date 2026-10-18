@@ -76,7 +76,7 @@ Common Crawl
 User-agent: CCBot
 Allow: /
 
-Apple-related search and discovery
+Apple Search and Discovery
 
 User-agent: Applebot
 Allow: /
@@ -104,7 +104,7 @@ Brave Search
 User-agent: Bravebot
 Allow: /
 
-Yahoo search (usually powered by Bing)
+Yahoo Search
 
 User-agent: Slurp
 Allow: /
@@ -134,6 +134,38 @@ Mistral AI
 User-agent: MistralAI-User
 Allow: /
 
-Search the web
+Huawei Petal Search
+
+User-agent: PetalBot
+Allow: /
+
+Qwant Search
+
+User-agent: Qwantbot
+Allow: /
+
+Naver Search
+
+User-agent: Yeti
+Allow: /
+
+Seznam Search
+
+User-agent: SeznamBot
+Allow: /
+
+SEO Research Crawlers
+
+User-agent: SemrushBot
+Allow: /
+
+User-agent: AhrefsBot
+Allow: /
+
+User-agent: MJ12bot
+Allow: /
+
+User-agent: DotBot
+Allow: /
 
 Sitemap: https://realtraders.ink/sitemap.xml
