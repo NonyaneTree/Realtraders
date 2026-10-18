@@ -2,37 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Real Traders | Free Forex Signals, Gold & NASDAQ Strategies</title>
+    <title>Real Traders | Free Gold, NASDAQ, US30 & GER30 Signals</title>
 
-    <meta name="description" content="Explore forex signals, gold trading strategies, NASDAQ 100 analysis, USTECH 100 strategies, technical analysis, fundamental analysis and free forex education at Real Traders.">
+    <meta name="description" content="Explore free gold signals, NASDAQ signals, US30 signals, GER30 signals, forex trading strategies, technical analysis, fundamental analysis and free forex education at Real Traders.">
 
-    <meta name="keywords" content="forex trading, free forex signals, forex signals today, live forex signals, forex trading for beginners, gold trading strategy, gold trading signals, XAUUSD analysis, NASDAQ 100 trading strategy, NAS100 strategy, USTECH 100 strategy, forex technical analysis, forex fundamental analysis, free forex mentor, forex education, forex market analysis">
+    <meta name="keywords" content="free gold signals, free NASDAQ signals, free US30 signals, free GER30 signals, forex trading, free forex signals, forex signals today, gold trading strategy, XAUUSD analysis, NASDAQ 100 trading strategy, NAS100 signals, US30 trading signals, GER30 signals, technical analysis, fundamental analysis, forex mentor, forex education">
 
     <meta name="author" content="Real Traders">
-
     <meta name="robots" content="index, follow">
-
     <meta name="theme-color" content="#080808">
 
     <link rel="canonical" href="https://realtraders.ink/">
-
     <link rel="icon" type="image/png" href="logo.png">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Real Traders | Forex Signals & Trading Strategies">
-    <meta property="og:description" content="Discover forex trading strategies, gold analysis, NASDAQ setups, market insights and free forex education.">
+    <meta property="og:title" content="Real Traders | Free Trading Signals">
+    <meta property="og:description" content="Explore free Gold, NASDAQ, US30 and GER30 signals, technical analysis and trading education.">
     <meta property="og:url" content="https://realtraders.ink/">
     <meta property="og:image" content="https://realtraders.ink/logo.png">
     <meta property="og:site_name" content="Real Traders">
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Real Traders | Forex Education">
-    <meta name="twitter:description" content="Explore forex signals, gold strategies, NASDAQ analysis and free trading education.">
+    <meta name="twitter:title" content="Real Traders | Free Trading Signals">
+    <meta name="twitter:description" content="Explore free Gold, NASDAQ, US30 and GER30 signals and trading education.">
     <meta name="twitter:image" content="https://realtraders.ink/logo.png">
 
     <!-- Structured data -->
@@ -43,7 +39,7 @@
       "name": "Real Traders",
       "url": "https://realtraders.ink/",
       "logo": "https://realtraders.ink/logo.png",
-      "description": "Forex education, trading strategies, market analysis and trading resources."
+      "description": "Forex education, trading strategies, market analysis and free trading signal resources."
     }
     </script>
 
@@ -53,7 +49,7 @@
       "@type": "WebSite",
       "name": "Real Traders",
       "url": "https://realtraders.ink/",
-      "description": "Forex trading education, technical analysis, fundamental analysis and trading strategies."
+      "description": "Free Gold, NASDAQ, US30 and GER30 signals, forex education and market analysis."
     }
     </script>
 
@@ -157,6 +153,7 @@
             justify-content: space-between;
             align-items: center;
             gap: 18px;
+            position: relative;
         }
 
         .brand {
@@ -164,6 +161,7 @@
             align-items: center;
             gap: 10px;
             min-width: 0;
+            flex-shrink: 0;
         }
 
         .brand img {
@@ -191,11 +189,13 @@
             font-weight: 700;
         }
 
-        .nav-links a {
+        .nav-links > a,
+        .nav-links > .nav-dropdown > .dropdown-toggle {
             transition: color 0.2s;
         }
 
-        .nav-links a:hover {
+        .nav-links > a:hover,
+        .nav-links > .nav-dropdown:hover > .dropdown-toggle {
             color: var(--yellow);
         }
 
@@ -215,6 +215,111 @@
             padding: 8px 12px;
             border-radius: 7px;
             cursor: pointer;
+        }
+
+        /* TECHNICAL ANALYSIS DROPDOWN */
+
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: transparent;
+            color: #fff;
+            border: none;
+            padding: 10px 0;
+            cursor: pointer;
+            font-size: inherit;
+            font-weight: inherit;
+            white-space: nowrap;
+        }
+
+        .dropdown-arrow {
+            color: var(--yellow);
+            font-size: 11px;
+            transition: transform 0.2s;
+        }
+
+        .nav-dropdown.open .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            min-width: 235px;
+            padding: 8px;
+            background: #111;
+            border: 1px solid rgba(255, 212, 0, 0.45);
+            border-radius: 11px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.65);
+            z-index: 1200;
+        }
+
+        .nav-dropdown.open .dropdown-menu {
+            display: block;
+            animation: dropdownFade 0.18s ease;
+        }
+
+        @keyframes dropdownFade {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-heading {
+            color: var(--yellow);
+            padding: 10px 12px 8px;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            font-weight: 900;
+            border-bottom: 1px solid #303030;
+            margin-bottom: 5px;
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 12px;
+            color: #eee;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 800;
+            transition: 0.2s;
+        }
+
+        .dropdown-menu a:hover,
+        .dropdown-menu a:focus-visible {
+            background: rgba(255, 212, 0, 0.12);
+            color: var(--yellow);
+        }
+
+        .dropdown-menu a span:first-child {
+            width: 27px;
+            height: 27px;
+            display: grid;
+            place-items: center;
+            background: #222;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        .dropdown-menu a .dropdown-arrow-right {
+            margin-left: auto;
+            color: var(--yellow);
         }
 
         /* MARKET TICKER */
@@ -246,6 +351,7 @@
             from {
                 transform: translateX(0);
             }
+
             to {
                 transform: translateX(-50%);
             }
@@ -376,7 +482,7 @@
             padding: 25px;
             box-shadow: 0 18px 55px rgba(0, 0, 0, 0.45);
             position: relative;
-            overflow: hidden;
+            overflow: visible;
         }
 
         .hero-panel::before {
@@ -388,6 +494,7 @@
             height: 170px;
             border-radius: 50%;
             background: rgba(237, 28, 36, 0.16);
+            pointer-events: none;
         }
 
         .panel-label {
@@ -435,12 +542,14 @@
             font-size: 12px;
             font-weight: 900;
             color: var(--yellow);
+            white-space: nowrap;
         }
 
         .panel-disclaimer {
             color: #aaa;
             font-size: 10px;
             margin-top: 15px;
+            position: relative;
         }
 
         /* SECTION */
@@ -935,9 +1044,9 @@
 
         /* RESPONSIVE */
 
-        @media (max-width: 900px) {
+        @media (max-width: 1000px) {
             .nav-links {
-                gap: 11px;
+                gap: 10px;
                 font-size: 11px;
             }
 
@@ -966,13 +1075,18 @@
             }
         }
 
-        @media (max-width: 650px) {
+        @media (max-width: 700px) {
             .navbar {
                 min-height: 65px;
             }
 
             .brand-name {
                 font-size: 17px;
+            }
+
+            .brand img {
+                width: 38px;
+                height: 38px;
             }
 
             .menu-toggle {
@@ -983,30 +1097,58 @@
                 display: none;
                 position: absolute;
                 top: 100%;
-                left: 0;
-                right: 0;
-                padding: 15px 4%;
+                left: -4.35%;
+                right: -4.35%;
+                padding: 12px 4%;
                 background: #0b0b0b;
                 border-bottom: 2px solid var(--yellow);
                 flex-direction: column;
                 align-items: stretch;
                 gap: 0;
+                max-height: calc(100vh - 70px);
+                overflow-y: auto;
             }
 
             .nav-links.open {
                 display: flex;
             }
 
-            .nav-links a {
+            .nav-links > a {
                 display: block;
                 padding: 12px 7px;
                 border-bottom: 1px solid #252525;
                 font-size: 13px;
             }
 
-            .nav-cta {
+            .nav-links .nav-cta {
                 margin-top: 8px;
                 text-align: center;
+            }
+
+            .nav-dropdown {
+                width: 100%;
+                border-bottom: 1px solid #252525;
+            }
+
+            .dropdown-toggle {
+                width: 100%;
+                justify-content: space-between;
+                padding: 13px 7px;
+                font-size: 13px;
+            }
+
+            .dropdown-menu {
+                position: static;
+                width: 100%;
+                min-width: 0;
+                margin: 0 0 10px;
+                box-shadow: none;
+                border-color: #393939;
+                background: #151515;
+            }
+
+            .dropdown-menu a {
+                padding: 12px;
             }
 
             .hero {
@@ -1070,6 +1212,25 @@
             }
         }
 
+        @media (max-width: 380px) {
+            .brand-name {
+                font-size: 15px;
+            }
+
+            .menu-toggle {
+                padding: 7px 9px;
+                font-size: 12px;
+            }
+
+            .hero-buttons .btn {
+                width: 100%;
+            }
+
+            .quick-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             html {
                 scroll-behavior: auto;
@@ -1088,7 +1249,7 @@
 
 <body>
 
-    <!-- TOP MOTTO: PRESERVED -->
+    <!-- TOP MOTTO -->
 
     <div class="motto">
         <div class="motto-main">
@@ -1111,7 +1272,6 @@
             Οἱ RealTraders μέρος εἰσὶ τοῦ Global One.
         </div>
     </div>
-
 
     <!-- HEADER -->
 
@@ -1136,6 +1296,7 @@
                 type="button"
                 aria-label="Open navigation menu"
                 aria-expanded="false"
+                aria-controls="navLinks"
             >
                 ☰ Menu
             </button>
@@ -1145,6 +1306,55 @@
                 <a href="https://realtraders.ink/">Home</a>
 
                 <a href="#strategies">Strategies</a>
+
+                <!-- TECHNICAL ANALYSIS MINI DROPDOWN -->
+
+                <div class="nav-dropdown" id="technicalDropdown">
+
+                    <button
+                        class="dropdown-toggle"
+                        id="technicalDropdownToggle"
+                        type="button"
+                        aria-expanded="false"
+                        aria-controls="technicalDropdownMenu"
+                    >
+                        Technical Analysis
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+
+                    <div class="dropdown-menu" id="technicalDropdownMenu">
+
+                        <div class="dropdown-heading">
+                            FREE TRADING SIGNALS
+                        </div>
+
+                        <a href="gold.html">
+                            <span>🥇</span>
+                            <span>Free Gold Signals</span>
+                            <span class="dropdown-arrow-right">→</span>
+                        </a>
+
+                        <a href="nasdaq.html">
+                            <span>📈</span>
+                            <span>Free NASDAQ Signals</span>
+                            <span class="dropdown-arrow-right">→</span>
+                        </a>
+
+                        <a href="us30.html">
+                            <span>📊</span>
+                            <span>Free US30 Signals</span>
+                            <span class="dropdown-arrow-right">→</span>
+                        </a>
+
+                        <a href="ger30.html">
+                            <span>🇩🇪</span>
+                            <span>Free GER30 Signals</span>
+                            <span class="dropdown-arrow-right">→</span>
+                        </a>
+
+                    </div>
+
+                </div>
 
                 <a href="#market-chart">Market Chart</a>
 
@@ -1161,31 +1371,31 @@
         </div>
     </header>
 
-
     <!-- MOVING MARKET MESSAGE -->
 
     <div class="ticker" aria-label="Forex education topics">
         <div class="ticker-inner">
             <span>📈 FOREX TRADING EDUCATION</span>
-            <span>🟡 GOLD / XAUUSD STRATEGIES</span>
-            <span>🔴 NASDAQ 100 / USTECH 100</span>
-            <span>📊 TECHNICAL ANALYSIS</span>
+            <span>🟡 FREE GOLD SIGNALS</span>
+            <span>🔴 FREE NASDAQ SIGNALS</span>
+            <span>📊 FREE US30 SIGNALS</span>
+            <span>🇩🇪 FREE GER30 SIGNALS</span>
             <span>🌍 FUNDAMENTAL ANALYSIS</span>
             <span>🎯 TRADING SETUPS</span>
 
             <span>📈 FOREX TRADING EDUCATION</span>
-            <span>🟡 GOLD / XAUUSD STRATEGIES</span>
-            <span>🔴 NASDAQ 100 / USTECH 100</span>
-            <span>📊 TECHNICAL ANALYSIS</span>
+            <span>🟡 FREE GOLD SIGNALS</span>
+            <span>🔴 FREE NASDAQ SIGNALS</span>
+            <span>📊 FREE US30 SIGNALS</span>
+            <span>🇩🇪 FREE GER30 SIGNALS</span>
             <span>🌍 FUNDAMENTAL ANALYSIS</span>
             <span>🎯 TRADING SETUPS</span>
         </div>
     </div>
 
-
-    <!-- HERO -->
-
     <main>
+
+        <!-- HERO -->
 
         <section class="hero">
             <div class="container hero-grid">
@@ -1203,19 +1413,19 @@
                     </h1>
 
                     <p class="hero-description">
-                        Explore forex trading strategies, technical analysis,
-                        gold trading concepts, NASDAQ 100 setups and fundamental
-                        market insights. Build your understanding of the markets
-                        with Real Traders.
+                        Explore free Gold, NASDAQ, US30 and GER30 signal resources,
+                        forex trading strategies, technical analysis and fundamental
+                        market insights. Build your understanding of the financial
+                        markets with Real Traders.
                     </p>
 
                     <div class="hero-buttons">
 
                         <a
                             class="btn btn-yellow"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
+                            href="#free-signals"
                         >
-                            Explore Technical Analysis →
+                            Explore Free Signals →
                         </a>
 
                         <a
@@ -1233,58 +1443,51 @@
 
                 </div>
 
-
                 <div class="hero-panel">
 
                     <div class="panel-label">
-                        EXPLORE MARKET OPPORTUNITIES
+                        EXPLORE FREE SIGNAL RESOURCES
                     </div>
 
-                    <a
-                        class="market-row"
-                        href="https://abox-uncooperative-alida.ngrok-free.dev"
-                    >
-                        <div>
-                            <div class="market-symbol">FOREX SIGNALS</div>
-                            <div class="market-sub">Currency pairs and trading setups</div>
-                            <span class="market-tag">TECHNICAL ANALYSIS</span>
-                        </div>
-
-                        <div class="market-action">Explore →</div>
-                    </a>
-
-
-                    <a
-                        class="market-row"
-                        href="https://abox-uncooperative-alida.ngrok-free.dev"
-                    >
-                        <div>
-                            <div class="market-symbol">NASDAQ 100</div>
-                            <div class="market-sub">NAS100 / USTECH 100 strategies</div>
-                            <span class="market-tag">INDEX ANALYSIS</span>
-                        </div>
-
-                        <div class="market-action">Explore →</div>
-                    </a>
-
-
-                    <a
-                        class="market-row"
-                        href="https://abox-uncooperative-alida.ngrok-free.dev"
-                    >
+                    <a class="market-row" href="gold.html">
                         <div>
                             <div class="market-symbol">GOLD / XAUUSD</div>
-                            <div class="market-sub">Gold market analysis and strategies</div>
-                            <span class="market-tag">GOLD ANALYSIS</span>
+                            <div class="market-sub">Gold market signals and analysis</div>
+                            <span class="market-tag">FREE GOLD SIGNALS</span>
                         </div>
-
                         <div class="market-action">Explore →</div>
                     </a>
 
+                    <a class="market-row" href="nasdaq.html">
+                        <div>
+                            <div class="market-symbol">NASDAQ 100</div>
+                            <div class="market-sub">NAS100 / USTECH 100</div>
+                            <span class="market-tag">FREE NASDAQ SIGNALS</span>
+                        </div>
+                        <div class="market-action">Explore →</div>
+                    </a>
+
+                    <a class="market-row" href="us30.html">
+                        <div>
+                            <div class="market-symbol">US30</div>
+                            <div class="market-sub">Dow Jones index analysis</div>
+                            <span class="market-tag">FREE US30 SIGNALS</span>
+                        </div>
+                        <div class="market-action">Explore →</div>
+                    </a>
+
+                    <a class="market-row" href="ger30.html">
+                        <div>
+                            <div class="market-symbol">GER30</div>
+                            <div class="market-sub">German index analysis</div>
+                            <span class="market-tag">FREE GER30 SIGNALS</span>
+                        </div>
+                        <div class="market-action">Explore →</div>
+                    </a>
 
                     <p class="panel-disclaimer">
-                        Market conditions change. Analysis does not guarantee
-                        profitable trades or future results.
+                        Signals and analysis do not guarantee profitable trades
+                        or future results. Always consider risk management.
                     </p>
 
                 </div>
@@ -1292,45 +1495,37 @@
             </div>
         </section>
 
-
         <!-- QUICK ACCESS -->
 
-        <section class="quick-section">
+        <section class="quick-section" id="free-signals">
             <div class="container quick-grid">
 
-                <a
-                    class="quick-card"
-                    href="https://abox-uncooperative-alida.ngrok-free.dev"
-                >
+                <a class="quick-card" href="gold.html">
+                    <div class="quick-icon">🥇</div>
+                    <h3>Free Gold Signals</h3>
+                    <p>Explore XAUUSD trading signals and gold market setups.</p>
+                </a>
+
+                <a class="quick-card" href="nasdaq.html">
+                    <div class="quick-icon">📈</div>
+                    <h3>Free NASDAQ Signals</h3>
+                    <p>Explore NAS100 and USTECH 100 market setups.</p>
+                </a>
+
+                <a class="quick-card" href="us30.html">
                     <div class="quick-icon">📊</div>
-                    <h3>Technical Analysis</h3>
-                    <p>Explore technical market setups.</p>
+                    <h3>Free US30 Signals</h3>
+                    <p>Explore US30 index analysis and trading setups.</p>
                 </a>
 
-
-                <a class="quick-card" href="fundamental.html">
-                    <div class="quick-icon">🌍</div>
-                    <h3>Fundamental Analysis</h3>
-                    <p>Understand news and economic factors.</p>
-                </a>
-
-
-                <a class="quick-card" href="marketexpectations.html">
-                    <div class="quick-icon">📰</div>
-                    <h3>Market Expectations</h3>
-                    <p>Explore market outlook and expectations.</p>
-                </a>
-
-
-                <a class="quick-card" href="forexmentor.html">
-                    <div class="quick-icon">🎓</div>
-                    <h3>Forex Mentor</h3>
-                    <p>Continue your forex learning journey.</p>
+                <a class="quick-card" href="ger30.html">
+                    <div class="quick-icon">🇩🇪</div>
+                    <h3>Free GER30 Signals</h3>
+                    <p>Explore GER30 index analysis and trading setups.</p>
                 </a>
 
             </div>
         </section>
-
 
         <!-- STRATEGIES -->
 
@@ -1346,14 +1541,12 @@
                     </h2>
 
                     <p>
-                        Explore currency markets, major indices and gold.
-                        Every card in Groups A, B and C below opens the same
-                        technical analysis destination.
+                        Explore free signal resources for gold and major indices,
+                        alongside forex education and market analysis.
                     </p>
                 </div>
 
-
-                <!-- GROUP A: ALL LINKS GO TO TECHNICAL ANALYSIS -->
+                <!-- GROUP A -->
 
                 <div class="strategy-group">
 
@@ -1362,110 +1555,76 @@
 
                         <div>
                             <h3>Forex Signals & Currency Markets</h3>
-                            <p>
-                                Forex signals, currency pairs and technical setups.
-                            </p>
+                            <p>Forex signals, currency pairs and technical setups.</p>
                         </div>
                     </div>
 
-
                     <div class="strategy-grid">
 
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
+                        <a class="strategy-card" href="forexmentor.html">
                             <div class="card-icon">🎯</div>
-                            <h4>Free Forex Signals</h4>
+                            <h4>Forex Trading Education</h4>
                             <p>
-                                Explore technical market setups and learn how
-                                traders assess potential trading opportunities.
+                                Learn how currency pairs work and explore
+                                technical concepts used to study the forex market.
+                            </p>
+                            <span class="card-link">Start Learning <span>→</span></span>
+                        </a>
+
+                        <a class="strategy-card" href="forexmentor.html">
+                            <div class="card-icon">📈</div>
+                            <h4>Forex Signals Today</h4>
+                            <p>
+                                Build your understanding of market structure,
+                                technical setups and trading discipline.
+                            </p>
+                            <span class="card-link">Explore Education <span>→</span></span>
+                        </a>
+
+                        <a class="strategy-card" href="fundamental.html">
+                            <div class="card-icon">🌍</div>
+                            <h4>Currency Market Analysis</h4>
+                            <p>
+                                Explore economic developments that may influence
+                                currency prices and financial markets.
                             </p>
                             <span class="card-link">Explore Analysis <span>→</span></span>
                         </a>
 
-
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
-                            <div class="card-icon">📈</div>
-                            <h4>Forex Signals Today</h4>
-                            <p>
-                                Visit the technical analysis page to explore
-                                current market setups and price movements.
-                            </p>
-                            <span class="card-link">View Analysis <span>→</span></span>
-                        </a>
-
-
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
-                            <div class="card-icon">⚡</div>
-                            <h4>Live Forex Signals</h4>
-                            <p>
-                                Explore technical analysis resources for
-                                understanding currency market movements.
-                            </p>
-                            <span class="card-link">Explore Setups <span>→</span></span>
-                        </a>
-
-
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
-                            <div class="card-icon">🌍</div>
-                            <h4>Forex Signals South Africa</h4>
-                            <p>
-                                Access the technical analysis destination
-                                from South Africa or anywhere in the world.
-                            </p>
-                            <span class="card-link">Visit Analysis <span>→</span></span>
-                        </a>
-
-
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
+                        <a class="strategy-card" href="forexmentor.html">
                             <div class="card-icon">💱</div>
                             <h4>Currency Pair Analysis</h4>
                             <p>
-                                Explore technical approaches to currency
-                                charts, price levels and market structure.
+                                Learn about currency pairs, price movements,
+                                support, resistance and market structure.
                             </p>
-                            <span class="card-link">Explore Currency Markets <span>→</span></span>
+                            <span class="card-link">Learn More <span>→</span></span>
                         </a>
 
-
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
-                            <div class="card-icon">📊</div>
+                        <a class="strategy-card" href="forexmentor.html">
+                            <div class="card-icon">⚡</div>
                             <h4>Forex Trading Setups</h4>
                             <p>
-                                Learn about chart-based trading setups,
-                                trend analysis and potential entry areas.
+                                Study chart-based trading setups, entry planning
+                                and the importance of risk management.
                             </p>
                             <span class="card-link">Explore Setups <span>→</span></span>
                         </a>
 
+                        <a class="strategy-card" href="game.html">
+                            <div class="card-icon">🎮</div>
+                            <h4>Practise Your Trading Skills</h4>
+                            <p>
+                                Use the trading game to practise recognising
+                                market movements and trading concepts.
+                            </p>
+                            <span class="card-link">Play Trading Game <span>→</span></span>
+                        </a>
+
                     </div>
-
-                    <p class="group-note">
-                        Note: These links open the technical analysis destination.
-                        They do not guarantee that a live signal or trade recommendation
-                        is available at every moment.
-                    </p>
-
                 </div>
 
-
-                <!-- GROUP B: ALL LINKS GO TO TECHNICAL ANALYSIS -->
+                <!-- GROUP B -->
 
                 <div class="strategy-group">
 
@@ -1473,105 +1632,77 @@
                         <div class="group-letter">B</div>
 
                         <div>
-                            <h3>NASDAQ 100 & USTECH 100 Strategies</h3>
-                            <p>
-                                Index trading concepts, NAS100 analysis and price action.
-                            </p>
+                            <h3>NASDAQ 100 & USTECH 100</h3>
+                            <p>Index analysis, NAS100 setups and price action.</p>
                         </div>
                     </div>
 
-
                     <div class="strategy-grid">
 
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
-                            <div class="card-icon">📉</div>
-                            <h4>NASDAQ 100 Trading Strategy</h4>
+                        <a class="strategy-card" href="nasdaq.html">
+                            <div class="card-icon">📈</div>
+                            <h4>Free NASDAQ Signals</h4>
                             <p>
-                                Explore technical approaches for analysing
-                                the NASDAQ 100 index and its price movements.
+                                Visit the dedicated NASDAQ signals page for
+                                available index analysis and trading setups.
                             </p>
-                            <span class="card-link">Explore Strategy <span>→</span></span>
+                            <span class="card-link">View Free Signals <span>→</span></span>
                         </a>
 
-
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
+                        <a class="strategy-card" href="nasdaq.html">
                             <div class="card-icon">🚀</div>
                             <h4>NAS100 Trading Strategy</h4>
                             <p>
-                                Visit the technical analysis page for
-                                index chart setups and trading concepts.
+                                Explore NAS100 market setups and learn about
+                                chart structure and risk management.
                             </p>
                             <span class="card-link">Explore NAS100 <span>→</span></span>
                         </a>
 
-
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
+                        <a class="strategy-card" href="nasdaq.html">
                             <div class="card-icon">💹</div>
-                            <h4>USTECH 100 Strategy</h4>
+                            <h4>USTECH 100 Analysis</h4>
                             <p>
-                                Explore technical market analysis for the
-                                USTECH 100 instrument.
+                                Access the NASDAQ resource page to explore
+                                USTECH 100 analysis and trading concepts.
                             </p>
                             <span class="card-link">Explore USTECH 100 <span>→</span></span>
                         </a>
 
-
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
+                        <a class="strategy-card" href="nasdaq.html">
                             <div class="card-icon">🔎</div>
                             <h4>NASDAQ Technical Analysis</h4>
                             <p>
-                                Learn about chart structure, price action,
-                                potential support and resistance areas.
+                                Study potential support and resistance areas,
+                                price action and market structure.
                             </p>
-                            <span class="card-link">View Technical Analysis <span>→</span></span>
+                            <span class="card-link">View Analysis <span>→</span></span>
                         </a>
 
-
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
+                        <a class="strategy-card" href="nasdaq.html">
                             <div class="card-icon">⚡</div>
                             <h4>NAS100 Signals</h4>
                             <p>
-                                Explore the technical analysis destination
-                                for NAS100-related market setups.
+                                Open the dedicated NASDAQ page for the available
+                                signal resources and market setups.
                             </p>
-                            <span class="card-link">Explore Setups <span>→</span></span>
+                            <span class="card-link">Explore Signals <span>→</span></span>
                         </a>
 
-
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
+                        <a class="strategy-card" href="nasdaq.html">
                             <div class="card-icon">🧭</div>
                             <h4>NASDAQ Market Analysis</h4>
                             <p>
-                                Explore chart-based analysis and understand
-                                the importance of risk management.
+                                Explore NASDAQ-related analysis while keeping
+                                risk management central to every decision.
                             </p>
                             <span class="card-link">Explore Market Analysis <span>→</span></span>
                         </a>
 
                     </div>
-
                 </div>
 
-
-                <!-- GROUP C: ALL LINKS GO TO TECHNICAL ANALYSIS -->
+                <!-- GROUP C -->
 
                 <div class="strategy-group">
 
@@ -1580,108 +1711,175 @@
 
                         <div>
                             <h3>Gold Trading Strategies & XAUUSD</h3>
-                            <p>
-                                Gold trading concepts, XAUUSD analysis and price action.
-                            </p>
+                            <p>Gold trading concepts, XAUUSD analysis and price action.</p>
                         </div>
                     </div>
 
-
                     <div class="strategy-grid">
 
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
+                        <a class="strategy-card" href="gold.html">
                             <div class="card-icon">🥇</div>
-                            <h4>Gold Trading Strategy</h4>
+                            <h4>Free Gold Signals</h4>
                             <p>
-                                Explore technical concepts for analysing
-                                gold prices and potential trading setups.
+                                Visit the dedicated gold page for available
+                                gold signals, analysis and market setups.
                             </p>
-                            <span class="card-link">Explore Gold Strategy <span>→</span></span>
+                            <span class="card-link">Explore Gold Signals <span>→</span></span>
                         </a>
 
-
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
+                        <a class="strategy-card" href="gold.html">
                             <div class="card-icon">💰</div>
                             <h4>XAUUSD Analysis</h4>
                             <p>
-                                Visit the technical analysis page to explore
-                                gold chart structure and price behaviour.
+                                Explore gold chart structure, price behaviour
+                                and available technical analysis.
                             </p>
                             <span class="card-link">Explore XAUUSD <span>→</span></span>
                         </a>
 
-
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
+                        <a class="strategy-card" href="gold.html">
                             <div class="card-icon">🎯</div>
-                            <h4>Gold Trading Signals</h4>
+                            <h4>Gold Trading Setups</h4>
                             <p>
-                                Explore technical market resources related
-                                to gold and potential trading opportunities.
+                                Explore the gold signals page to learn about
+                                potential trading setups and risk considerations.
                             </p>
-                            <span class="card-link">Explore Gold Analysis <span>→</span></span>
+                            <span class="card-link">View Gold Setups <span>→</span></span>
                         </a>
 
-
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
+                        <a class="strategy-card" href="gold.html">
                             <div class="card-icon">📊</div>
                             <h4>Gold Technical Analysis</h4>
                             <p>
-                                Explore chart-based approaches to gold,
-                                including price levels and market trends.
+                                Study chart-based approaches to gold, including
+                                price levels and potential market trends.
                             </p>
                             <span class="card-link">View Analysis <span>→</span></span>
                         </a>
 
-
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
+                        <a class="strategy-card" href="gold.html">
                             <div class="card-icon">⚡</div>
-                            <h4>XAUUSD Trading Setups</h4>
+                            <h4>XAUUSD Trading Signals</h4>
                             <p>
-                                Explore technical chart setups and learn
-                                why trade confirmation matters.
+                                Visit the gold resource page for available
+                                signal information and technical setups.
                             </p>
-                            <span class="card-link">Explore Setups <span>→</span></span>
+                            <span class="card-link">Explore XAUUSD <span>→</span></span>
                         </a>
 
-
-                        <a
-                            class="strategy-card"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
+                        <a class="strategy-card" href="gold.html">
                             <div class="card-icon">🔍</div>
                             <h4>Gold Price Action</h4>
                             <p>
-                                Explore price action concepts for studying
+                                Explore price-action concepts for understanding
                                 gold's market movements.
                             </p>
                             <span class="card-link">Explore Price Action <span>→</span></span>
                         </a>
 
                     </div>
+                </div>
 
+                <!-- GROUP D: US30 -->
+
+                <div class="strategy-group">
+
+                    <div class="group-heading">
+                        <div class="group-letter">D</div>
+
+                        <div>
+                            <h3>US30 Trading Signals & Strategies</h3>
+                            <p>Dow Jones index analysis and trading concepts.</p>
+                        </div>
+                    </div>
+
+                    <div class="strategy-grid">
+
+                        <a class="strategy-card" href="us30.html">
+                            <div class="card-icon">📊</div>
+                            <h4>Free US30 Signals</h4>
+                            <p>
+                                Explore the dedicated US30 page for available
+                                signals and index market setups.
+                            </p>
+                            <span class="card-link">View Free Signals <span>→</span></span>
+                        </a>
+
+                        <a class="strategy-card" href="us30.html">
+                            <div class="card-icon">📈</div>
+                            <h4>US30 Technical Analysis</h4>
+                            <p>
+                                Study price action and chart structure for
+                                the US30 index.
+                            </p>
+                            <span class="card-link">Explore Analysis <span>→</span></span>
+                        </a>
+
+                        <a class="strategy-card" href="us30.html">
+                            <div class="card-icon">🎯</div>
+                            <h4>US30 Trading Setups</h4>
+                            <p>
+                                Explore potential trading setups and learn
+                                about managing risk on index trades.
+                            </p>
+                            <span class="card-link">View Setups <span>→</span></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <!-- GROUP E: GER30 -->
+
+                <div class="strategy-group">
+
+                    <div class="group-heading">
+                        <div class="group-letter">E</div>
+
+                        <div>
+                            <h3>GER30 Trading Signals & Strategies</h3>
+                            <p>German index analysis and trading concepts.</p>
+                        </div>
+                    </div>
+
+                    <div class="strategy-grid">
+
+                        <a class="strategy-card" href="ger30.html">
+                            <div class="card-icon">🇩🇪</div>
+                            <h4>Free GER30 Signals</h4>
+                            <p>
+                                Visit the GER30 page for available German
+                                index signal resources and market setups.
+                            </p>
+                            <span class="card-link">View Free Signals <span>→</span></span>
+                        </a>
+
+                        <a class="strategy-card" href="ger30.html">
+                            <div class="card-icon">📈</div>
+                            <h4>GER30 Technical Analysis</h4>
+                            <p>
+                                Explore chart structure and price action
+                                for the German index.
+                            </p>
+                            <span class="card-link">Explore Analysis <span>→</span></span>
+                        </a>
+
+                        <a class="strategy-card" href="ger30.html">
+                            <div class="card-icon">🎯</div>
+                            <h4>GER30 Trading Setups</h4>
+                            <p>
+                                Explore index trading concepts and the
+                                importance of disciplined risk management.
+                            </p>
+                            <span class="card-link">View Setups <span>→</span></span>
+                        </a>
+
+                    </div>
                 </div>
 
             </div>
-
         </section>
 
-
-        <!-- GROUP D AND E: OTHER DESTINATIONS PRESERVED -->
+        <!-- EDUCATION -->
 
         <section class="education-section" id="education">
 
@@ -1695,18 +1893,14 @@
                     </h2>
 
                     <p>
-                        Explore the economic factors, market news and educational
+                        Explore economic factors, market news and educational
                         resources that can help you understand trading decisions.
                     </p>
                 </div>
 
-
                 <div class="education-grid">
 
-                    <!-- GROUP D -->
-
                     <article class="education-card">
-
                         <h3>🎓 Learn Forex Trading</h3>
 
                         <p>
@@ -1718,48 +1912,36 @@
                         <a class="text-link" href="forexmentor.html">
                             Explore the Forex Mentor →
                         </a>
-
                     </article>
 
-
                     <article class="education-card">
-
                         <h3>📚 Forex Trading for Beginners</h3>
 
                         <p>
-                            Start with the basics of currency pairs, pips,
-                            spreads, leverage, order types and responsible
-                            risk management.
+                            Start with currency pairs, pips, spreads, leverage,
+                            order types and responsible risk management.
                         </p>
 
                         <a class="text-link" href="forexmentor.html">
                             Start Learning →
                         </a>
-
                     </article>
 
-
-                    <!-- GROUP E -->
-
                     <article class="education-card">
-
                         <h3>🌍 Fundamental Forex Analysis</h3>
 
                         <p>
                             Understand how interest rates, inflation, employment
                             data, central bank decisions and economic releases
-                            can influence currency markets.
+                            can influence financial markets.
                         </p>
 
                         <a class="text-link" href="fundamental.html">
                             Explore Fundamental Analysis →
                         </a>
-
                     </article>
 
-
                     <article class="education-card">
-
                         <h3>📰 Forex News & Market Expectations</h3>
 
                         <p>
@@ -1771,12 +1953,9 @@
                         <a class="text-link" href="marketexpectations.html">
                             Explore Market Expectations →
                         </a>
-
                     </article>
 
-
                     <article class="education-card">
-
                         <h3>🧠 Trading Practice</h3>
 
                         <p>
@@ -1788,34 +1967,26 @@
                         <a class="text-link" href="game.html">
                             Open Trading Game →
                         </a>
-
                     </article>
 
-
                     <article class="education-card">
-
-                        <h3>📈 Technical Market Analysis</h3>
+                        <h3>📈 Free Technical Analysis</h3>
 
                         <p>
-                            Explore the technical analysis destination for
-                            chart-based market research and trading concepts.
+                            Select an instrument to access its dedicated
+                            free signal and market analysis page.
                         </p>
 
-                        <a
-                            class="text-link"
-                            href="https://abox-uncooperative-alida.ngrok-free.dev"
-                        >
-                            Open Technical Analysis →
+                        <a class="text-link" href="#technicalDropdownMenu"
+                           onclick="openTechnicalDropdown(event)">
+                            Choose Your Market →
                         </a>
 
                     </article>
 
                 </div>
-
             </div>
-
         </section>
-
 
         <!-- TRADINGVIEW CHART -->
 
@@ -1824,7 +1995,6 @@
             <div class="container">
 
                 <div class="section-heading">
-
                     <div class="section-kicker">Market overview</div>
 
                     <h2>
@@ -1835,9 +2005,7 @@
                         View an embedded EUR/USD chart to study price movement.
                         Chart data is provided by TradingView.
                     </p>
-
                 </div>
-
 
                 <div class="chart-box">
 
@@ -1863,16 +2031,13 @@
 
                 </div>
 
-
                 <p class="chart-disclaimer">
                     Charts are provided for informational and educational purposes.
                     Prices and availability may vary by provider.
                 </p>
 
             </div>
-
         </section>
-
 
         <!-- FREE MENTOR CTA -->
 
@@ -1895,9 +2060,7 @@
                 </a>
 
             </div>
-
         </section>
-
 
         <!-- FAQ -->
 
@@ -1906,7 +2069,6 @@
             <div class="container">
 
                 <div class="section-heading">
-
                     <div class="section-kicker">Frequently asked questions</div>
 
                     <h2>
@@ -1914,48 +2076,48 @@
                     </h2>
 
                     <p>
-                        Learn more about forex education, market analysis
+                        Learn more about forex education, free signal resources
                         and trading strategies.
                     </p>
-
                 </div>
-
 
                 <div class="faq-list">
 
                     <details class="faq-item">
-                        <summary>Where can I find forex technical analysis?</summary>
+                        <summary>Where can I find free gold signals?</summary>
 
                         <div class="faq-answer">
-                            You can access the Real Traders technical analysis
-                            destination using the strategy cards for forex signals,
-                            NASDAQ 100, USTECH 100 and gold trading.
+                            Select Technical Analysis in the main menu and choose
+                            Free Gold Signals, or open gold.html directly.
                         </div>
                     </details>
-
 
                     <details class="faq-item">
-                        <summary>Where can I learn about gold trading?</summary>
+                        <summary>Where can I find free NASDAQ signals?</summary>
 
                         <div class="faq-answer">
-                            Open any Gold Trading Strategy, XAUUSD Analysis,
-                            Gold Technical Analysis or Gold Trading Signals
-                            card. All these cards lead to the technical analysis
-                            destination.
+                            Open the Technical Analysis dropdown and select
+                            Free NASDAQ Signals. This takes you to nasdaq.html.
                         </div>
                     </details>
-
 
                     <details class="faq-item">
-                        <summary>Where can I explore NASDAQ 100 strategies?</summary>
+                        <summary>Where can I find free US30 signals?</summary>
 
                         <div class="faq-answer">
-                            Use the NASDAQ 100 Trading Strategy, NAS100 Trading
-                            Strategy or USTECH 100 Strategy cards. Each opens
-                            the same technical analysis destination.
+                            Select Free US30 Signals from the Technical Analysis
+                            dropdown to visit us30.html.
                         </div>
                     </details>
 
+                    <details class="faq-item">
+                        <summary>Where can I find free GER30 signals?</summary>
+
+                        <div class="faq-answer">
+                            Select Free GER30 Signals from the Technical Analysis
+                            dropdown to visit ger30.html.
+                        </div>
+                    </details>
 
                     <details class="faq-item">
                         <summary>Can beginners learn forex trading here?</summary>
@@ -1967,7 +2129,6 @@
                         </div>
                     </details>
 
-
                     <details class="faq-item">
                         <summary>What is fundamental forex analysis?</summary>
 
@@ -1975,14 +2136,13 @@
                             Fundamental analysis examines economic data,
                             interest rates, inflation, employment reports
                             and central bank decisions to understand factors
-                            that may affect currency prices. Visit the
+                            that may affect market prices. Visit the
                             Fundamental Analysis page to learn more.
                         </div>
                     </details>
 
-
                     <details class="faq-item">
-                        <summary>Are forex signals guaranteed to make money?</summary>
+                        <summary>Are trading signals guaranteed to make money?</summary>
 
                         <div class="faq-answer">
                             No. No trading signal, strategy or analysis can
@@ -1993,11 +2153,8 @@
                     </details>
 
                 </div>
-
             </div>
-
         </section>
-
 
         <!-- RISK WARNING -->
 
@@ -2024,11 +2181,9 @@
                 </div>
 
             </div>
-
         </section>
 
     </main>
-
 
     <!-- FOOTER -->
 
@@ -2053,44 +2208,30 @@
 
                 </div>
 
-
                 <div class="footer-column">
 
                     <h3>Trading Resources</h3>
 
                     <a href="forexmentor.html">Forex Mentor</a>
-
                     <a href="fundamental.html">Fundamental Analysis</a>
-
                     <a href="marketexpectations.html">Market Expectations</a>
-
                     <a href="game.html">Trading Game</a>
 
                 </div>
 
-
                 <div class="footer-column">
 
-                    <h3>Market Analysis</h3>
+                    <h3>Free Trading Signals</h3>
 
-                    <a href="https://abox-uncooperative-alida.ngrok-free.dev">
-                        Forex Technical Analysis
-                    </a>
-
-                    <a href="https://abox-uncooperative-alida.ngrok-free.dev">
-                        Gold / XAUUSD Analysis
-                    </a>
-
-                    <a href="https://abox-uncooperative-alida.ngrok-free.dev">
-                        NASDAQ / USTECH 100
-                    </a>
-
+                    <a href="gold.html">Free Gold Signals</a>
+                    <a href="nasdaq.html">Free NASDAQ Signals</a>
+                    <a href="us30.html">Free US30 Signals</a>
+                    <a href="ger30.html">Free GER30 Signals</a>
                     <a href="#faq">Frequently Asked Questions</a>
 
                 </div>
 
             </div>
-
 
             <div class="copyright">
                 © <span id="currentYear"></span> Real Traders.
@@ -2098,9 +2239,7 @@
             </div>
 
         </div>
-
     </footer>
-
 
     <!-- FLOATING XIO MENTOR BUTTON -->
 
@@ -2114,12 +2253,12 @@
         <span>Ask Xio</span>
     </button>
 
-
     <!-- TRADINGVIEW SCRIPT -->
 
     <script>
         (function () {
-            const chartContainer = document.getElementById("tradingview_eurusd");
+            const chartContainer =
+                document.getElementById("tradingview_eurusd");
 
             if (!chartContainer) return;
 
@@ -2159,11 +2298,10 @@
         })();
     </script>
 
-
     <!-- PAGE INTERACTIONS -->
 
     <script>
-        // Mobile navigation menu
+        // Mobile navigation
         const menuToggle = document.getElementById("menuToggle");
         const navLinks = document.getElementById("navLinks");
 
@@ -2174,28 +2312,102 @@
             menuToggle.textContent = isOpen ? "✕ Close" : "☰ Menu";
         });
 
+        // Technical Analysis dropdown
+        const technicalDropdown =
+            document.getElementById("technicalDropdown");
 
-        // Close mobile navigation after a local navigation link is selected
+        const technicalDropdownToggle =
+            document.getElementById("technicalDropdownToggle");
+
+        technicalDropdownToggle.addEventListener("click", function (event) {
+            event.stopPropagation();
+
+            const isOpen =
+                technicalDropdown.classList.toggle("open");
+
+            technicalDropdownToggle.setAttribute(
+                "aria-expanded",
+                String(isOpen)
+            );
+        });
+
+        // Allow the education section to open the Technical Analysis dropdown
+        function openTechnicalDropdown(event) {
+            event.preventDefault();
+
+            const dropdownIsOpen =
+                technicalDropdown.classList.contains("open");
+
+            if (!dropdownIsOpen) {
+                technicalDropdown.classList.add("open");
+
+                technicalDropdownToggle.setAttribute(
+                    "aria-expanded",
+                    "true"
+                );
+            }
+
+            technicalDropdown.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+            technicalDropdownToggle.focus();
+        }
+
+        // Close dropdown when clicking outside it
+        document.addEventListener("click", function (event) {
+            if (!technicalDropdown.contains(event.target)) {
+                technicalDropdown.classList.remove("open");
+
+                technicalDropdownToggle.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+            }
+        });
+
+        // Close dropdown when Escape is pressed
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                technicalDropdown.classList.remove("open");
+
+                technicalDropdownToggle.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+            }
+        });
+
+        // Close mobile navigation after selecting a destination
         navLinks.querySelectorAll("a").forEach(function (link) {
             link.addEventListener("click", function () {
                 navLinks.classList.remove("open");
+
                 menuToggle.setAttribute("aria-expanded", "false");
                 menuToggle.textContent = "☰ Menu";
+
+                technicalDropdown.classList.remove("open");
+
+                technicalDropdownToggle.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
             });
         });
 
-
-        // Current year in footer
+        // Current year
         document.getElementById("currentYear").textContent =
             new Date().getFullYear();
 
-
-        // Xio redirects to the Forex Mentor page
-        document.getElementById("xioButton").addEventListener("click", function () {
-            window.location.href = "forexmentor.html";
-        });
+        // Xio redirects to Forex Mentor
+        document.getElementById("xioButton").addEventListener(
+            "click",
+            function () {
+                window.location.href = "forexmentor.html";
+            }
+        );
     </script>
-
 
     <!-- EXISTING MONETIZATION SCRIPT -->
 
@@ -2207,4 +2419,4 @@
     </script>
 
 </body>
-  </html>
+    </html>
