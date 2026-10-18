@@ -3,60 +3,191 @@
 <head>
   <meta charset="UTF-8">
 
-  <title>About the Owner | Real Traders</title>
+  <title>About Thulane Nonyane | Real Traders Founder</title>
 
   <!-- Mobile friendly -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Google AdSense script (REQUIRED) -->
+  <!-- SEO -->
+  <meta name="description" content="Meet Thulane Nonyane, founder and creator of Real Traders. Born in 1999 and based in Pretoria, Thulane is a software developer, designer, and businessman driven by innovation, Forex education, and entrepreneurship.">
+
+  <meta name="keywords" content="Thulane Nonyane, Real Traders founder, Forex education, software developer Pretoria, software designer, South African entrepreneur">
+
+  <meta name="author" content="Thulane Nonyane">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="About Thulane Nonyane | Real Traders">
+  <meta property="og:description" content="Discover the story behind Thulane Nonyane, the founder of Real Traders, and his journey as a software developer, designer, and entrepreneur.">
+  <meta property="og:type" content="profile">
+  <meta property="og:image" content="owner.png">
+
+  <!-- Google AdSense -->
   <script async
     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7221396727211259"
     crossorigin="anonymous">
   </script>
 
-  <!-- SEO basics -->
-  <meta name="description" content="Learn more about the founder of Real Traders, the vision behind the platform, and our approach to Forex education.">
-  <meta name="robots" content="index, follow">
-
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-      color: #333;
-      line-height: 1.6;
+      background: #fff9ed;
+      color: #292929;
+      line-height: 1.8;
     }
 
     header {
-      background-color: #212529;
-      color: white;
-      padding: 1.2rem;
+      background: linear-gradient(135deg, #a80000, #e00000);
+      color: #ffffff;
       text-align: center;
+      padding: 35px 20px;
+      border-bottom: 6px solid #ffd400;
     }
 
-    .content {
-      padding: 2rem;
-      max-width: 900px;
-      margin: 2rem auto;
-      background-color: #ffffff;
-      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    header h1 {
+      margin: 0;
+      font-size: 2.2rem;
+    }
+
+    header p {
+      margin: 8px 0 0;
+      font-size: 1.1rem;
+    }
+
+    .owner-section {
+      max-width: 950px;
+      margin: 35px auto;
+      padding: 30px;
+      background: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+      border-top: 5px solid #ffd400;
+    }
+
+    .owner-profile {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .owner-image {
+      width: 190px;
+      height: 190px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 5px solid #ffd400;
+      background: #eeeeee;
+      display: block;
+      margin: 0 auto 18px;
+    }
+
+    .owner-profile h2 {
+      color: #b00000;
+      margin: 10px 0 5px;
+      font-size: 1.9rem;
+    }
+
+    .owner-title {
+      color: #666666;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .location {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 6px 14px;
+      background: #fff3b0;
+      color: #5c3900;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    .content-section {
+      margin-top: 30px;
+    }
+
+    .content-section h2 {
+      color: #b00000;
+      border-left: 5px solid #ffd400;
+      padding-left: 12px;
+      margin-bottom: 12px;
+    }
+
+    .content-section p {
+      margin-bottom: 16px;
+    }
+
+    .highlight {
+      background: #fff8d9;
+      border-left: 4px solid #ffd400;
+      padding: 18px;
+      margin: 25px 0;
+      border-radius: 5px;
+      font-style: italic;
+    }
+
+    .values {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .value-card {
+      background: #fff9ed;
+      border: 1px solid #ffe28a;
       border-radius: 10px;
+      padding: 18px;
     }
 
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
+    .value-card h3 {
+      color: #b00000;
+      margin-top: 0;
     }
 
-    p {
-      margin-bottom: 1rem;
+    .disclaimer {
+      background: #f5f5f5;
+      padding: 18px;
+      border-radius: 8px;
+      font-size: 0.95rem;
     }
 
     footer {
       text-align: center;
-      padding: 1rem;
+      padding: 25px 15px;
+      background: #212529;
+      color: #ffffff;
+      border-top: 5px solid #ffd400;
       font-size: 0.9rem;
-      color: #666;
+    }
+
+    footer p {
+      margin: 5px 0;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.8rem;
+      }
+
+      .owner-section {
+        margin: 20px 12px;
+        padding: 22px 18px;
+      }
+
+      .owner-image {
+        width: 155px;
+        height: 155px;
+      }
+
+      .owner-profile h2 {
+        font-size: 1.6rem;
+      }
     }
   </style>
 </head>
@@ -65,39 +196,207 @@
 
 <header>
   <h1>About the Owner</h1>
-  <p>Real Traders</p>
+  <p>Discover the Vision Behind Real Traders</p>
 </header>
 
-<main class="content">
-  <h2>Who We Are</h2>
-  <p>
-    Real Traders was created to provide transparent, practical, and realistic
-    insights into Forex trading. The platform focuses on education, discipline,
-    and long-term growth rather than hype or false guarantees.
-  </p>
+<main class="owner-section">
 
-  <h2>Our Vision</h2>
-  <p>
-    Our goal is to help traders understand how the market works, manage risk
-    responsibly, and build consistency through knowledge and experience.
-  </p>
+  <!-- Owner Profile -->
+  <section class="owner-profile">
+    <img
+      src="owner.png"
+      alt="Thulane Nonyane, founder and creator of Real Traders"
+      class="owner-image"
+      loading="eager"
+    >
 
-  <h2>Disclaimer</h2>
-  <p>
-    Trading involves risk. Past performance does not guarantee future results.
-    All content is for educational purposes only.
-  </p>
+    <h2>Thulane Nonyane</h2>
+
+    <p class="owner-title">
+      Founder of Real Traders | Software Developer | Designer | Businessman
+    </p>
+
+    <span class="location">Pretoria, South Africa</span>
+  </section>
+
+  <!-- Biography -->
+  <section class="content-section">
+    <h2>Meet Thulane Nonyane</h2>
+
+    <p>
+      Thulane Nonyane, born in 1999 and based in Pretoria, South Africa,
+      is the owner and creator of Real Traders. He is a software developer,
+      designer, and businessman with a passion for technology, innovation,
+      entrepreneurship, and financial education.
+    </p>
+
+    <p>
+      Through his interest in software development and digital design,
+      Thulane works towards turning ideas into practical digital
+      experiences. His vision is to create platforms that provide
+      information, encourage learning, and help people explore
+      opportunities in the digital world.
+    </p>
+
+    <p>
+      As an entrepreneur, Thulane believes that meaningful projects
+      often begin with a simple idea. With dedication, creativity,
+      and a willingness to learn, that idea can develop into something
+      real and useful.
+    </p>
+  </section>
+
+  <!-- The Dream -->
+  <section class="content-section">
+    <h2>From a Dream to Reality</h2>
+
+    <p>
+      Thulane Nonyane Software Design started as a dream: the dream
+      of building something of his own, using technology and creativity
+      to turn ideas into reality.
+    </p>
+
+    <p>
+      What began as a vision gradually became a journey into software
+      development, digital design, and entrepreneurship. Each project
+      represents another step towards bringing that dream to life.
+    </p>
+
+    <p>
+      Real Traders is part of this journey. It reflects the ambition
+      to build a platform where people interested in Forex trading
+      can access educational information, explore trading concepts,
+      and develop a better understanding of the financial markets.
+    </p>
+
+    <div class="highlight">
+      "Every great achievement begins with a dream. With vision,
+      determination, and consistent effort, a dream can become reality."
+    </div>
+  </section>
+
+  <!-- About Real Traders -->
+  <section class="content-section">
+    <h2>About Real Traders</h2>
+
+    <p>
+      Real Traders was created to provide transparent, practical,
+      and realistic insights into Forex trading. The platform focuses
+      on education, trading knowledge, discipline, and responsible
+      risk management rather than hype or false guarantees.
+    </p>
+
+    <p>
+      Our aim is to help beginners and experienced traders explore
+      market concepts, understand trading strategies, and continue
+      learning as they develop their own approach to the Forex market.
+    </p>
+  </section>
+
+  <!-- Vision -->
+  <section class="content-section">
+    <h2>Our Vision</h2>
+
+    <p>
+      Our vision is to make Forex education more accessible and to
+      encourage traders to approach the market with knowledge,
+      patience, discipline, and realistic expectations.
+    </p>
+
+    <p>
+      We believe that learning is an ongoing process. Every trader
+      should have the opportunity to improve their understanding
+      of the market and make informed decisions based on their
+      own research and circumstances.
+    </p>
+  </section>
+
+  <!-- Values -->
+  <section class="content-section">
+    <h2>What We Stand For</h2>
+
+    <div class="values">
+
+      <div class="value-card">
+        <h3>Innovation</h3>
+        <p>
+          Using technology and creative thinking to turn ideas
+          into useful digital experiences.
+        </p>
+      </div>
+
+      <div class="value-card">
+        <h3>Education</h3>
+        <p>
+          Encouraging continuous learning and a better understanding
+          of Forex trading and financial markets.
+        </p>
+      </div>
+
+      <div class="value-card">
+        <h3>Discipline</h3>
+        <p>
+          Promoting patience, preparation, and responsible
+          risk management.
+        </p>
+      </div>
+
+      <div class="value-card">
+        <h3>Entrepreneurship</h3>
+        <p>
+          Turning ideas into projects through creativity,
+          commitment, and consistent effort.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Disclaimer -->
+  <section class="content-section">
+    <h2>Trading Disclaimer</h2>
+
+    <div class="disclaimer">
+      <p>
+        Forex trading involves significant financial risk and may not
+        be suitable for everyone. You may lose some or all of your
+        invested capital.
+      </p>
+
+      <p>
+        Content published by Real Traders is intended for educational
+        and informational purposes only. It does not constitute
+        financial, investment, or trading advice.
+      </p>
+
+      <p>
+        Past performance does not guarantee future results. Always
+        conduct your own research and consider your financial
+        circumstances before making trading decisions.
+      </p>
+    </div>
+  </section>
+
 </main>
 
 <footer>
-  © 2025 Real Traders · All rights reserved
+  <p>&copy; <span id="year"></span> Real Traders. All rights reserved.</p>
+  <p>Created with vision by Thulane Nonyane.</p>
+  <p>Pretoria, South Africa</p>
 </footer>
 
-<!-- Added Script -->
-<script src="https://quge5.com/88/tag.min.js"
-        data-zone="199016"
-        async
-        data-cfasync="false">
+<!-- Automatic Current Year -->
+<script>
+  document.getElementById("year").textContent =
+    new Date().getFullYear();
+</script>
+
+<!-- Existing Advertising Script -->
+<script
+  src="https://quge5.com/88/tag.min.js"
+  data-zone="199016"
+  async
+  data-cfasync="false">
 </script>
 
 </body>
