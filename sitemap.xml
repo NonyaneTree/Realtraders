@@ -1,32 +1,45 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
+    <loc>https://realtraders.ink/</loc>
+</url>
 
-    <url>
-        <loc>https://realtraders.ink/</loc>
-    </url>
+<url>
+    <loc>https://realtraders.ink/forexmentor.html</loc>
+</url>
 
-    <url>
-        <loc>https://realtraders.ink/forexmentor.html</loc>
-    </url>
+<url>
+    <loc>https://realtraders.ink/fundamental.html</loc>
+</url>
 
-    <url>
-        <loc>https://realtraders.ink/fundamental.html</loc>
-    </url>
+<url>
+    <loc>https://realtraders.ink/owner.html</loc>
+</url>
 
-    <url>
-        <loc>https://realtraders.ink/owner.html</loc>
-    </url>
+<url>
+    <loc>https://realtraders.ink/game.html</loc>
+</url>
 
-    <url>
-        <loc>https://realtraders.ink/game.html</loc>
-    </url>
+<url>
+    <loc>https://realtraders.ink/marketexpectations.html</loc>
+</url>
 
-    <url>
-        <loc>https://realtraders.ink/marketexpectations.html</loc>
-    </url>
+<url>
+    <loc>https://realtraders.ink/deriv.html</loc>
+</url>
 
-    <url>
-        <loc>https://realtraders.ink/deriv.html</loc>
-    </url>
+<url>
+    <loc>https://realtraders.ink/gold.html</loc>
+</url>
+
+<url>
+    <loc>https://realtraders.ink/nasdaq.html</loc>
+</url>
+
+<url>
+    <loc>https://realtraders.ink/us30.html</loc>
+</url>
+
+<url>
+    <loc>https://realtraders.ink/ger30.html</loc>
+</url>
 
 </urlset>
