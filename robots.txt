@@ -1,0 +1,139 @@
+==========================================
+
+REALTRADERS.INK
+
+Search Engine and AI Crawler Access
+
+==========================================
+
+User-agent: *
+Allow: /
+
+OpenAI / ChatGPT
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+Google Search and Google AI
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+Microsoft Bing and Copilot
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: MicrosoftBot
+Allow: /
+
+Anthropic / Claude
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+Perplexity AI
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+xAI / Grok
+
+User-agent: Grok
+Allow: /
+
+Meta AI
+
+User-agent: FacebookBot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+Common Crawl
+
+User-agent: CCBot
+Allow: /
+
+Apple-related search and discovery
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+DuckDuckGo
+
+User-agent: DuckDuckBot
+Allow: /
+
+Yandex
+
+User-agent: YandexBot
+Allow: /
+
+Baidu
+
+User-agent: Baiduspider
+Allow: /
+
+Brave Search
+
+User-agent: Bravebot
+Allow: /
+
+Yahoo search (usually powered by Bing)
+
+User-agent: Slurp
+Allow: /
+
+Amazon
+
+User-agent: Amazonbot
+Allow: /
+
+Cohere
+
+User-agent: cohere-ai
+Allow: /
+
+AI21
+
+User-agent: AI21Bot
+Allow: /
+
+DeepSeek
+
+User-agent: DeepSeekBot
+Allow: /
+
+Mistral AI
+
+User-agent: MistralAI-User
+Allow: /
+
+Search the web
+
+Sitemap: https://realtraders.ink/sitemap.xml
